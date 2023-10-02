@@ -8,7 +8,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String data = "";
+  Map products = {};
+
+  get data => null;
 
   @override
   void initState() {
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final jsonString = await assetBundle.loadString('assets/products.json');
     final jsonData = json.decode(jsonString);
     setState(() {
-      data = jsonData['products'];
+      products = jsonData['products'];
     });
   }
 
