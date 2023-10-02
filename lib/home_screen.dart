@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
+import 'package:mobile_app_internet_shop/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -39,20 +40,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Интернет-магазин'),
-      ),
-      body: ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(products[index].name),
-            subtitle: Text(products[index].description),
-            leading: Image.asset(products[index].image),
-            trailing: Text('${products[index].price} руб.'),
-          );
-        },
-      ),
-    );
+        appBar: AppBar(
+          title: Text('Интернет-магазин'),
+        ),
+        body: ListView.builder(
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            return ProductCard(
+              key: UniqueKey(),
+              product: Product(
+                  name: products[index].name,
+                  description: products[index].description,
+                  image: products[index].image,
+                  price: products[index].price),
+              // Здесь передаются данные для отображения карточки товара
+            );
+          },
+        ));
   }
 }
