@@ -30,7 +30,7 @@ class ProductCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Image.network(
+              Image.asset(
                 product.image,
                 height: 100,
                 width: 100,
