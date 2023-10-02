@@ -3,42 +3,42 @@
     "name": "iPhone 15 Pro Max",
     "description": "Apple iPhone 15 Pro Max 1TB White Titanium (Dual Sim)",
     "price": 259999.0,
-    "imagePath": "assets/images/Apple iPhone 15 Pro Max 1TB White Titanium (Dual Sim).jpg"
+    "image": "assets/images/Apple iPhone 15 Pro Max 1TB White Titanium (Dual Sim).jpg"
   },
   {
     "name": "HONOR 70",
     "description": "HONOR 70 8+256Gb Crystal Silver",
     "price": 44999.0,
-    "imagePath": "assets/images/HONOR 70 8+256Gb Crystal Silver.jpg"
+    "image": "assets/images/HONOR 70 8+256Gb Crystal Silver.jpg"
   },
   {
     "name": "HUAWEI Mate X3",
     "description": "HUAWEI Mate X3 12/512GB Dark Green",
     "price": 169999.0,
-    "imagePath": "assets/images/HUAWEI Mate X3 12512GB Dark Green.jpg"
+    "image": "assets/images/HUAWEI Mate X3 12512GB Dark Green.jpg"
   },
   {
     "name": "Infinix Note 30 VIP",
     "description": "Infinix Note 30 VIP 12/256 White (X6710)",
     "price": 31999.0,
-    "imagePath": "assets/images/Infinix Note 30 VIP 12256 White (X6710).jpg"
+    "image": "assets/images/Infinix Note 30 VIP 12256 White (X6710).jpg"
   },
   {
     "name": "realme GT 2 PRO",
     "description": "realme GT 2 PRO 12/256GB Paper White (RMX3301)",
     "price": 49999.0,
-    "imagePath": "assets/images/realme GT 2 PRO 12256GB Paper White (RMX3301).jpg"
+    "image": "assets/images/realme GT 2 PRO 12256GB Paper White (RMX3301).jpg"
   },
   {
     "name": "Samsung Galaxy Z Fold5",
     "description": "Samsung Galaxy Z Fold5 512GB Icy Blue (SM-F946B)",
     "price": 199999.0,
-    "imagePath": "assets/images/Samsung Galaxy Z Fold5 512GB Icy Blue (SM-F946B).jpg"
+    "image": "assets/images/Samsung Galaxy Z Fold5 512GB Icy Blue (SM-F946B).jpg"
   },
   {
     "name": "Xiaomi 13 Ultra",
     "description": "Xiaomi 13 Ultra 512Gb Black",
     "price": 139999.0,
-    "imagePath": "assets/images/Xiaomi 13 Ultra 512Gb Black.jpg"
+    "image": "assets/images/Xiaomi 13 Ultra 512Gb Black.jpg"
   }
 ]

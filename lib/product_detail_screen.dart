@@ -17,8 +17,8 @@ class ProductDetailsScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Image.network(
-            product.imageUrl,
+          Image.asset(
+            product.image,
             height: 300,
             fit: BoxFit.cover,
           ),

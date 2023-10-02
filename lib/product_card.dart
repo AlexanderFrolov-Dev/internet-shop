@@ -31,7 +31,7 @@ class ProductCard extends StatelessWidget {
           child: Row(
             children: [
               Image.network(
-                product.imageUrl,
+                product.image,
                 height: 100,
                 width: 100,
                 fit: BoxFit.cover,
@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
                     Text(
                       product.name,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -56,7 +56,7 @@ class ProductCard extends StatelessWidget {
                     Text(
                       '${product.price} руб.',
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
