@@ -60,14 +60,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/products.json
-    - assets/images/Apple iPhone 15 Pro Max 1TB White Titanium (Dual Sim).jpg
-    - assets/images/HONOR 70 8+256Gb Crystal Silver.jpg
-    - assets/images/HUAWEI Mate X3 12512GB Dark Green.jpg
-    - assets/images/Infinix Note 30 VIP 12256 White (X6710).jpg
-    - assets/images/realme GT 2 PRO 12256GB Paper White (RMX3301).jpg
-    - assets/images/Samsung Galaxy Z Fold5 512GB Icy Blue (SM-F946B).jpg
-    - assets/images/Xiaomi 13 Ultra 512Gb Black.jpg
+    - assets/data/products.json
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

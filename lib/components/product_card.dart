@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/product_detail_screen.dart';
+import 'package:mobile_app_internet_shop/components/product_detail_screen.dart';
 
-import 'cart.dart';
-import 'product.dart';
+import '../cart.dart';
+import '../product.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
   final bool showCartIcon;
 
-  const ProductCard({required Key key, required this.product, this.showCartIcon = false})
+  const ProductCard({required Key key, required this.product, this.showCartIcon = true})
       : super(key: key);
 
   @override

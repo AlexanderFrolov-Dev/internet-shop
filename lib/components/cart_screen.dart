@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/product_card.dart';
+import 'package:mobile_app_internet_shop/components/product_card.dart';
 
-import 'cart.dart';
+import '../cart.dart';
 
 class CartScreen extends StatelessWidget {
   final Cart cart = Cart.getInstance();

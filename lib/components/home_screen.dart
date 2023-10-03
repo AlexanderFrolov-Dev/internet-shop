@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
-import 'package:mobile_app_internet_shop/product_card.dart';
+import 'package:mobile_app_internet_shop/components/product_card.dart';
+
+import 'cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 // Метод для получения данных о товарах из JSON-файла
   Future<void> getProducts() async {
     // Получение данных из JSON-файла с помощью метода rootBundle
-    final jsonProducts = await rootBundle.loadString('assets/products.json');
+    final jsonProducts = await rootBundle.loadString('assets/data/products.json');
 
     // Преобразование полученных данных в формат JSON
     final jsonData = json.decode(jsonProducts);
@@ -42,6 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Интернет-магазин'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+            ),
+          ],
         ),
         body: ListView.builder(
           itemCount: products.length,
