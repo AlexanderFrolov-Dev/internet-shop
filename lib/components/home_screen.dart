@@ -57,12 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: products.length,
           itemBuilder: (context, index) {
             return ProductCard(
-              key: UniqueKey(),
-              product: Product(
-                  name: products[index].name,
-                  description: products[index].description,
-                  image: products[index].image,
-                  price: products[index].price),
+              key: ValueKey(products[index]),
+              product: products[index],
               // Здесь передаются данные для отображения карточки товара
             );
           },

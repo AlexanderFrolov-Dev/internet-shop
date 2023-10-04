@@ -16,7 +16,7 @@ class CartScreen extends StatelessWidget {
         itemCount: cart.products.length,
         itemBuilder: (context, index) {
           return ProductCard(
-            key: UniqueKey(),
+            key: ValueKey(cart),
             product: cart.products[index],
             showCartIcon: false,
           );
