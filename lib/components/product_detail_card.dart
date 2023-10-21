@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../cart.dart';
 import '../product.dart';
 
-class ProductDetailsScreen extends StatelessWidget {
+class ProductDetailsCard extends StatelessWidget {
   final Product product;
 
-  const ProductDetailsScreen({required Key key, required this.product}) : super(key: key);
+  const ProductDetailsCard({required Key key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

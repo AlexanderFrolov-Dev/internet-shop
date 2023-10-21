@@ -4,7 +4,6 @@ class Product {
   final String description;
   final String image;
   final double price;
-  int quantity = 0;
 
   Product({required this.id, required this.name, required this.description, required this.image, required this.price});
 
