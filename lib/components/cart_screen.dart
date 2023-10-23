@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/components/cart_product_card.dart';
+import 'package:provider/provider.dart';
 
 import '../cart.dart';
 import '../cart_item.dart';
+import '../cart_model.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -31,14 +33,38 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: cart.cartItems.length,
-              itemBuilder: (context, index) {
-                return CartProductCard(cart.cartItems[index]);
+
+            Consumer<CartModel>(
+              builder: (context, cart, _) {
+                return ListView.builder(
+                  itemCount: cart.cartItems.length,
+                  itemBuilder: (context, index) {
+                    return CartProductCard(cart.cartItems[index]);
+                  },
+                );
               },
             ),
-          ),
+
+          // Consumer<CartModel>(
+          //   builder: (context, cart, _) {
+          //     return Positioned(
+          //       bottom: 0,
+          //       child: Container(
+          //         width: MediaQuery.of(context).size.width,
+          //         color: Colors.grey[200],
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.end,
+          //           children: [
+          //             Text(
+          //               'Общая стоимость: ${cart.totalPrice} руб.',
+          //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
           Text("Общая сумма: $total"),
           // отображение общей суммы товаров в корзине
           ElevatedButton(

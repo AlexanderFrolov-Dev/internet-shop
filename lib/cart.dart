@@ -58,6 +58,11 @@ class Cart {
     return _totalPrice;
   }
 
+  void update() {
+    cartItems;
+    getTotalPrice();
+  }
+
   void clearCart() {
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();

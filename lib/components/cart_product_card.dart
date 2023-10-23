@@ -52,7 +52,8 @@ class _CartProductCardState extends State<CartProductCard> {
             children: <Widget>[
               InkWell(
                 // onTap: () => setState(() => widget.addToCart(widget.cartItem.product)),
-                onTap: () => setState(() => widget.cart.addToCart(widget.cartItem.product)),
+                onTap: () => setState(() => {widget.cart.addToCart(widget.cartItem.product),
+                  widget.cart.update()}),
 
                 child: Icon(Icons.arrow_drop_up),
               ),
@@ -60,7 +61,9 @@ class _CartProductCardState extends State<CartProductCard> {
               Text('${widget.cartItem.quantity}'),
               SizedBox(width: 5),
               InkWell(
-                onTap: () => setState(() => widget.cart.removeFromCart(widget.cartItem.product)),
+                // onTap: () => setState(() => widget.cart.removeFromCart(widget.cartItem.product)),
+                onTap: () => setState(() => {widget.cart.removeFromCart(widget.cartItem.product),
+                  widget.cart.update()}),
                 child: Icon(Icons.arrow_drop_down),
               ),
             ],
