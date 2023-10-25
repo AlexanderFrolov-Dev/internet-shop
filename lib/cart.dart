@@ -34,12 +34,12 @@ class Cart {
     if (cartItems.any((item) => item == product)) {
       // Если есть, то уменьшаем счетчик товара на 1
       int index = cartItems.indexWhere((item) => item == product);
-      if (cartItems[index].quantity > 0) {
+      if (cartItems[index].quantity > 1) {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
       } else {
-        // Если счетчик равен 0, то удаляем товар из корзины
+        // Если счетчик равен 1, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;

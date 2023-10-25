@@ -77,6 +77,7 @@ class _CartScreenState extends State<CartScreen> {
                               onPressed: () {
                                 cart.addToCart(cart.cartItems[index]);
                                 setState(() {
+                                  cart.cartItems;
                                   cart.cartItems[index].quantity;
                                 });
                               },
@@ -85,9 +86,15 @@ class _CartScreenState extends State<CartScreen> {
                           Text('${cart.cartItems[index].quantity}'),
                           IconButton(
                               onPressed: () {
-                                cart.removeFromCart(cart.cartItems[index]);
+                                // cart.removeFromCart(cart.cartItems[index]);
                                 setState(() {
-                                  cart.cartItems[index].quantity;
+                                  if(cart.cartItems[index].quantity > 0) {
+                                    cart.cartItems[index].quantity--;
+                                  } else {
+                                    cart.removeFromCart(cart.cartItems[index]);
+                                    // cart.cartItems.removeAt(index); // удаление выбранного товара из списка
+                                  }
+                                  // cart.cartItems.removeAt(index); // удаление выбранного товара из списка
                                 });
                               },
                               icon: const Icon(Icons.arrow_drop_down)
