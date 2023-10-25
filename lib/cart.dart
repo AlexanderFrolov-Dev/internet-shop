@@ -1,8 +1,7 @@
-import 'cart_item.dart';
 import 'product.dart';
 
 class Cart {
-  final List<CartItem> _cartItems = [];
+  final List<Product> _cartItems = [];
   double _totalPrice = 0;
 
   // Создаем приватный конструктор для реализации Singleton
@@ -14,17 +13,17 @@ class Cart {
   // Создаем геттер для доступа к единственному экземпляру класса
   static Cart getInstance() => _instance;
 
-  List<CartItem> get cartItems => _cartItems;
+  List<Product> get cartItems => _cartItems;
 
   void addToCart(Product product) {
     // Проверяем, есть ли уже такой товар в корзине
-    if (cartItems.any((item) => item.product == product)) {
+    if (cartItems.any((item) => item == product)) {
       // Если есть, то увеличиваем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item.product == product);
+      int index = cartItems.indexWhere((item) => item == product);
       cartItems[index].quantity++;
     } else {
       // Если нет, то добавляем товар в корзину
-      cartItems.add(CartItem(product, 1));
+      cartItems.add(product);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -32,15 +31,15 @@ class Cart {
 
   void removeFromCart(Product product) {
     // Проверяем, есть ли такой товар в корзине
-    if (cartItems.any((item) => item.product == product)) {
+    if (cartItems.any((item) => item == product)) {
       // Если есть, то уменьшаем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item.product == product);
-      if (cartItems[index].quantity > 1) {
+      int index = cartItems.indexWhere((item) => item == product);
+      if (cartItems[index].quantity > 0) {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
       } else {
-        // Если счетчик равен 1, то удаляем товар из корзины
+        // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
@@ -51,8 +50,8 @@ class Cart {
   // Метод для получения общей суммы товаров в корзине
   double getTotalPrice() {
     // Считаем общую сумму по всем элементам корзины
-    for (CartItem item in cartItems) {
-      _totalPrice += item.product.price * item.quantity;
+    for (Product item in cartItems) {
+      _totalPrice += item.price * item.quantity;
     }
 
     return _totalPrice;

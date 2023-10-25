@@ -15,9 +15,7 @@
 ///по нажатию на которую корзина очищается, и выводится сообщение "Успешно"
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'cart_model.dart';
 import 'components/home_screen.dart';
 
 void main() => runApp(InternetShop());
@@ -25,17 +23,12 @@ void main() => runApp(InternetShop());
 class InternetShop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => CartModel()),
-      ],
-      child: MaterialApp(
+    return MaterialApp(
         title: 'Интернет-магазин',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: HomeScreen(),
-      ),
-    );
+      );
   }
 }

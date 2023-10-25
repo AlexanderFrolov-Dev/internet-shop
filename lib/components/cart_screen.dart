@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/components/cart_product_card.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile_app_internet_shop/product.dart';
 
 import '../cart.dart';
-import '../cart_item.dart';
-import '../cart_model.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -17,15 +14,15 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     double total = 0; // переменная для хранения общей суммы товаров в корзине
-    for (CartItem cartItem in cart.cartItems) {
+    for (Product cartItem in cart.cartItems) {
       // цикл для подсчета общей суммы
-      total += cartItem.product.price * cartItem.quantity;
+      total += cartItem.price * cartItem.quantity;
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Корзина"),
+        title: const Text("Корзина"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -33,42 +30,81 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Column(
         children: [
-
-            Consumer<CartModel>(
-              builder: (context, cart, _) {
-                return ListView.builder(
-                  itemCount: cart.cartItems.length,
-                  itemBuilder: (context, index) {
-                    return CartProductCard(cart.cartItems[index]);
-                  },
-                );
-              },
-            ),
-
-          // Consumer<CartModel>(
-          //   builder: (context, cart, _) {
-          //     return Positioned(
-          //       bottom: 0,
-          //       child: Container(
-          //         width: MediaQuery.of(context).size.width,
-          //         color: Colors.grey[200],
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.end,
-          //           children: [
-          //             Text(
-          //               'Общая стоимость: ${cart.totalPrice} руб.',
-          //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
+          Expanded(child: ListView.builder(
+            itemCount: cart.cartItems.length,
+            itemBuilder: (context, index) {
+              // return ProductCard(key: ValueKey(cart.cartItems[index]), product: cart.cartItems[index]);
+              return Card(
+                margin: const EdgeInsets.all(10),
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        cart.cartItems[index].image,
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cart.cartItems[index].name,
+                              style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              cart.cartItems[index].description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              '${cart.cartItems[index].price} руб.',
+                              style:
+                              TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(child: Column(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                cart.addToCart(cart.cartItems[index]);
+                                setState(() {
+                                  cart.cartItems[index].quantity;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_drop_up)
+                          ),
+                          Text('${cart.cartItems[index].quantity}'),
+                          IconButton(
+                              onPressed: () {
+                                cart.removeFromCart(cart.cartItems[index]);
+                                setState(() {
+                                  cart.cartItems[index].quantity;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_drop_down)
+                          )
+                        ],
+                      )
+                      )
+                    ],
+                  ),
+                ),
+              );
+            })
+          ),
           Text("Общая сумма: $total"),
           // отображение общей суммы товаров в корзине
           ElevatedButton(
-            child: Text("Купить"),
+            child: const Text("Купить"),
             onPressed: () {
               cart.cartItems.clear(); // очистка корзины
               showDialog(
@@ -76,10 +112,10 @@ class _CartScreenState extends State<CartScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: Text("Успешно"),
+                    content: const Text("Успешно"),
                     actions: [
                       TextButton(
-                        child: Text("Ок"),
+                        child: const Text("Ок"),
                         onPressed: () {
                           Navigator.pop(context); // закрытие диалогового окна
                         },
@@ -95,3 +131,44 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 }
+
+// ElevatedButton(
+// child: Text("Купить"),
+// onPressed: () {
+// if (total > 0) {
+// // если общая сумма больше 0, то покупка успешна
+// cartItems.clear();
+// showDialog(
+// context: context,
+// builder: (context) {
+// return AlertDialog(
+// content: Text("Успешно"),
+// actions: [
+// TextButton(
+// child: Text("Ок"),
+// onPressed: () {
+// Navigator.pop(context);
+// },
+// ),
+// ],
+// );
+// },
+// );
+// } else {
+// // если общая сумма равна 0, то покупка не может быть завершена
+// showDialog(
+// context: context,
+// builder: (context) {
+// return AlertDialog(
+// content: Text("Корзина пуста"),
+// actions: [
+// TextButton(
+// child: Text("Ок"),
+// onPressed: () {
+// Navigator.pop(context);
+// },
+// ),
+// ],
+// );
+// },
+// );

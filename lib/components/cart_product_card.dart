@@ -1,74 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/cart_item.dart';
-
-import '../cart.dart';
+import 'package:mobile_app_internet_shop/product.dart';
 
 class CartProductCard extends StatefulWidget {
-  Cart cart = Cart.getInstance();
-  CartItem cartItem;
+  final Product product;
 
-  CartProductCard(this.cartItem);
+  const CartProductCard({required this.product, super.key});
 
   @override
-  State<CartProductCard> createState() => _CartProductCardState();
+  State<StatefulWidget> createState() => _CartProductCard();
 }
 
-class _CartProductCardState extends State<CartProductCard> {
-
-
+class _CartProductCard extends State<CartProductCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            height: 150.0,
-            width: 150.0,
-            child: Image.asset(
-              widget.cartItem.product.image,
+    return Card(
+      margin: const EdgeInsets.all(10),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Image.asset(
+              widget.product.image,
+              height: 100,
+              width: 100,
               fit: BoxFit.cover,
             ),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  widget.cartItem.product.name,
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '\$${widget.cartItem.product.price}',
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                ),
-              ],
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.product.name,
+                    style:
+                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    widget.product.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    '${widget.product.price} руб.',
+                    style:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(width: 10),
-          Column(
-            children: <Widget>[
-              InkWell(
-                // onTap: () => setState(() => widget.addToCart(widget.cartItem.product)),
-                onTap: () => setState(() => {widget.cart.addToCart(widget.cartItem.product),
-                  widget.cart.update()}),
+            Expanded(child: Column(
+                children: [
+                  IconButton(
+                      onPressed: () {
 
-                child: Icon(Icons.arrow_drop_up),
-              ),
-              SizedBox(width: 5),
-              Text('${widget.cartItem.quantity}'),
-              SizedBox(width: 5),
-              InkWell(
-                // onTap: () => setState(() => widget.cart.removeFromCart(widget.cartItem.product)),
-                onTap: () => setState(() => {widget.cart.removeFromCart(widget.cartItem.product),
-                  widget.cart.update()}),
-                child: Icon(Icons.arrow_drop_down),
-              ),
-            ],
-          ),
-        ],
+                      },
+                      icon: const Icon(Icons.arrow_drop_up))
+                ],
+              )
+            )
+          ],
+        ),
       ),
     );
   }

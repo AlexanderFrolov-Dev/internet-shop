@@ -4,8 +4,14 @@ class Product {
   final String description;
   final String image;
   final double price;
+  int quantity;
 
-  Product({required this.id, required this.name, required this.description, required this.image, required this.price});
+  Product({required this.id,
+    required this.name,
+    required this.description,
+    required this.image,
+    required this.price,
+    this.quantity = 1});
 
   // Создаем фабрический конструктор для удобного парсинга данных из json
   factory Product.fromJson(Map<String, dynamic> json) {
