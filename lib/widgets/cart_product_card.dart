@@ -16,7 +16,7 @@ class _CartProductCard extends State<CartProductCard> {
     return Card(
       margin: const EdgeInsets.all(10),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             Image.asset(
@@ -25,41 +25,38 @@ class _CartProductCard extends State<CartProductCard> {
               width: 100,
               fit: BoxFit.cover,
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     widget.product.name,
-                    style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     widget.product.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     '${widget.product.price} руб.',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            Expanded(child: Column(
-                children: [
-                  IconButton(
-                      onPressed: () {
-
-                      },
-                      icon: const Icon(Icons.arrow_drop_up))
-                ],
-              )
-            )
+            Expanded(
+                child: Column(
+              children: [
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.arrow_drop_up))
+              ],
+            ))
           ],
         ),
       ),

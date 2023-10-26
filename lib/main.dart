@@ -16,19 +16,21 @@
 
 import 'package:flutter/material.dart';
 
-import 'components/home_screen.dart';
+import 'screens/home_screen.dart';
 
-void main() => runApp(InternetShop());
+void main() => runApp(const InternetShop());
 
 class InternetShop extends StatelessWidget {
+  const InternetShop({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Интернет-магазин',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: HomeScreen(),
-      );
+      title: 'Интернет-магазин',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomeScreen(),
+    );
   }
 }

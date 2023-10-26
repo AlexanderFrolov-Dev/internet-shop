@@ -45,17 +45,6 @@ class Cart {
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }
-
-      // if (cartItems[index].quantity == 0) {
-      //   // вызываем метод для удаления карточки из корзины
-      //   cartItems.removeAt(index);
-      // }
-      // else {
-      //   // Если счетчик равен 0, то удаляем товар из корзины
-      //   cartItems.removeAt(index);
-      //   // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
-      //   _totalPrice -= product.price;
-      // }
     }
   }
 
@@ -67,11 +56,6 @@ class Cart {
     }
 
     return _totalPrice;
-  }
-
-  void update() {
-    cartItems;
-    getTotalPrice();
   }
 
   void clearCart() {

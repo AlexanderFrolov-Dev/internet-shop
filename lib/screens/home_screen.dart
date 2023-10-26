@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
-import 'package:mobile_app_internet_shop/components/product_card.dart';
+import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 
 import 'cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
 // Метод для получения данных о товарах из JSON-файла
   Future<void> getProducts() async {
     // Получение данных из JSON-файла с помощью метода rootBundle
-    final jsonProducts = await rootBundle.loadString('assets/data/products.json');
+    final jsonProducts =
+        await rootBundle.loadString('assets/data/products.json');
 
     // Преобразование полученных данных в формат JSON
     final jsonData = json.decode(jsonProducts);
@@ -43,16 +46,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Интернет-магазин'),
+          title: const Text('Интернет-магазин'),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CartScreen()));
+                        builder: (context) => const CartScreen()));
               },
             ),
           ],
@@ -63,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return ProductCard(
               key: ValueKey(products[index]),
               product: products[index],
-              // Здесь передаются данные для отображения карточки товара
             );
           },
         ));
