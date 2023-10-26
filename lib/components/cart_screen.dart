@@ -88,12 +88,13 @@ class _CartScreenState extends State<CartScreen> {
                               onPressed: () {
                                 // cart.removeFromCart(cart.cartItems[index]);
                                 setState(() {
-                                  if(cart.cartItems[index].quantity > 0) {
-                                    cart.cartItems[index].quantity--;
-                                  } else {
-                                    cart.removeFromCart(cart.cartItems[index]);
-                                    // cart.cartItems.removeAt(index); // удаление выбранного товара из списка
-                                  }
+                                  cart.removeFromCart(cart.cartItems[index]);
+                                  // if(cart.cartItems[index].quantity > 1) {
+                                  //   --cart.cartItems[index].quantity;
+                                  // } else {
+                                  //   cart.removeFromCart(cart.cartItems[index]);
+                                  //   // cart.cartItems.removeAt(index); // удаление выбранного товара из списка
+                                  // }
                                   // cart.cartItems.removeAt(index); // удаление выбранного товара из списка
                                 });
                               },

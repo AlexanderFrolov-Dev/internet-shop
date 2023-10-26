@@ -38,12 +38,24 @@ class Cart {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
-      } else {
-        // Если счетчик равен 1, то удаляем товар из корзины
+      }
+      else {
+        // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }
+
+      // if (cartItems[index].quantity == 0) {
+      //   // вызываем метод для удаления карточки из корзины
+      //   cartItems.removeAt(index);
+      // }
+      // else {
+      //   // Если счетчик равен 0, то удаляем товар из корзины
+      //   cartItems.removeAt(index);
+      //   // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
+      //   _totalPrice -= product.price;
+      // }
     }
   }
 
