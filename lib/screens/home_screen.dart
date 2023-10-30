@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
-import 'package:mobile_app_internet_shop/widgets/product_card.dart';
+import 'package:mobile_app_internet_shop/widgets/user_product_card.dart';
 
 import 'cart_screen.dart';
 
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: ListView.builder(
           itemCount: products.length,
           itemBuilder: (context, index) {
-            return ProductCard(
+            return UserProductCard(
               key: ValueKey(products[index]),
               product: products[index],
             );

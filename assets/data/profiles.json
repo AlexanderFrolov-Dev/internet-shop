@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "role": "admin",
+    "lastName": "Александров",
+    "firstName": "Александр",
+    "patronymic": "Александрович",
+    "login": "aleksandrov_aleksandr",
+    "password": "aleksandr123"
+  },
+  {
+    "id": 2,
+    "role": "admin",
+    "lastName": "Александрова",
+    "firstName": "Александра",
+    "patronymic": "Александровна",
+    "login": "aleksandrova_aleksandra",
+    "password": "aleksandra123"
+  },
+  {
+    "id": 3,
+    "role": "user",
+    "lastName": "Алексеев",
+    "firstName": "Алексей",
+    "patronymic": "Алексеевич",
+    "login": "alekseev_aleksey",
+    "password": "aleksey123"
+  },
+  {
+    "id": 4,
+    "role": "user",
+    "lastName": "Антонов",
+    "firstName": "Антон",
+    "patronymic": "Антонович",
+    "login": "antonov_anton",
+    "password": "anton123"
+  },
+  {
+    "id": 5,
+    "role": "user",
+    "lastName": "Борисов",
+    "firstName": "Борис",
+    "patronymic": "Борисович",
+    "login": "borisov_boris",
+    "password": "boris123"
+  },
+  {
+    "id": 6,
+    "role": "user",
+    "lastName": "Васильев",
+    "firstName": "Василий",
+    "patronymic": "Васильевич",
+    "login": "vasiliev_vasiliy",
+    "password": "vasiliy123"
+  },
+  {
+    "id": 7,
+    "role": "user",
+    "lastName": "Васильева",
+    "firstName": "Василиса",
+    "patronymic": "Васильевна",
+    "login": "vasilieva_vasilisa",
+    "password": "vasilisa123"
+  },
+  {
+    "id": 8,
+    "role": "user",
+    "lastName": "Викторов",
+    "firstName": "Виктор",
+    "patronymic": "Викторович",
+    "login": "victorov_victor",
+    "password": "victor123"
+  },
+  {
+    "id": 9,
+    "role": "user",
+    "lastName": "Викторова",
+    "firstName": "Виктория",
+    "patronymic": "Викторовна",
+    "login": "victorova_victoria",
+    "password": "victoria123"
+  },
+  {
+    "id": 10,
+    "role": "user",
+    "lastName": "Денисов",
+    "firstName": "Денис",
+    "patronymic": "Денисович",
+    "login": "denisov_denis",
+    "password": "denis123"
+  }
+]

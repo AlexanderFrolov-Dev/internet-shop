@@ -4,11 +4,11 @@ import 'package:mobile_app_internet_shop/widgets/product_detail_card.dart';
 import '../cart.dart';
 import '../product.dart';
 
-class ProductCard extends StatelessWidget {
+class UserProductCard extends StatelessWidget {
   final Product product;
   final bool showCartIcon;
 
-  const ProductCard(
+  const UserProductCard(
       {required Key key, required this.product, this.showCartIcon = true})
       : super(key: key);
 

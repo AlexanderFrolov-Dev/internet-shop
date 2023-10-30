@@ -15,6 +15,7 @@
 ///по нажатию на которую корзина очищается, и выводится сообщение "Успешно"
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 
 import 'screens/home_screen.dart';
 
@@ -30,7 +31,7 @@ class InternetShop extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: AuthorizationScreen(),
     );
   }
 }
