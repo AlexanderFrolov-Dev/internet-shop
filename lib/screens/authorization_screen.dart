@@ -67,6 +67,7 @@ class AuthorizationScreen extends StatelessWidget {
                     // если значения совпадают, выводим сообщение об успешной авторизации
                     print('Авторизация успешна');
                     print(profile.lastName);
+
                     break; // прерываем цикл, чтобы не проверять остальные элементы
                   } else {
                     print('Неверный логин или пароль');
