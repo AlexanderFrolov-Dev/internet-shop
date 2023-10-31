@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 
+import 'admin_home_screen.dart';
+
 class AuthorizationScreen extends StatelessWidget {
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
@@ -67,6 +69,7 @@ class AuthorizationScreen extends StatelessWidget {
                     // если значения совпадают, выводим сообщение об успешной авторизации
                     print('Авторизация успешна');
                     print(profile.lastName);
+                    // const AdminHomeScreen();
 
                     break; // прерываем цикл, чтобы не проверять остальные элементы
                   } else {
