@@ -71,6 +71,11 @@ class AuthorizationScreen extends StatelessWidget {
                     print(profile.lastName);
                     // const AdminHomeScreen();
 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdminHomeScreen()),
+                    );
+
                     break; // прерываем цикл, чтобы не проверять остальные элементы
                   } else {
                     print('Неверный логин или пароль');

@@ -63,6 +63,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         body: Column(
           children: [
             ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
               itemCount: products.length,
               itemBuilder: (context, index) {
                 return ProductCard(
