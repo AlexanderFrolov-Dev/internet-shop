@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
+import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
 
 import 'admin_home_screen.dart';
 
@@ -71,10 +72,17 @@ class AuthorizationScreen extends StatelessWidget {
                     print(profile.lastName);
                     // const AdminHomeScreen();
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AdminHomeScreen()),
-                    );
+                    if(profile.role == 'admin') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AdminHomeScreen()),
+                      );
+                    } else if(profile.role == 'user') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UserHomeScreen()),
+                      );
+                    }
 
                     break; // прерываем цикл, чтобы не проверять остальные элементы
                   } else {
