@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/widgets/product_detail_card.dart';
 
-import '../cart.dart';
+import '../models/cart_model.dart';
 import '../product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -67,7 +67,7 @@ class ProductCard extends StatelessWidget {
                   icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
                     // При нажатии на иконку корзины добавляем товар в корзину
-                    Cart.getInstance().addToCart(product);
+                    CartModel.getInstance().addToCart(product);
                   },
                 ),
             ],

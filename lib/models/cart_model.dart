@@ -1,17 +1,19 @@
-import 'product.dart';
+import 'package:flutter/cupertino.dart';
 
-class Cart {
+import '../product.dart';
+
+class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
 
   // Создаем приватный конструктор для реализации Singleton
-  Cart._();
+  CartModel._();
 
   // Создаем статическое поле для хранения единственного экземпляра класса
-  static final Cart _instance = Cart._();
+  static final CartModel _instance = CartModel._();
 
   // Создаем геттер для доступа к единственному экземпляру класса
-  static Cart getInstance() => _instance;
+  static CartModel getInstance() => _instance;
 
   List<Product> get cartItems => _cartItems;
 
@@ -27,6 +29,7 @@ class Cart {
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
+    notifyListeners();
   }
 
   void removeFromCart(Product product) {
@@ -44,6 +47,7 @@ class Cart {
         cartItems.removeAt(index);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
+        notifyListeners();
       }
     }
   }
@@ -55,6 +59,7 @@ class Cart {
       _totalPrice += item.price * item.quantity;
     }
 
+    notifyListeners();
     return _totalPrice;
   }
 
@@ -62,5 +67,6 @@ class Cart {
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();
     _totalPrice = 0;
+    notifyListeners();
   }
 }

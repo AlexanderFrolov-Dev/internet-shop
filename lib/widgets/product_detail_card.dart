@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../cart.dart';
+import '../models/cart_model.dart';
 import '../product.dart';
 
 class ProductDetailsCard extends StatelessWidget {
@@ -55,7 +55,7 @@ class ProductDetailsCard extends StatelessWidget {
               child: const Text('Добавить в корзину'),
               onPressed: () {
                 // При нажатии на кнопку добавляем товар в корзину
-                Cart.getInstance().addToCart(product);
+                CartModel.getInstance().addToCart(product);
               },
             ),
           ),

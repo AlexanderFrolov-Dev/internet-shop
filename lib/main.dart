@@ -5,9 +5,16 @@
 /// экран с формой для добавления товара, открываются.
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const InternetShop());
+void main() => runApp(
+  ChangeNotifierProvider(
+      create: (context) => CartModel.getInstance(),
+    child: const InternetShop(),
+  )
+);
 
 class InternetShop extends StatelessWidget {
   const InternetShop({super.key});
