@@ -62,22 +62,37 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         ),
         body: Column(
           children: [
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  key: ValueKey(products[index]),
-                  product: products[index],
-                );
-              },
+            Flexible(
+              flex: 5,
+              child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        return ProductCard(
+                          key: ValueKey(products[index]),
+                          product: products[index],
+                        );
+                      },
+                    ),
             ),
+            Flexible(
+              flex: 1,
+              child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: TextButton(
+                        onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AddProductForm()),
+                            );
+                        },
+                        child: Text('Добавить товар'),
+                      ),
+                    ),
+            )
           ],
-        ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => AddProductForm(),
-      // )
+        )
     );
   }
 }
