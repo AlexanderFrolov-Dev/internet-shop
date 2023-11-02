@@ -5,6 +5,7 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
+  int _itemsCount = 0;
 
   // Создаем приватный конструктор для реализации Singleton
   CartModel._();
@@ -61,6 +62,15 @@ class CartModel extends ChangeNotifier {
 
     notifyListeners();
     return _totalPrice;
+  }
+
+  int getItemsCount() {
+    for(Product item in cartItems) {
+      _itemsCount += item.quantity;
+    }
+
+    notifyListeners();
+    return _itemsCount;
   }
 
   void clearCart() {

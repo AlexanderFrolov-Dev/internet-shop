@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/product.dart';
 import 'package:mobile_app_internet_shop/widgets/add_product_form.dart';
+import 'package:mobile_app_internet_shop/widgets/cart_badge.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
+import 'package:provider/provider.dart';
 
 import 'cart_screen.dart';
 
@@ -29,7 +32,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   Future<void> getProducts() async {
     // Получение данных из JSON-файла с помощью метода rootBundle
     final jsonProducts =
-    await rootBundle.loadString('assets/data/products.json');
+        await rootBundle.loadString('assets/data/products.json');
 
     // Преобразование полученных данных в формат JSON
     final jsonData = json.decode(jsonProducts);
@@ -49,50 +52,71 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         appBar: AppBar(
           title: const Text('Интернет-магазин'),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CartScreen()));
-              },
-            ),
+            Consumer<CartModel>(
+              builder: (context, cart, child) => CartBadge(
+                // label: '5',
+                // label: Text('${context.read<CartModel>()}'),
+                // value: '${cart.getItemsCount()}',
+                value: '${context.select<CartModel>()}',
+                child: IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CartScreen()));
+                  },
+                ),
+              ),
+            )
           ],
+
+
+          // actions: <Widget>[
+          //   Consumer<CartModel>(
+          //     builder: (context, cart, child) => Badge(
+          //       // label: '5',
+          //       // label: Text('${context.read<CartModel>()}'),
+          //       child: IconButton(
+          //         icon: const Icon(Icons.shopping_cart),
+          //         onPressed: () {},
+          //       ),
+          //     ),
+          //   )
+          // ],
         ),
         body: Column(
           children: [
             Flexible(
               flex: 5,
               child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return ProductCard(
-                          key: ValueKey(products[index]),
-                          product: products[index],
-                        );
-                      },
-                    ),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  return ProductCard(
+                    key: ValueKey(products[index]),
+                    product: products[index],
+                  );
+                },
+              ),
             ),
             Flexible(
               flex: 1,
               child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: TextButton(
-                        onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AddProductForm()),
-                            );
-                        },
-                        child: Text('Добавить товар'),
-                      ),
-                    ),
+                alignment: Alignment.bottomCenter,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddProductForm()),
+                    );
+                  },
+                  child: Text('Добавить товар'),
+                ),
+              ),
             )
           ],
-        )
-    );
+        ));
   }
 }
