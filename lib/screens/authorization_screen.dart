@@ -32,7 +32,7 @@ class AuthorizationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Экран авторизации'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -53,21 +53,21 @@ class AuthorizationScreen extends StatelessWidget {
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               child: const Text('Вход'),
               onPressed: () {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
 
-                // цикл для перебора элементов в списке json данных
+                // Цикл для перебора элементов в списке json данных
                 for (var i = 0; i < profiles.length; i++) {
-                  // получаем текущий элемент json
+                  // Получаем текущий элемент json
                   var profile = profiles[i];
 
-                  // проверяем совпадение значений переменных с данными из текущего элемента json
+                  // Проверяем совпадение значений переменных с данными из текущего элемента json
                   if (username == profile.login && password == profile.password) {
-                    // если значения совпадают, выводим сообщение об успешной авторизации
+                    // Если значения совпадают, выводим сообщение об успешной авторизации
                     print('Авторизация успешна');
                     print(profile.lastName);
                     // const AdminHomeScreen();
@@ -75,16 +75,16 @@ class AuthorizationScreen extends StatelessWidget {
                     if(profile.role == 'admin') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AdminHomeScreen()),
+                        MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
                       );
                     } else if(profile.role == 'user') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => UserHomeScreen()),
+                        MaterialPageRoute(builder: (context) => const UserHomeScreen()),
                       );
                     }
 
-                    break; // прерываем цикл, чтобы не проверять остальные элементы
+                    break; // Прерываем цикл, чтобы не проверять остальные элементы
                   } else {
                     print('Неверный логин или пароль');
                   }

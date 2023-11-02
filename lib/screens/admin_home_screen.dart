@@ -28,7 +28,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     getProducts();
   }
 
-// Метод для получения данных о товарах из JSON-файла
+  // Метод для получения данных о товарах из JSON-файла
   Future<void> getProducts() async {
     // Получение данных из JSON-файла с помощью метода rootBundle
     final jsonProducts =
@@ -54,10 +54,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           actions: <Widget>[
             Consumer<CartModel>(
               builder: (context, cart, child) => CartBadge(
-                // label: '5',
-                // label: Text('${context.read<CartModel>()}'),
-                // value: '${cart.getItemsCount()}',
-                value: '${context.select<CartModel>()}',
+                value: '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
                 child: IconButton(
                   icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
@@ -70,20 +67,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               ),
             )
           ],
-
-
-          // actions: <Widget>[
-          //   Consumer<CartModel>(
-          //     builder: (context, cart, child) => Badge(
-          //       // label: '5',
-          //       // label: Text('${context.read<CartModel>()}'),
-          //       child: IconButton(
-          //         icon: const Icon(Icons.shopping_cart),
-          //         onPressed: () {},
-          //       ),
-          //     ),
-          //   )
-          // ],
         ),
         body: Column(
           children: [
@@ -112,7 +95,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       MaterialPageRoute(builder: (context) => AddProductForm()),
                     );
                   },
-                  child: Text('Добавить товар'),
+                  child: const Text('Добавить товар'),
                 ),
               ),
             )

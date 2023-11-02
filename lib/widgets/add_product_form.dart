@@ -30,7 +30,7 @@ class _AddProductForm extends State<AddProductForm> {
           children: <Widget>[
             // Поле для ввода id
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'ID',
               ),
               // Сохранение введенного значения в переменную id
@@ -40,7 +40,7 @@ class _AddProductForm extends State<AddProductForm> {
             ),
             // Поле для ввода названия
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Название',
               ),
               // Сохранение введенного значения в переменную name
@@ -50,7 +50,7 @@ class _AddProductForm extends State<AddProductForm> {
             ),
             // Поле для ввода описания
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Описание',
               ),
               // Сохранение введенного значения в переменную name
@@ -60,7 +60,7 @@ class _AddProductForm extends State<AddProductForm> {
             ),
             // Поле для ввода пути нахождения изображения
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Изображение',
               ),
               // Сохранение введенного значения в переменную name
@@ -70,7 +70,7 @@ class _AddProductForm extends State<AddProductForm> {
             ),
             // Поле для ввода цены
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Цена',
               ),
               // Сохранение введенного значения в переменную price
@@ -81,16 +81,16 @@ class _AddProductForm extends State<AddProductForm> {
             // Кнопка для добавления товара
             ElevatedButton(
               onPressed: () {
-                // 2. Создание экземпляра класса Product и передача значений
+                // Создание экземпляра класса Product и передача значений
                 Product newProduct = Product(id: id,
                     name: name,
                     description: description,
                     image: image,
                     price: price);
-                // 3. Вызов метода addProduct()
+                // Вызов метода addProduct()
                 Product.addProduct(newProduct);
               },
-              child: Text('Добавить товар'),
+              child: const Text('Добавить товар'),
             ),
           ],
         ),

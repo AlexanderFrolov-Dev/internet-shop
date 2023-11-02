@@ -5,7 +5,6 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
-  int _itemsCount = 0;
 
   // Создаем приватный конструктор для реализации Singleton
   CartModel._();
@@ -48,29 +47,21 @@ class CartModel extends ChangeNotifier {
         cartItems.removeAt(index);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
-        notifyListeners();
       }
+
+      notifyListeners();
     }
   }
 
   // Метод для получения общей суммы товаров в корзине
   double getTotalPrice() {
     // Считаем общую сумму по всем элементам корзины
-    for (Product item in cartItems) {
-      _totalPrice += item.price * item.quantity;
-    }
-
-    notifyListeners();
-    return _totalPrice;
+    return _cartItems.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
   }
 
+  // Метод для получения общего количества товаров в корзине
   int getItemsCount() {
-    for(Product item in cartItems) {
-      _itemsCount += item.quantity;
-    }
-
-    notifyListeners();
-    return _itemsCount;
+    return _cartItems.fold(0, (sum, item) => sum + item.quantity);
   }
 
   void clearCart() {

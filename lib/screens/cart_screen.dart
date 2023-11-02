@@ -16,11 +16,11 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double total = 0; // Переменная для хранения общей суммы товаров в корзине
-    for (Product cartItem in cart.cartItems) {
-      // Цикл для подсчета общей суммы
-      total += cartItem.price * cartItem.quantity;
-    }
+    // double total = 0; // Переменная для хранения общей суммы товаров в корзине
+    // for (Product cartItem in cart.cartItems) {
+    //   // Цикл для подсчета общей суммы
+    //   total += cartItem.price * cartItem.quantity;
+    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Корзина"),
@@ -83,19 +83,21 @@ class _CartScreenState extends State<CartScreen> {
                                       IconButton(
                                           onPressed: () {
                                             cart.addToCart(cart.cartItems[index]);
-                                            setState(() {
-                                              cart.cartItems;
-                                              cart.cartItems[index].quantity;
-                                            });
+                                            // setState(() {
+                                            //   cart.cartItems;
+                                            //   cart.cartItems[index].quantity;
+                                            // });
                                           },
                                           icon: const Icon(Icons.arrow_drop_up)),
                                       Text('${cart.cartItems[index].quantity}'),
                                       IconButton(
                                           onPressed: () {
-                                            setState(() {
-                                              cart.removeFromCart(
-                                                  cart.cartItems[index]);
-                                            });
+                                            cart.removeFromCart(
+                                                cart.cartItems[index]);
+                                            // setState(() {
+                                            //   cart.removeFromCart(
+                                            //       cart.cartItems[index]);
+                                            // });
                                           },
                                           icon: const Icon(Icons.arrow_drop_down))
                                     ],
@@ -105,12 +107,12 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       );
                     })),
-            Text("Общая сумма: $total"),
+            Text("Общая сумма: ${cart.getTotalPrice()}"),
             // Отображение общей суммы товаров в корзине
             ElevatedButton(
               child: const Text("Купить"),
               onPressed: () {
-                if (total > 0) {
+                if (cart.getTotalPrice() > 0) {
                   // Если общая сумма больше 0, то покупка успешна
                   setState(() {
                     cart.clearCart();

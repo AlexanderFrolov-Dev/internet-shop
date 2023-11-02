@@ -1,5 +1,3 @@
-import 'package:mobile_app_internet_shop/role.dart';
-
 class Profile {
   final int id;
   String role;

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/services.dart';
 
@@ -49,7 +48,6 @@ class Product {
     // 5. Преобразование объекта обратно в JSON
     String newJsonString = json.encode(products);
     // 6. Запись данных в файл products.json
-    // await rootBundle.writeAsString('assets/data/products.json', newJsonString);
     final File file = File('assets/data/products.json');
     file.writeAsString(newJsonString);
   }
