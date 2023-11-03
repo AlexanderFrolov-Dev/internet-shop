@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/product.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart_model.dart';
@@ -16,11 +15,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // double total = 0; // Переменная для хранения общей суммы товаров в корзине
-    // for (Product cartItem in cart.cartItems) {
-    //   // Цикл для подсчета общей суммы
-    //   total += cartItem.price * cartItem.quantity;
-    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Корзина"),
@@ -83,10 +77,6 @@ class _CartScreenState extends State<CartScreen> {
                                       IconButton(
                                           onPressed: () {
                                             cart.addToCart(cart.cartItems[index]);
-                                            // setState(() {
-                                            //   cart.cartItems;
-                                            //   cart.cartItems[index].quantity;
-                                            // });
                                           },
                                           icon: const Icon(Icons.arrow_drop_up)),
                                       Text('${cart.cartItems[index].quantity}'),
@@ -94,10 +84,6 @@ class _CartScreenState extends State<CartScreen> {
                                           onPressed: () {
                                             cart.removeFromCart(
                                                 cart.cartItems[index]);
-                                            // setState(() {
-                                            //   cart.removeFromCart(
-                                            //       cart.cartItems[index]);
-                                            // });
                                           },
                                           icon: const Icon(Icons.arrow_drop_down))
                                     ],

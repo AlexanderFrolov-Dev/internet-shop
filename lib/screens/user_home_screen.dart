@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
+import 'package:provider/provider.dart';
 
+import '../models/cart_model.dart';
+import '../widgets/cart_badge.dart';
 import 'cart_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
@@ -48,15 +51,20 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         appBar: AppBar(
           title: const Text('Интернет-магазин'),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CartScreen()));
-              },
-            ),
+            Consumer<CartModel>(
+              builder: (context, cart, child) => CartBadge(
+                value: '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
+                child: IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CartScreen()));
+                  },
+                ),
+              ),
+            )
           ],
         ),
         body: ListView.builder(
