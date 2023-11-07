@@ -59,6 +59,7 @@ class AuthorizationScreen extends StatelessWidget {
               onPressed: () {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
+                bool isCredentialsValid = false;
 
                 // Цикл для перебора элементов в списке json данных
                 for (var i = 0; i < profiles.length; i++) {
@@ -68,10 +69,7 @@ class AuthorizationScreen extends StatelessWidget {
                   // Проверяем совпадение значений переменных с данными из текущего элемента json
                   if (username == profile.login && password == profile.password) {
                     // Если значения совпадают, выводим сообщение об успешной авторизации
-                    print('Авторизация успешна');
-                    print(profile.lastName);
-                    // const AdminHomeScreen();
-
+                    isCredentialsValid = true;
                     if(profile.role == 'admin') {
                       Navigator.push(
                         context,
@@ -84,10 +82,23 @@ class AuthorizationScreen extends StatelessWidget {
                       );
                     }
 
-                    break; // Прерываем цикл, чтобы не проверять остальные элементы
-                  } else {
-                    print('Неверный логин или пароль');
+                    // Прерываем цикл, чтобы не проверять остальные элементы
+                    break;
                   }
+                }
+
+                // Если значения не совпадают, выводим сообщение об ошибке авторизации
+                if (!isCredentialsValid) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Неверный логин или пароль',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.blue,
+                    ),
+                  );
                 }
               },
             ),
