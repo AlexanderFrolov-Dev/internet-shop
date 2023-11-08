@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/product.dart';
-import 'package:mobile_app_internet_shop/widgets/add_product_form.dart';
+import 'package:mobile_app_internet_shop/screens/add_product_form.dart';
 import 'package:mobile_app_internet_shop/widgets/cart_badge.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 import 'package:provider/provider.dart';

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
+import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
 
 import 'admin_home_screen.dart';
@@ -101,6 +102,16 @@ class AuthorizationScreen extends StatelessWidget {
                   );
                 }
               },
+            ),
+            const SizedBox(height: 10), // Добавляем отступ между кнопками
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                );
+              },
+              child: const Text('Зарегистрироваться'),
             ),
           ],
         ),
