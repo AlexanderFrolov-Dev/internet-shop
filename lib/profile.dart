@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+
 class Profile {
   final int id;
   String role;
@@ -27,5 +31,19 @@ class Profile {
       login: json['login'],
       password: json['password'],
     );
+  }
+
+  // Метод для получения данных о профилях из JSON-файла
+  static Future<void> getProfiles(List<Profile> profiles) async {
+    // Получение данных из JSON-файла с помощью метода rootBundle
+    final jsonProfiles = await rootBundle.loadString('assets/data/profiles.json');
+
+    // Преобразование полученных данных в формат JSON
+    final jsonData = json.decode(jsonProfiles);
+
+    // Проход по списку товаров и создание экземпляров класса Product
+    for (var profile in jsonData) {
+      profiles.add(Profile.fromJson(profile));
+    }
   }
 }

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
@@ -13,23 +10,9 @@ class AuthorizationScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Метод для получения данных о профилях из JSON-файла
-  Future<void> getProfiles() async {
-    // Получение данных из JSON-файла с помощью метода rootBundle
-    final jsonProfiles = await rootBundle.loadString('assets/data/profiles.json');
-
-    // Преобразование полученных данных в формат JSON
-    final jsonData = json.decode(jsonProfiles);
-
-    // Проход по списку товаров и создание экземпляров класса Product
-    for (var profile in jsonData) {
-      profiles.add(Profile.fromJson(profile));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    getProfiles();
+    Profile.getProfiles(profiles);
 
     return Scaffold(
       appBar: AppBar(
