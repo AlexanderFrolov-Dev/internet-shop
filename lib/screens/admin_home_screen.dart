@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/product.dart';
+import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/add_product_form.dart';
+import 'package:mobile_app_internet_shop/screens/profile_screen.dart';
 import 'package:mobile_app_internet_shop/widgets/cart_badge.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +14,8 @@ import 'package:provider/provider.dart';
 import 'cart_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  const AdminHomeScreen({super.key});
+  late int profileId;
+  AdminHomeScreen({super.key, required this.profileId});
 
   @override
   _AdminHomeScreenState createState() => _AdminHomeScreenState();
@@ -20,6 +23,8 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   List<Product> products = [];
+  static const List<Widget> widgets = <Widget> [];
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -46,15 +51,47 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     setState(() {});
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Profile> profiles = [];
+    Profile.getProfiles(profiles);
+    late Profile profile;
+
+    // Цикл для перебора элементов в списке json данных
+    for (var i = 0; i < profiles.length; i++) {
+      // Получаем текущий элемент json
+      var currentProfile = profiles[i];
+
+      // Проверяем совпадение значений переменных с данными из текущего элемента json
+      if (currentProfile.id == widget.profileId) {
+        // Если значения совпадают, выводим сообщение об успешной авторизации
+        profile = currentProfile;
+
+        // Прерываем цикл, чтобы не проверять остальные элементы
+        break;
+      }
+    }
+
+
+    // Profile profile = getProfile(_usernameController.text, _passwordController.text);
+
+    widgets.add(AdminHomeScreen(profileId: widget.profileId,));
+    widgets.add(ProfileScreen(profile: profile,));
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Интернет-магазин'),
           actions: <Widget>[
             Consumer<CartModel>(
               builder: (context, cart, child) => CartBadge(
-                value: '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
+                value:
+                    '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
                 child: IconButton(
                   icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
@@ -98,7 +135,19 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   child: const Text('Добавить товар'),
                 ),
               ),
-            )
+            ),
+            BottomNavigationBar(
+              items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                label: ('Каталог'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: ('Профиль'),
+              ),
+            ],
+            currentIndex: _onItemTapped,)
           ],
         ));
   }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../profile.dart';
 
-class UserScreen extends StatelessWidget {
+class ProfileScreen extends StatelessWidget {
   final Profile profile;
 
-  const UserScreen({super.key, required this.profile});
+  const ProfileScreen({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {

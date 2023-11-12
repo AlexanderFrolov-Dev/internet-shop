@@ -10,6 +10,13 @@ class RegistrationScreen extends StatelessWidget {
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+
+  // TODO: и прочие методы валидации вводимых данных
+  String lengthValidation(int length, String s) {
+    return s.length < length
+        ? 'Длина строки должна равняться $length или более символов' : '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,11 +78,5 @@ class RegistrationScreen extends StatelessWidget {
         )
       ),
     );
-  }
-
-  // TODO: и прочие методы валидации вводимых данных
-  String lengthValidation(int length, String s) {
-    return s.length < length
-        ? 'Длина строки должна равняться $length или более символов' : '';
   }
 }

@@ -40,7 +40,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     if (_usernameController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
       // Определение роли пользователя (админ или обычный пользователь)
-      String role = getProfile(_usernameController.text, _passwordController.text).role;
+      Profile profile = getProfile(_usernameController.text, _passwordController.text);
+      String role = profile.role;
 
       if (role == 'admin') {
         // Сохраняем факт авторизации в shared preferences
@@ -50,7 +51,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Переходим на экран администратора
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminHomeScreen()),
+          MaterialPageRoute(builder: (context) => AdminHomeScreen(profileId: profile.id)),
         );
       } else if (role == 'user') {
         // Сохраняем факт авторизации в shared preferences
