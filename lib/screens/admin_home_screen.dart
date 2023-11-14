@@ -15,6 +15,7 @@ import 'cart_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   late int profileId;
+
   AdminHomeScreen({super.key, required this.profileId});
 
   @override
@@ -23,7 +24,7 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   List<Product> products = [];
-  static const List<Widget> widgets = <Widget> [];
+  static const List<Widget> widgets = <Widget>[];
   int _selectedIndex = 0;
 
   @override
@@ -78,11 +79,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       }
     }
 
-
     // Profile profile = getProfile(_usernameController.text, _passwordController.text);
 
-    widgets.add(AdminHomeScreen(profileId: widget.profileId,));
-    widgets.add(ProfileScreen(profile: profile,));
+    widgets.add(AdminHomeScreen(
+      profileId: widget.profileId,
+    ));
+    widgets.add(ProfileScreen(
+      profile: profile,
+    ));
 
     return Scaffold(
         appBar: AppBar(
@@ -105,39 +109,40 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             )
           ],
         ),
-        body: Column(
-          children: [
-            Flexible(
-              flex: 5,
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  return ProductCard(
-                    key: ValueKey(products[index]),
-                    product: products[index],
+        body: Column(children: [
+          Flexible(
+            flex: 5,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                return ProductCard(
+                  key: ValueKey(products[index]),
+                  product: products[index],
+                );
+              },
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddProductForm()),
                   );
                 },
+                child: const Text('Добавить товар'),
               ),
             ),
-            Flexible(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddProductForm()),
-                    );
-                  },
-                  child: const Text('Добавить товар'),
-                ),
-              ),
-            ),
-            BottomNavigationBar(
-              items: const [
+          ),
+          BottomNavigationBar(
+            onTap: _onItemTapped,
+            currentIndex: _selectedIndex,
+            items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
                 label: ('Каталог'),
@@ -147,8 +152,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 label: ('Профиль'),
               ),
             ],
-            currentIndex: _onItemTapped,)
-          ],
-        ));
+          ),
+        ]));
   }
 }

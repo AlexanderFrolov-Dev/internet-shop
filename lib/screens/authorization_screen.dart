@@ -23,7 +23,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   void initState() {
     super.initState();
     checkLoginStatus();
-
   }
 
   void checkLoginStatus() async {

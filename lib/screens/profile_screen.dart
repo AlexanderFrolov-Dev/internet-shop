@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../profile.dart';
+import 'authorization_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final Profile profile;
 
   const ProfileScreen({super.key, required this.profile});
+
+  void _logout(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AuthorizationScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,12 @@ class ProfileScreen extends StatelessWidget {
                 // TODO: В дальнейшем добавить функционал для редактирования профиля
               },
               child: const Text('Редактировать профиль'),
+            ),
+            ListTile(
+              title: const Text('Logout'),
+              onTap: () {
+                _logout(context);
+              },
             ),
           ],
         ),
