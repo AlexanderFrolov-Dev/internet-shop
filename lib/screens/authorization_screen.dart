@@ -71,7 +71,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Переходим на экран администратора
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminHomeScreen()));
+          MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
       } else if (role == 'user') {
         // Сохраняем факт авторизации в shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import 'cart_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  const AdminHomeScreen({super.key});
+  Profile profile;
+
+  AdminHomeScreen({super.key, required this.profile});
 
   @override
   _AdminHomeScreenState createState() => _AdminHomeScreenState();
@@ -20,6 +22,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   late int profileId;
   List<Product> products = [];
   List<Widget> widgets = <Widget>[];
+  List<Profile> profiles = [];
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -29,13 +32,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    List<Profile> profiles = [];
+  void initState() {
+    super.initState();
     Profile.getProfiles(profiles);
+
     widgets.add(const AdminProductList());
-    if (profiles.isNotEmpty) {
-      widgets.add(ProfileScreen(profile: profiles.firstWhere((profile) => profile.id == profileId)));
-    }
+    widgets.add(ProfileScreen(profile: widget.profile));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("PROFILES LENGTH: ${profiles.length}");
+    print(widget.profile.id);
+
+
 
     return Scaffold(
         appBar: AppBar(
@@ -58,7 +68,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             )
           ],
         ),
-        body: BottomNavigationBar(
+        body: Center(
+          child: widgets.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
           onTap: _onItemTapped,
           currentIndex: _selectedIndex,
           items: const [

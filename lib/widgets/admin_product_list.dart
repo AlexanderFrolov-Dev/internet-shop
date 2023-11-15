@@ -49,26 +49,6 @@ class _AdminProductListState extends State<AdminProductList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Интернет-магазин'),
-          actions: <Widget>[
-            Consumer<CartModel>(
-              builder: (context, cart, child) => CartBadge(
-                value:
-                '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
-                child: IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CartScreen()));
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
         body:
         Column(children: [
           Flexible(
