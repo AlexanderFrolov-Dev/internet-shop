@@ -28,18 +28,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     });
   }
 
-  Profile getProfile() {
-    List<Profile> profiles = [];
-    Profile.getProfiles(profiles);
-    return profiles.firstWhere((profile) => profile.id == profileId);
-  }
-
   @override
   Widget build(BuildContext context) {
+    List<Profile> profiles = [];
+    Profile.getProfiles(profiles);
     widgets.add(const AdminProductList());
-    widgets.add(ProfileScreen(
-      profile: getProfile(),
-    ));
+    if (profiles.isNotEmpty) {
+      widgets.add(ProfileScreen(profile: profiles.firstWhere((profile) => profile.id == profileId)));
+    }
 
     return Scaffold(
         appBar: AppBar(
