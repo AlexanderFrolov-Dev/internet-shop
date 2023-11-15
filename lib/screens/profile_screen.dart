@@ -11,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
   void _logout(BuildContext context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => AuthorizationScreen()),
+      MaterialPageRoute(builder: (context) => const AuthorizationScreen()),
     );
   }
 

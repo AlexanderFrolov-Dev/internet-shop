@@ -32,6 +32,27 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     });
   }
 
+  Profile getProfile(String username, String password) {
+    late Profile profile;
+
+    // Цикл для перебора элементов в списке json данных
+    for (var i = 0; i < profiles.length; i++) {
+      // Получаем текущий элемент json
+      var currentProfile = profiles[i];
+
+      // Проверяем совпадение значений переменных с данными из текущего элемента json
+      if (username == currentProfile.login && password == currentProfile.password) {
+        // Если значения совпадают, выводим сообщение об успешной авторизации
+        profile = currentProfile;
+
+        // Прерываем цикл, чтобы не проверять остальные элементы
+        break;
+      }
+    }
+
+    return profile;
+  }
+
   void login() async {
     Profile.getProfiles(profiles);
 
@@ -50,8 +71,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Переходим на экран администратора
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminHomeScreen(profileId: profile.id)),
-        );
+          MaterialPageRoute(builder: (context) => AdminHomeScreen()));
       } else if (role == 'user') {
         // Сохраняем факт авторизации в shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -83,27 +103,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         );
       }
     }
-  }
-
-  Profile getProfile(String username, String password) {
-    late Profile profile;
-
-    // Цикл для перебора элементов в списке json данных
-    for (var i = 0; i < profiles.length; i++) {
-      // Получаем текущий элемент json
-      var currentProfile = profiles[i];
-
-      // Проверяем совпадение значений переменных с данными из текущего элемента json
-      if (username == currentProfile.login && password == currentProfile.password) {
-        // Если значения совпадают, выводим сообщение об успешной авторизации
-        profile = currentProfile;
-
-        // Прерываем цикл, чтобы не проверять остальные элементы
-        break;
-      }
-    }
-
-    return profile;
   }
 
   @override
