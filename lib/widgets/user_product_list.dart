@@ -5,16 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 
 import '../product.dart';
-import '../screens/add_product_form.dart';
 
-class AdminProductList extends StatefulWidget {
-  const AdminProductList({super.key});
+class UserProductList extends StatefulWidget {
+  const UserProductList({super.key});
 
   @override
-  State<AdminProductList> createState() => _AdminProductListState();
+  State<UserProductList> createState() => _UserProductListState();
 }
 
-class _AdminProductListState extends State<AdminProductList> {
+class _UserProductListState extends State<UserProductList> {
   List<Product> products = [];
 
   @override
@@ -60,22 +59,7 @@ class _AdminProductListState extends State<AdminProductList> {
                 );
               },
             ),
-          ),
-          Flexible(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddProductForm()),
-                  );
-                },
-                child: const Text('Добавить товар'),
-              ),
-            ),
-          ),
+          )
         ])
     );
   }

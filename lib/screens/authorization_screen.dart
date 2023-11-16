@@ -80,7 +80,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Переходим на экран пользователя
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => UserHomeScreen()),
+          MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
         );
       } else {
         // Выводим сообщение об ошибке
@@ -136,52 +136,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
             ElevatedButton(
               child: const Text('Вход'),
               onPressed: () {
-
                 login();
-
-                // String username = _usernameController.text;
-                // String password = _passwordController.text;
-                // bool isCredentialsValid = false;
-                //
-                // // Цикл для перебора элементов в списке json данных
-                // for (var i = 0; i < profiles.length; i++) {
-                //   // Получаем текущий элемент json
-                //   var profile = profiles[i];
-                //
-                //   // Проверяем совпадение значений переменных с данными из текущего элемента json
-                //   if (username == profile.login && password == profile.password) {
-                //     // Если значения совпадают, выводим сообщение об успешной авторизации
-                //     isCredentialsValid = true;
-                //     if(profile.role == 'admin') {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
-                //       );
-                //     } else if(profile.role == 'user') {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(builder: (context) => const UserHomeScreen()),
-                //       );
-                //     }
-                //
-                //     // Прерываем цикл, чтобы не проверять остальные элементы
-                //     break;
-                //   }
-                // }
-                //
-                // // Если значения не совпадают, выводим сообщение об ошибке авторизации
-                // if (!isCredentialsValid) {
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(
-                //       content: Text(
-                //         'Неверный логин или пароль',
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(color: Colors.white),
-                //       ),
-                //       backgroundColor: Colors.blue,
-                //     ),
-                //   );
-                // }
               },
             ),
             const SizedBox(height: 10), // Добавляем отступ между кнопками

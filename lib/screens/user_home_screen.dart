@@ -1,17 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
-import 'package:mobile_app_internet_shop/widgets/product_card.dart';
+import 'package:mobile_app_internet_shop/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart_model.dart';
+import '../profile.dart';
 import '../widgets/cart_badge.dart';
+import '../widgets/user_product_list.dart';
 import 'cart_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
-  const UserHomeScreen({super.key});
+  Profile profile;
+
+  UserHomeScreen({super.key, required this.profile});
 
   @override
   _UserHomeScreenState createState() => _UserHomeScreenState();
@@ -19,30 +20,23 @@ class UserHomeScreen extends StatefulWidget {
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
   List<Product> products = [];
+  List<Widget> widgets = <Widget>[];
+  List<Profile> profiles = [];
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // Вызов метода для получения данных о товарах при инициализации экрана
-    getProducts();
-  }
+    Profile.getProfiles(profiles);
 
-// Метод для получения данных о товарах из JSON-файла
-  Future<void> getProducts() async {
-    // Получение данных из JSON-файла с помощью метода rootBundle
-    final jsonProducts =
-        await rootBundle.loadString('assets/data/products.json');
-
-    // Преобразование полученных данных в формат JSON
-    final jsonData = json.decode(jsonProducts);
-
-    // Проход по списку товаров и создание экземпляров класса Product
-    for (var product in jsonData) {
-      products.add(Product.fromJson(product));
-    }
-
-    // Обновление состояния виджета для отображения полученных данных
-    setState(() {});
+    widgets.add(const UserProductList());
+    widgets.add(ProfileScreen(profile: widget.profile));
   }
 
   @override
@@ -67,14 +61,22 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             )
           ],
         ),
-        body: ListView.builder(
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            return ProductCard(
-              key: ValueKey(products[index]),
-              product: products[index],
-            );
-          },
+        body: Center(
+          child: widgets.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: _onItemTapped,
+          currentIndex: _selectedIndex,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: ('Каталог'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: ('Профиль'),
+            ),
+          ],
         )
     );
   }

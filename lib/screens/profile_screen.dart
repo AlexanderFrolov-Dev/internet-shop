@@ -18,9 +18,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Профиль'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,12 +53,20 @@ class ProfileScreen extends StatelessWidget {
               },
               child: const Text('Редактировать профиль'),
             ),
-            ListTile(
-              title: const Text('Logout'),
-              onTap: () {
+
+            ElevatedButton(
+              onPressed: () {
                 _logout(context);
               },
+              child: const Text('Выход'),
             ),
+
+            // ListTile(
+            //   title: const Text('Выход'),
+            //   onTap: () {
+            //     _logout(context);
+            //   },
+            // ),
           ],
         ),
       ),

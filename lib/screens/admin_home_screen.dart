@@ -19,7 +19,6 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-  late int profileId;
   List<Product> products = [];
   List<Widget> widgets = <Widget>[];
   List<Profile> profiles = [];
@@ -42,10 +41,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("PROFILES LENGTH: ${profiles.length}");
-    print(widget.profile.id);
-
-
+    // print("PROFILES LENGTH: ${profiles.length}");
+    // print(widget.profile.id);
 
     return Scaffold(
         appBar: AppBar(
