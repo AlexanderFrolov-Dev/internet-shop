@@ -53,7 +53,6 @@ class ProfileScreen extends StatelessWidget {
               },
               child: const Text('Редактировать профиль'),
             ),
-
             ElevatedButton(
               onPressed: () {
                 _logout(context);

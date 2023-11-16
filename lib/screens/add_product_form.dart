@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/product.dart';
 
 class AddProductForm extends StatefulWidget {
+  const AddProductForm({super.key});
+
   @override
   State<StatefulWidget> createState() => _AddProductForm();
 }

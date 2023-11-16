@@ -41,9 +41,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print("PROFILES LENGTH: ${profiles.length}");
-    // print(widget.profile.id);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Интернет-магазин'),

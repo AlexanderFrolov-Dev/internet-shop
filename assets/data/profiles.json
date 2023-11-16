@@ -88,5 +88,14 @@
     "patronymic": "Денисович",
     "login": "denisov_denis",
     "password": "denis123"
+  },
+  {
+    "id": 11,
+    "role": "admin",
+    "lastName": "Бородавкина",
+    "firstName": "Марина",
+    "patronymic": "Валерьевна",
+    "login": "borodavkina_marina",
+    "password": "marina"
   }
 ]

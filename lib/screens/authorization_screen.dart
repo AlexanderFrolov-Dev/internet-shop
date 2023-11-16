@@ -15,7 +15,7 @@ class AuthorizationScreen extends StatefulWidget {
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
   List<Profile> profiles = [];
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
 
@@ -56,32 +56,56 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   void login() async {
     Profile.getProfiles(profiles);
 
+    bool isFound = false;
+
+    for (var i = 0; i < profiles.length; i++) {
+      Profile profile = profiles[i];
+
+      String login = '';
+      String password = '';
+
+      if (profile.login == _loginController.text) {
+        login = profile.login;
+      }
+
+      if (profile.password == _passwordController.text) {
+        password = profile.password;
+      }
+
+      if (login.isNotEmpty && password.isNotEmpty) {
+        isFound = true;
+      }
+    }
+
     // Проверяем, что поля логина и пароля не пустые
-    if (_usernameController.text.isNotEmpty &&
+    if (_loginController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
-      // Определение роли пользователя (админ или обычный пользователь)
-      Profile profile = getProfile(_usernameController.text, _passwordController.text);
-      String role = profile.role;
 
-      if (role == 'admin') {
-        // Сохраняем факт авторизации в shared preferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
+      if (isFound) {
+        // Определение роли пользователя (админ или обычный пользователь)
+        Profile profile = getProfile(_loginController.text, _passwordController.text);
+        String role = profile.role;
 
-        // Переходим на экран администратора
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
-      } else if (role == 'user') {
-        // Сохраняем факт авторизации в shared preferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
+        if (role == 'admin') {
+          // Сохраняем факт авторизации в shared preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
 
-        // Переходим на экран пользователя
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
-        );
+          // Переходим на экран администратора
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
+        } else if (role == 'user') {
+          // Сохраняем факт авторизации в shared preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+
+          // Переходим на экран пользователя
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
+          );
+        }
       } else {
         // Выводим сообщение об ошибке
         showDialog(
@@ -107,8 +131,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Profile.getProfiles(profiles);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Экран авторизации'),
@@ -119,7 +141,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _usernameController,
+              controller: _loginController,
               decoration: const InputDecoration(
                 labelText: 'Логин',
               ),
