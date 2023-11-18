@@ -8,14 +8,14 @@ import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   const AuthorizationScreen({super.key});
-  
+
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
 }
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
   List<Profile> profiles = [];
-  final TextEditingController _loginController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
 
@@ -32,98 +32,63 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     });
   }
 
-  Profile getProfile(String username, String password) {
-    late Profile profile;
-
-    // Цикл для перебора элементов в списке json данных
-    for (var i = 0; i < profiles.length; i++) {
-      // Получаем текущий элемент json
-      var currentProfile = profiles[i];
-
-      // Проверяем совпадение значений переменных с данными из текущего элемента json
-      if (username == currentProfile.login && password == currentProfile.password) {
-        // Если значения совпадают, выводим сообщение об успешной авторизации
-        profile = currentProfile;
-
-        // Прерываем цикл, чтобы не проверять остальные элементы
-        break;
+  Profile? getProfile(String username, String password) {
+    for (var profile in profiles) {
+      if (username == profile.login && password == profile.password) {
+        return profile;
       }
     }
 
-    return profile;
+    return null;
   }
 
   void login() async {
     Profile.getProfiles(profiles);
+    Profile? profile = getProfile(_usernameController.text, _passwordController.text);
 
-    bool isFound = false;
-
-    for (var i = 0; i < profiles.length; i++) {
-      Profile profile = profiles[i];
-
-      String login = '';
-      String password = '';
-
-      if (profile.login == _loginController.text) {
-        login = profile.login;
-      }
-
-      if (profile.password == _passwordController.text) {
-        password = profile.password;
-      }
-
-      if (login.isNotEmpty && password.isNotEmpty) {
-        isFound = true;
-      }
-    }
-
-    // Проверяем, что поля логина и пароля не пустые
-    if (_loginController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-
-      if (isFound) {
-        // Определение роли пользователя (админ или обычный пользователь)
-        Profile profile = getProfile(_loginController.text, _passwordController.text);
-        String role = profile.role;
-
-        if (role == 'admin') {
-          // Сохраняем факт авторизации в shared preferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-
-          // Переходим на экран администратора
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
-        } else if (role == 'user') {
-          // Сохраняем факт авторизации в shared preferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-
-          // Переходим на экран пользователя
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
+    if (_usernameController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        profile == null) {
+      // Выводим сообщение об ошибке
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Ошибка'),
+            content: const Text('Неверный логин или пароль.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           );
-        }
-      } else {
-        // Выводим сообщение об ошибке
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Ошибка'),
-              content: const Text('Неверный логин или пароль.'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
+        },
+      );
+    } else {
+      String role = profile.role;
+
+      // Определение роли пользователя (админ или обычный пользователь)
+      if (role == 'admin') {
+        // Сохраняем факт авторизации в shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+
+        // Переходим на экран администратора
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
+      } else if (role == 'user') {
+        // Сохраняем факт авторизации в shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+
+        // Переходим на экран пользователя
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
         );
       }
     }
@@ -131,6 +96,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Profile.getProfiles(profiles);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Экран авторизации'),
@@ -141,7 +108,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _loginController,
+              controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'Логин',
               ),
