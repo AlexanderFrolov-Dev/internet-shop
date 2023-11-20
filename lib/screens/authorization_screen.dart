@@ -22,6 +22,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   @override
   void initState() {
     super.initState();
+    fillProfilesList();
     checkLoginStatus();
   }
 
@@ -30,6 +31,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     setState(() {
       isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     });
+  }
+
+  Future<void> fillProfilesList() async {
+    await Profile.getProfiles().then((value) => profiles = value);
   }
 
   Profile? getProfile(String username, String password) {
@@ -43,7 +48,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   }
 
   void login() async {
-    Profile.getProfiles(profiles);
     Profile? profile = getProfile(_usernameController.text, _passwordController.text);
 
     if (_usernameController.text.isEmpty ||
@@ -96,8 +100,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Profile.getProfiles(profiles);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Экран авторизации'),

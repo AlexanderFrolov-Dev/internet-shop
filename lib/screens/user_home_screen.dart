@@ -21,7 +21,6 @@ class UserHomeScreen extends StatefulWidget {
 class _UserHomeScreenState extends State<UserHomeScreen> {
   List<Product> products = [];
   List<Widget> widgets = <Widget>[];
-  List<Profile> profiles = [];
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -33,7 +32,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   void initState() {
     super.initState();
-    Profile.getProfiles(profiles);
 
     widgets.add(const UserProductList());
     widgets.add(ProfileScreen(profile: widget.profile));

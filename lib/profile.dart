@@ -34,16 +34,17 @@ class Profile {
   }
 
   // Метод для получения данных о профилях из JSON-файла
-  static Future<void> getProfiles(List<Profile> profiles) async {
+  static Future<List<Profile>> getProfiles() async {
     // Получение данных из JSON-файла с помощью метода rootBundle
     final jsonProfiles = await rootBundle.loadString('assets/data/profiles.json');
-
     // Преобразование полученных данных в формат JSON
     final jsonData = json.decode(jsonProfiles);
 
-    // Проход по списку товаров и создание экземпляров класса Product
+    final profiles = <Profile>[];
     for (var profile in jsonData) {
       profiles.add(Profile.fromJson(profile));
     }
+
+    return profiles;
   }
 }
