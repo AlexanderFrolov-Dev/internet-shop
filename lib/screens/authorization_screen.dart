@@ -18,12 +18,14 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
+  bool passwordVisible = false;
 
   @override
   void initState() {
     super.initState();
     fillProfilesList();
     checkLoginStatus();
+    passwordVisible = true;
   }
 
   void checkLoginStatus() async {
@@ -118,10 +120,20 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(
+              obscureText: passwordVisible,
+              decoration: InputDecoration(
                 labelText: 'Пароль',
+                suffixIcon: IconButton(
+                    icon: Icon(passwordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    onPressed: () {
+                      setState(
+                              () {
+                            passwordVisible = !passwordVisible;
+                          });
+                    }),
               ),
-              obscureText: true,
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
