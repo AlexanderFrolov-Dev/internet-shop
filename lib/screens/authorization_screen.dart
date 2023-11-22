@@ -35,7 +35,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     });
   }
 
-  Future<void> fillProfilesList() async {
+  void fillProfilesList() async {
     await Profile.getProfiles().then((value) => profiles = value);
   }
 
