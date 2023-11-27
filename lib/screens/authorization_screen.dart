@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
-  const AuthorizationScreen({super.key});
+  const AuthorizationScreen({Key? key}) : super(key: key);
 
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
@@ -18,25 +18,30 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
-  bool passwordVisible = false;
+  bool passwordVisible = true;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fillProfilesList();
-    checkLoginStatus();
-    passwordVisible = true;
+    fillProfilesList().then((void _) {
+      checkLoginStatus();
+      passwordVisible = false;
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
-  void checkLoginStatus() async {
+  Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     });
   }
 
-  void fillProfilesList() async {
-    await Profile.getProfiles().then((value) => profiles = value);
+  Future<void> fillProfilesList() async {
+    profiles = await Profile.getProfiles();
   }
 
   Profile? getProfile(String username, String password) {
@@ -50,7 +55,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   }
 
   void login() async {
-    Profile? profile = getProfile(_usernameController.text, _passwordController.text);
+    Profile? profile =
+        getProfile(_usernameController.text, _passwordController.text);
 
     if (_usernameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -84,8 +90,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
 
         // Переходим на экран администратора
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => AdminHomeScreen(profile: profile,)));
+          context,
+          MaterialPageRoute(
+              builder: (context) => AdminHomeScreen(profile: profile)),
+        );
       } else if (role == 'user') {
         // Сохраняем факт авторизации в shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -94,7 +102,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Переходим на экран пользователя
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => UserHomeScreen(profile: profile,)),
+          MaterialPageRoute(
+              builder: (context) => UserHomeScreen(profile: profile)),
         );
       }
     }
@@ -104,57 +113,60 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Экран авторизации'),
+        title: const Text('Авторизация'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Логин',
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Логин',
+                      ),
+                    ),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: !passwordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Пароль',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: login,
+                      child: const Text('Войти'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegistrationScreen()),
+                        );
+                      },
+                      child: const Text('Зарегистрироваться'),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20.0),
-            TextField(
-              controller: _passwordController,
-              obscureText: passwordVisible,
-              decoration: InputDecoration(
-                labelText: 'Пароль',
-                suffixIcon: IconButton(
-                    icon: Icon(passwordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () {
-                      setState(
-                              () {
-                            passwordVisible = !passwordVisible;
-                          });
-                    }),
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              child: const Text('Вход'),
-              onPressed: () {
-                login();
-              },
-            ),
-            const SizedBox(height: 10), // Добавляем отступ между кнопками
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
-                );
-              },
-              child: const Text('Зарегистрироваться'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
