@@ -35,9 +35,9 @@ class Profile {
 
   // Метод для получения данных о профилях из JSON-файла
   static Future<List<Profile>> getProfiles() async {
-    print('after ${DateTime.now()}');
-    await Future.delayed(const Duration(seconds: 10));
     print('before ${DateTime.now()}');
+    await Future.delayed(const Duration(seconds: 10));
+    print('after ${DateTime.now()}');
     // Получение данных из JSON-файла с помощью метода rootBundle
     final jsonProfiles = await rootBundle.loadString('assets/data/profiles.json');
     // Преобразование полученных данных в формат JSON

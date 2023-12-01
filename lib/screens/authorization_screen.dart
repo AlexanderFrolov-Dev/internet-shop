@@ -18,32 +18,47 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
-  bool passwordVisible = true;
+  bool passwordVisible = false;
   bool isLoading = true;
+  int profileId = 0;
 
   @override
   void initState() {
     super.initState();
-    fillProfilesList().then((void _) {
-      checkLoginStatus();
-      passwordVisible = false;
+    // Создаем Future для получения списка профилей.
+    // Работа по получению списка профилей началась.
+    getProfileList().then((value) {
+      // В then мы уже получаем в качестве результата список профилей.
       setState(() {
+        // После получения списка профилей, присваиваем этот результат
+        // переменной profiles. Меняем значение isLoading на false,
+        // обозначая этим, что загрузка профилей закончена.
+        // И проверяем авторизован ли пользователь,
+        // с помощью вызова метода checkLoginStatus.
+        profiles = value;
         isLoading = false;
+        checkLoginStatus();
       });
     });
   }
 
+  // Проверяем, авторизован ли пользователь.
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      // Присваиваем isLoggedIn значение, которое получаем по ключу 'isLoggedIn'.
+      // Если значение равно null, то присваиваем значение false.
       isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     });
   }
 
-  Future<void> fillProfilesList() async {
-    profiles = await Profile.getProfiles();
+  // Создаем Future для получения профилей.
+  Future<List<Profile>> getProfileList() async {
+    return await Profile.getProfiles();
   }
 
+  // Получаем профиль из списка по логину и паролю.
+  // Если не находим профиль в списке возвращаем null.
   Profile? getProfile(String username, String password) {
     for (var profile in profiles) {
       if (username == profile.login && password == profile.password) {
@@ -87,6 +102,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Сохраняем факт авторизации в shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
+        await prefs.setInt('profileId', profile.id);
 
         // Переходим на экран администратора
         Navigator.pushReplacement(
@@ -98,6 +114,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         // Сохраняем факт авторизации в shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
+        await prefs.setInt('profileId', profile.id);
 
         // Переходим на экран пользователя
         Navigator.pushReplacement(
