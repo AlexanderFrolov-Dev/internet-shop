@@ -38,6 +38,26 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         profiles = value;
         isLoading = false;
         checkLoginStatus();
+
+        if (profileId > 0) {
+          Profile authorizedProfile = getAuthorizedProfile(profileId);
+
+          if (authorizedProfile.role == 'admin') {
+            // Переходим на экран администратора
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AdminHomeScreen(profile: authorizedProfile)),
+            );
+          } else if (authorizedProfile.role == 'user') {
+            // Переходим на экран пользователя
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => UserHomeScreen(profile: authorizedProfile)),
+            );
+          }
+        }
       });
     });
   }
@@ -67,6 +87,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     }
 
     return null;
+  }
+
+  Profile getAuthorizedProfile(int id) {
+    return profiles.firstWhere((profile) => profile.id == id);
   }
 
   void login() async {
