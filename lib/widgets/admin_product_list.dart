@@ -69,7 +69,7 @@ class _AdminProductListState extends State<AdminProductList> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddProductForm()),
+                    MaterialPageRoute(builder: (context) => const AddProductForm()),
                   );
                 },
                 child: const Text('Добавить товар'),

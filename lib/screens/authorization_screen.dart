@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/databases/cart_database.dart';
+import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
@@ -14,6 +16,7 @@ class AuthorizationScreen extends StatefulWidget {
 }
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
+  CartModel cartModel = CartModel.getInstance();
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -21,16 +24,22 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   bool passwordVisible = false;
   bool isLoading = true;
   int profileId = 0;
+  // CartDatabase cartDatabase = CartDatabase();
 
   @override
   void initState() {
     super.initState();
+
+    // dbPath().then((value) {
+    //   print('Database path: $value');
+    // });
+
     // Создаем Future для получения списка профилей.
     // Работа по получению списка профилей началась.
     getProfileList().then((value) {
       // В then мы уже получаем в качестве результата список профилей.
       setState(() {
-        // После получения списка профилей, присваиваем этот результат
+        // После получения списка профилей присваиваем этот результат
         // переменной profiles. Меняем значение isLoading на false,
         // обозначая этим, что загрузка профилей закончена.
         // И проверяем авторизован ли пользователь,
@@ -61,6 +70,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       });
     });
   }
+
+  // Future<String> dbPath() async {
+  //   return await cartDatabase.getDatabasePath();
+  // }
 
   // Проверяем, авторизован ли пользователь.
   Future<void> checkLoginStatus() async {
@@ -147,6 +160,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
               builder: (context) => UserHomeScreen(profile: profile)),
         );
       }
+
+      cartModel.restoreCartFromDB();
     }
   }
 

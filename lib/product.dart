@@ -51,4 +51,16 @@ class Product {
     final File file = File('assets/data/products.json');
     file.writeAsString(newJsonString);
   }
+
+  static Future<Product> getProductById(int id) async {
+    try {
+      final data = await rootBundle.loadString('assets/products.json');
+      final jsonResult = json.decode(data);
+      final products = List<Product>.from(jsonResult.map((x) => Product.fromJson(x)));
+      final product = products.firstWhere((p) => p.id == id);
+      return product;
+    } catch (e) {
+      throw Exception('Не найден товар с id: $id');
+    }
+  }
 }
