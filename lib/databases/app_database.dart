@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class CartDatabase {
-  static final CartDatabase cartDatabase = CartDatabase();
+class AppDatabase {
+  static final AppDatabase cartDatabase = AppDatabase();
   Database? _database;
 
   // Если БД существует, то получаем её, если нет, создаём новую
@@ -42,27 +42,45 @@ class CartDatabase {
     );
   }
 
-  Future<void> increaseQuantity(int userId, int productId) async {
-    final db = await database;
+  // Future<void> increaseQuantity(int userId, int productId) async {
+  //   final db = await database;
+  //
+  //   await db.update(
+  //     'carts',
+  //     {'quantity': 'quantity + 1'},
+  //     where: 'product_id = ? AND user_id = ?',
+  //     whereArgs: [productId, userId],
+  //   );
+  // }
 
-    await db.update(
-      'carts',
-      {'quantity': 'quantity + 1'},
-      where: 'product_id = ? AND user_id = ?',
-      whereArgs: [productId, userId],
-    );
+  Future<void> increaseProductQuantity(int userId, int productId) async {
+    final db = await database;
+    await db.rawUpdate('''
+    UPDATE carts 
+    SET quantity = quantity + 1 
+    WHERE user_id = ? AND product_id = ?
+  ''', [userId, productId]);
   }
 
-  Future<void> reduceQuantity(int userId, int productId) async {
+  Future<void> decreaseProductQuantity(int userId, int productId) async {
     final db = await database;
-
-    await db.update(
-      'carts',
-      {'quantity': 'quantity - 1'},
-      where: 'product_id = ? AND user_id = ?',
-      whereArgs: [productId, userId],
-    );
+    await db.rawUpdate('''
+    UPDATE carts 
+    SET quantity = quantity - 1 
+    WHERE user_id = ? AND product_id = ?
+  ''', [userId, productId]);
   }
+
+  // Future<void> reduceQuantity(int userId, int productId) async {
+  //   final db = await database;
+  //
+  //   await db.update(
+  //     'carts',
+  //     {'quantity': 'quantity - 1'},
+  //     where: 'product_id = ? AND user_id = ?',
+  //     whereArgs: [productId, userId],
+  //   );
+  // }
 
   Future<void> deleteProduct(int userId, int productId) async {
     final db = await database;

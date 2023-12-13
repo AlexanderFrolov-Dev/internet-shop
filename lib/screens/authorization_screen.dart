@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_internet_shop/databases/cart_database.dart';
+import 'package:mobile_app_internet_shop/databases/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';

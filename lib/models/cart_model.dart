@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mobile_app_internet_shop/databases/cart_database.dart';
+import 'package:mobile_app_internet_shop/databases/app_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,7 +8,7 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
-  static CartDatabase cartDatabase = CartDatabase();
+  static AppDatabase cartDatabase = AppDatabase();
   static Database? db;
   int userId = 0;
 
@@ -31,20 +31,24 @@ class CartModel extends ChangeNotifier {
     getDb().then((value) => db);
   }
 
-  Future<int?> getProfileId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('profileId');
-  }
+  // Future<int?> getProfileId() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return prefs.getInt('profileId');
+  // }
 
-  void addToCart(Product product) {
-    getProfileId().then((value) => userId);
+  void addToCart(Product product) async {
+    // getProfileId().then((value) => userId);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли уже такой товар в корзине
     if (cartItems.any((item) => item == product)) {
       // Если есть, то увеличиваем счетчик товара на 1
       int index = cartItems.indexWhere((item) => item == product);
       cartItems[index].quantity++;
-      cartDatabase.increaseQuantity(userId, product.id);
+      // cartDatabase.increaseQuantity(userId, product.id);
+      cartDatabase.increaseProductQuantity(userId, product.id);
     } else {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
@@ -55,8 +59,11 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeFromCart(Product product) {
-    getProfileId().then((value) => userId);
+  void removeFromCart(Product product) async {
+    // getProfileId().then((value) => userId);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли такой товар в корзине
     if (cartItems.any((item) => item == product)) {
@@ -66,7 +73,8 @@ class CartModel extends ChangeNotifier {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
-        cartDatabase.reduceQuantity(userId, product.id);
+        // cartDatabase.reduceQuantity(userId, product.id);
+        cartDatabase.decreaseProductQuantity(userId, product.id);
       }
       else {
         // Если счетчик равен 0, то удаляем товар из корзины
@@ -91,8 +99,12 @@ class CartModel extends ChangeNotifier {
     return _cartItems.fold(0, (sum, item) => sum + item.quantity);
   }
 
-  void clearCart() {
-    getProfileId().then((value) => userId);
+  void clearCart() async {
+    // getProfileId().then((value) => userId);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId')!;
+
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();
     _totalPrice = 0;
@@ -106,7 +118,11 @@ class CartModel extends ChangeNotifier {
     cartItems.clear();
     _totalPrice = 0;
 
-    getProfileId().then((value) => userId);
+    // getProfileId().then((value) => userId);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId')!;
+
     cartDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
 
     for (final productRow in usersProducts) {
