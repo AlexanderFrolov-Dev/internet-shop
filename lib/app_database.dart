@@ -16,14 +16,13 @@ class AppDatabase {
 
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'cart.db');
+    final path = join(dbPath, 'app_database.db');
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE carts(
-        id INTEGER PRIMARY KEY,
         user_id INTEGER,
         product_id INTEGER,
         quantity INTEGER
