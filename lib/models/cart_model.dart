@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mobile_app_internet_shop/databases/app_database.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,8 +8,7 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
-  static AppDatabase cartDatabase = AppDatabase();
-  static Database? db;
+  AppDatabase appDatabase = AppDatabase();
   int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
@@ -23,12 +22,8 @@ class CartModel extends ChangeNotifier {
 
   List<Product> get cartItems => _cartItems;
 
-  static Future<Database> getDb() async {
-    return await cartDatabase.database;
-  }
-
-  static void initDatabase() {
-    getDb().then((value) => db);
+  Future<Database> getDb() async {
+    return await appDatabase.database;
   }
 
   // Future<int?> getProfileId() async {
@@ -48,11 +43,11 @@ class CartModel extends ChangeNotifier {
       int index = cartItems.indexWhere((item) => item == product);
       cartItems[index].quantity++;
       // cartDatabase.increaseQuantity(userId, product.id);
-      cartDatabase.increaseProductQuantity(userId, product.id);
+      appDatabase.increaseProductQuantity(userId, product.id);
     } else {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
-      cartDatabase.addToDb(userId, product.id, product.quantity);
+      appDatabase.addToDb(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -74,12 +69,12 @@ class CartModel extends ChangeNotifier {
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
         // cartDatabase.reduceQuantity(userId, product.id);
-        cartDatabase.decreaseProductQuantity(userId, product.id);
+        appDatabase.decreaseProductQuantity(userId, product.id);
       }
       else {
         // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
-        cartDatabase.deleteProduct(userId, product.id);
+        appDatabase.deleteProduct(userId, product.id);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }
@@ -108,7 +103,7 @@ class CartModel extends ChangeNotifier {
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();
     _totalPrice = 0;
-    cartDatabase.clearCartInDb(userId);
+    appDatabase.clearCartInDb(userId);
     notifyListeners();
   }
 
@@ -123,7 +118,7 @@ class CartModel extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
 
-    cartDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
+    appDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
 
     for (final productRow in usersProducts) {
       // Получение списка вхождений

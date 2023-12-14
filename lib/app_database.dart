@@ -2,7 +2,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
-  static final AppDatabase cartDatabase = AppDatabase();
   Database? _database;
 
   // Если БД существует, то получаем её, если нет, создаём новую
