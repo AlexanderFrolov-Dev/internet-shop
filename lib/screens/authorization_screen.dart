@@ -48,25 +48,25 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         isLoading = false;
         checkLoginStatus();
 
-        if (profileId > 0) {
-          Profile authorizedProfile = getAuthorizedProfile(profileId);
-
-          if (authorizedProfile.role == 'admin') {
-            // Переходим на экран администратора
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AdminHomeScreen(profile: authorizedProfile)),
-            );
-          } else if (authorizedProfile.role == 'user') {
-            // Переходим на экран пользователя
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => UserHomeScreen(profile: authorizedProfile)),
-            );
-          }
-        }
+        // if (profileId > 0) {
+        //   Profile authorizedProfile = getAuthorizedProfile(profileId);
+        //
+        //   if (authorizedProfile.role == 'admin') {
+        //     // Переходим на экран администратора
+        //     Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => AdminHomeScreen(profile: authorizedProfile)),
+        //     );
+        //   } else if (authorizedProfile.role == 'user') {
+        //     // Переходим на экран пользователя
+        //     Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => UserHomeScreen(profile: authorizedProfile)),
+        //     );
+        //   }
+        // }
       });
     });
   }
@@ -141,6 +141,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setInt('profileId', profile.id);
 
+        cartModel.restoreCartFromDB(prefs.getInt('profileId')!);
+
         // Переходим на экран администратора
         Navigator.pushReplacement(
           context,
@@ -153,6 +155,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setInt('profileId', profile.id);
 
+        cartModel.restoreCartFromDB(prefs.getInt('profileId')!);
+
         // Переходим на экран пользователя
         Navigator.pushReplacement(
           context,
@@ -161,7 +165,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         );
       }
 
-      cartModel.restoreCartFromDB();
+      // cartModel.restoreCartFromDB();
     }
   }
 

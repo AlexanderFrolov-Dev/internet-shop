@@ -25,7 +25,8 @@ class AppDatabase {
       CREATE TABLE carts(
         user_id INTEGER,
         product_id INTEGER,
-        quantity INTEGER
+        quantity INTEGER,
+        PRIMARY KEY (user_id, product_id)
       )
     ''');
   }
@@ -39,17 +40,6 @@ class AppDatabase {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
-  // Future<void> increaseQuantity(int userId, int productId) async {
-  //   final db = await database;
-  //
-  //   await db.update(
-  //     'carts',
-  //     {'quantity': 'quantity + 1'},
-  //     where: 'product_id = ? AND user_id = ?',
-  //     whereArgs: [productId, userId],
-  //   );
-  // }
 
   Future<void> increaseProductQuantity(int userId, int productId) async {
     final db = await database;

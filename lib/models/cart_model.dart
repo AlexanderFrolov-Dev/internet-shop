@@ -107,16 +107,11 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> restoreCartFromDB() async {
+  Future<void> restoreCartFromDB(int userId) async {
     List<Map<String, dynamic>> usersProducts = [];
     // получение id пользователя после авторизации;
     cartItems.clear();
     _totalPrice = 0;
-
-    // getProfileId().then((value) => userId);
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
 
     appDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
 
@@ -144,4 +139,42 @@ class CartModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  // Future<void> restoreCartFromDB() async {
+  //   List<Map<String, dynamic>> usersProducts = [];
+  //   // получение id пользователя после авторизации;
+  //   cartItems.clear();
+  //   _totalPrice = 0;
+  //
+  //   // getProfileId().then((value) => userId);
+  //
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getInt('profileId')!;
+  //
+  //   appDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
+  //
+  //   for (final productRow in usersProducts) {
+  //     // Получение списка вхождений
+  //     Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+  //     Product? product;
+  //     int productId = 0;
+  //     int quantity = 0;
+  //
+  //     // Перебор вхождений и поиск значений по ключу
+  //     for (var e in entry) {
+  //       if (e.key == 'id') {
+  //         productId = e.value;
+  //       } else if (e.key == 'quantity') {
+  //         quantity = e.value;
+  //       }
+  //     }
+  //
+  //     Product.getProductById(productId).then((value) => product);
+  //     product?.quantity = quantity;
+  //     cartItems.add(product!);
+  //     _totalPrice += product.price;
+  //   }
+  //
+  //   notifyListeners();
+  // }
 }
