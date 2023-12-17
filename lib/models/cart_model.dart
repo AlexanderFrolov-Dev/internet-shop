@@ -107,13 +107,37 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> restoreCartFromDB(int userId) async {
+  // Future<List<Map<String, dynamic>>> getProductListFromDb() async {
+  //   List<Map<String, dynamic>> usersProducts = [];
+  //   // получение id пользователя после авторизации;
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getInt('profileId')!;
+  //
+  //   print('userId: $userId');
+  //
+  //   await appDatabase.getAllProductsByUserId(userId).then((value) => {
+  //     usersProducts.addAll(value)
+  //   });
+  //
+  //   print('usersProducts length: ${usersProducts.length}');
+  //
+  //   return usersProducts;
+  //
+  // }
+
+  Future<void> restoreCartFromDb() async {
     List<Map<String, dynamic>> usersProducts = [];
     // получение id пользователя после авторизации;
-    cartItems.clear();
-    _totalPrice = 0;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId')!;
 
-    appDatabase.getAllProductsByUserId(userId).then((value) => usersProducts);
+    print('userId: $userId');
+
+    await appDatabase.getAllProductsByUserId(userId).then((value) => {
+      usersProducts.addAll(value)
+    });
+
+    print('usersProducts length: ${usersProducts.length}');
 
     for (final productRow in usersProducts) {
       // Получение списка вхождений

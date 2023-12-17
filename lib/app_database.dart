@@ -82,12 +82,39 @@ class AppDatabase {
 
   Future<List<Map<String, dynamic>>> getAllProductsByUserId(int userId) async {
     final db = await database;
-    return await db.query(
+    List<Map<String, dynamic>> list = await db.query(
       'carts',
       where: 'user_id = ?',
       whereArgs: [userId],
     );
+
+    print('list length: ${list.length}');
+
+    for (final productRow in list) {
+      // Получение списка вхождений
+      Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+
+      // Перебор вхождений и поиск значений по ключу
+      for (var e in entry) {
+        if (e.key == 'product_id') {
+          print('productId: ${e.value}');
+        } else if (e.key == 'quantity') {
+          print('quantity: ${e.value}');
+        }
+      }
+    }
+
+    return list;
   }
+
+  // Future<List<Map<String, dynamic>>> getAllProductsByUserId(int userId) async {
+  //   final db = await database;
+  //   return await db.query(
+  //     'carts',
+  //     where: 'user_id = ?',
+  //     whereArgs: [userId],
+  //   );
+  // }
 
   Future<void> clearCartInDb(int userId) async {
     final db = await database;
