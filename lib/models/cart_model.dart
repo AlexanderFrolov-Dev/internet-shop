@@ -148,14 +148,14 @@ class CartModel extends ChangeNotifier {
 
       // Перебор вхождений и поиск значений по ключу
       for (var e in entry) {
-        if (e.key == 'id') {
+        if (e.key == 'product_id') {
           productId = e.value;
         } else if (e.key == 'quantity') {
           quantity = e.value;
         }
       }
 
-      Product.getProductById(productId).then((value) => product);
+      await Product.getProductById(productId).then((value) => product);
       product?.quantity = quantity;
       cartItems.add(product!);
       _totalPrice += product.price;

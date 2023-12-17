@@ -141,7 +141,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setInt('profileId', profile.id);
 
-        cartModel.restoreCartFromDb();
+        // cartModel.restoreCartFromDb();
 
         // Переходим на экран администратора
         Navigator.pushReplacement(
@@ -155,7 +155,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         await prefs.setBool('isLoggedIn', true);
         await prefs.setInt('profileId', profile.id);
 
-        cartModel.restoreCartFromDb();
+        // cartModel.restoreCartFromDb();
 
         // Переходим на экран пользователя
         Navigator.pushReplacement(
@@ -165,7 +165,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         );
       }
 
-      // cartModel.restoreCartFromDB();
+      cartModel.restoreCartFromDb();
     }
   }
 
