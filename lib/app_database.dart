@@ -116,7 +116,7 @@ class AppDatabase {
   //   );
   // }
 
-  Future<void> clearCartInDb(int userId) async {
+  Future<void> deleteProductsByIdFromDb(int userId) async {
     final db = await database;
     await db.delete('carts', where: 'user_id = ?', whereArgs: [userId]);
   }
