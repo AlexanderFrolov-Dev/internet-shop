@@ -127,22 +127,27 @@ class CartModel extends ChangeNotifier {
 
   Future<void> restoreCartFromDb() async {
     List<Map<String, dynamic>> usersProducts = [];
+    List<Product> products = [];
     // получение id пользователя после авторизации;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
 
+    Product? product;
+
     print('userId: $userId');
 
-    await appDatabase.getAllProductsByUserId(userId).then((value) => {
-      usersProducts.addAll(value)
-    });
+    await appDatabase.getAllProductsByUserId(userId).then((value) =>
+      usersProducts.addAll(value));
+
+    await Product.getAllProducts().then((value) => products.addAll(value));
+    print('Products list length: ${products.length}');
 
     print('usersProducts length: ${usersProducts.length}');
 
     for (final productRow in usersProducts) {
       // Получение списка вхождений
       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-      Product? product;
+
       int productId = 0;
       int quantity = 0;
 
@@ -150,14 +155,25 @@ class CartModel extends ChangeNotifier {
       for (var e in entry) {
         if (e.key == 'product_id') {
           productId = e.value;
+          print('Founded product id: $productId');
         } else if (e.key == 'quantity') {
           quantity = e.value;
         }
       }
 
-      await Product.getProductById(productId).then((value) => product);
-      product?.quantity = quantity;
-      cartItems.add(product!);
+      // Product? product = await Product.getProductById(productId);
+
+      // await Product.getProductById(productId).then((value) => product);
+      
+      print('Products list length: ${products.length}');
+
+      product = products.firstWhere((p) => p.id == productId);
+
+      print(product.toString());
+
+      product.quantity = quantity;
+      cartItems.add(product);
+      print('Well done!');
       _totalPrice += product.price;
     }
 
