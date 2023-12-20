@@ -33,6 +33,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   void initState() {
     super.initState();
 
+    // Добавление виджетов списка товаров админинистратора и экрана профилей
+    // для использования в нижней панели BottomNavigationBarItem
     widgets.add(const AdminProductList());
     widgets.add(ProfileScreen(profile: widget.profile));
   }
@@ -44,7 +46,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           title: const Text('Интернет-магазин'),
           actions: <Widget>[
             Consumer<CartModel>(
+              // Использование счётчика товаров на значке корзины
               builder: (context, cart, child) => CartBadge(
+                // Получение значения количества товаров,
+                // находящихся в корзине
                 value:
                     '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
                 child: IconButton(

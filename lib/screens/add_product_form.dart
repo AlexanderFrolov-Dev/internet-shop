@@ -55,7 +55,7 @@ class _AddProductForm extends State<AddProductForm> {
               decoration: const InputDecoration(
                 labelText: 'Описание',
               ),
-              // Сохранение введенного значения в переменную name
+              // Сохранение введенного значения в переменную description
               onSaved: (value) {
                 description = value!;
               },
@@ -65,7 +65,7 @@ class _AddProductForm extends State<AddProductForm> {
               decoration: const InputDecoration(
                 labelText: 'Изображение',
               ),
-              // Сохранение введенного значения в переменную name
+              // Сохранение введенного значения в переменную image
               onSaved: (value) {
                 image = value!;
               },
@@ -99,5 +99,4 @@ class _AddProductForm extends State<AddProductForm> {
       )
     );
   }
-
 }
