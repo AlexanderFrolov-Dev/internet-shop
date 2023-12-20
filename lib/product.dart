@@ -52,22 +52,11 @@ class Product {
     file.writeAsString(newJsonString);
   }
 
-  // static Future<Product> getProductById(int id) async {
-  //   try {
-  //     final data = await rootBundle.loadString('assets/products.json');
-  //     final jsonResult = json.decode(data);
-  //     final products = List<Product>.from(jsonResult.map((x) => Product.fromJson(x)));
-  //     final product = products.firstWhere((p) => p.id == id);
-  //     return product;
-  //   } catch (e) {
-  //     throw Exception('Не найден товар с id: $id');
-  //   }
-  // }
-
+  // Метод для получения Future списка всех товаров из json файла
   static Future<List<Product>> getAllProducts() async {
     List<Product> products = [];
 
-    // Загружаем содержимое файла с продуктами
+    // Загружаем содержимое файла с товарами
     final jsonProducts = await rootBundle.loadString(
         'assets/data/products.json');
     // Преобразование полученных данных в формат JSON
@@ -81,108 +70,22 @@ class Product {
     return products;
   }
 
+  // Метод получения товара по id пользователя
   static Future<Product?> getProductById(int id) async {
     // Загружаем содержимое файла с продуктами
     final jsonProducts = await rootBundle.loadString(
         'assets/data/products.json');
     // Преобразование полученных данных в формат JSON
     final jsonData = json.decode(jsonProducts);
-    Product? product;
-
-    print('jsonData length: ${jsonData.toString()}');
+    // Product? product;
 
     // Проход по списку товаров и создание экземпляров класса Product
     for (var product in jsonData) {
       Product currentProduct = Product.fromJson(product);
 
-      print('Current product: ${currentProduct.toString()}');
-
-
-      print('Product.fromJson(product)________${Product.fromJson(product).toString()}');
-      print('Product.fromJson(product) name: ${Product.fromJson(product).name}');
-
       if (currentProduct.id == id) {
         return currentProduct;
       }
-
-      // Product product = Product(id: productId, name: name, description: description, image: image, price: price);
-
-      // Находим продукт с нужным id
-      // final productJson = products.firstWhere(
-      //       (product) => product['id'] == id,
-      //   orElse: () => <String, dynamic>{},
-      // );
-      // // Если продукт не найден, возвращаем null
-      // if (productJson == null) {
-      //   return null;
-      // }
-      // Создаем объект Product из JSON
-      // return Product.fromJson(productJson);
     }
-
-    // static Future<Product?> getProductById(int id) async {
-    //   // Загружаем содержимое файла с продуктами
-    //   final productsJson = await rootBundle.loadString('assets/data/products.json');
-    //   // Парсим JSON и создаем список продуктов
-    //   final products = List<Map<String, dynamic>>.from(json.decode(productsJson));
-    //   print('products length: ${products.length}');
-    //   int productId = 0;
-    //   String name = '';
-    //   String description = '';
-    //   String image = '';
-    //   double price = 0;
-    //
-    //   for (final product in products) {
-    //     Iterable<MapEntry<String, dynamic>> entry = product.entries;
-    //
-    //     // Перебор вхождений и поиск значений по ключу
-    //     for (var e in entry) {
-    //       print(e.toString());
-    //
-    //       if (e.key == 'id') {
-    //         if (e.value == id) {
-    //           productId = e.value;
-    //           print('Product class productId: ${e.value}');
-    //         }
-    //         if (e.key == 'name') {
-    //           name = e.value;
-    //           print('Product class name: ${e.value}');
-    //         }
-    //         if (e.key == 'description') {
-    //           description = e.value;
-    //           print('Product class description: ${e.value}');
-    //         }
-    //         if (e.key == 'image') {
-    //           image = e.value;
-    //           print('Product class image: ${e.value}');
-    //         }
-    //         if (e.key == 'price') {
-    //           price = e.value;
-    //           print('Product class price: ${e.value}');
-    //         }
-    //       }
-    //     }
-    //   }
-    //
-    //   if (productId > 0) {
-    //     return Product(id: productId, name: name, description: description, image: image, price: price);
-    //   } else {
-    //     return null;
-    //   }
-    //
-    //   // Product product = Product(id: productId, name: name, description: description, image: image, price: price);
-    //
-    //   // Находим продукт с нужным id
-    //   // final productJson = products.firstWhere(
-    //   //       (product) => product['id'] == id,
-    //   //   orElse: () => <String, dynamic>{},
-    //   // );
-    //   // // Если продукт не найден, возвращаем null
-    //   // if (productJson == null) {
-    //   //   return null;
-    //   // }
-    //   // Создаем объект Product из JSON
-    //   // return Product.fromJson(productJson);
-    // }
   }
 }

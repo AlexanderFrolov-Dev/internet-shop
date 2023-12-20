@@ -40,6 +40,8 @@ class CartModel extends ChangeNotifier {
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
+    // Этот вызов сообщает виджетам,
+    // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
   }
 
@@ -68,6 +70,8 @@ class CartModel extends ChangeNotifier {
         _totalPrice -= product.price;
       }
 
+      // Этот вызов сообщает виджетам,
+      // которые прослушивают эту модель, о необходимости перестройки.
       notifyListeners();
     }
   }
@@ -92,6 +96,8 @@ class CartModel extends ChangeNotifier {
     _totalPrice = 0;
     // Удаляем из БД товары пользователя
     appDatabase.deleteProductsByIdFromDb(userId);
+    // Этот вызов сообщает виджетам,
+    // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
   }
 
@@ -139,6 +145,8 @@ class CartModel extends ChangeNotifier {
       _totalPrice += product.price;
     }
 
+    // Этот вызов сообщает виджетам,
+    // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
   }
 }

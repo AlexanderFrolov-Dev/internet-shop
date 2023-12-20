@@ -25,6 +25,9 @@ import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(
+  // ChangeNotifierProvider это виджет,
+  // который предоставляет экземпляр ChangeNotifier своим потомкам.
+  // Определяем конструктор, который создает новый экземпляр из CartModel.
   ChangeNotifierProvider(
       create: (context) => CartModel.getInstance(),
     child: const InternetShop(),
@@ -36,6 +39,7 @@ class InternetShop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Создаём виджет верхнего уровня
     return MaterialApp(
       title: 'Интернет-магазин',
       theme: ThemeData(

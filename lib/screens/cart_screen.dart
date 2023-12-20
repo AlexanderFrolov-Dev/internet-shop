@@ -25,6 +25,9 @@ class _CartScreenState extends State<CartScreen> {
           },
         ),
       ),
+      // Consumer позволяет использовать CartModel,
+      // который прослушивается через ChangeNotifierProvider,
+      // отслеживающий все изменения происходящие в CartModel
       body: Consumer<CartModel>(
         builder: (context, cart, child) => Column(
           children: [
@@ -75,12 +78,16 @@ class _CartScreenState extends State<CartScreen> {
                                   child: Column(
                                     children: [
                                       IconButton(
+                                        // Увеличение количества товара по
+                                        // нажатию кнопки со стрелкой вверх
                                           onPressed: () {
                                             cart.addToCart(cart.cartItems[index]);
                                           },
                                           icon: const Icon(Icons.arrow_drop_up)),
                                       Text('${cart.cartItems[index].quantity}'),
                                       IconButton(
+                                        // Уменьшение количества товара по
+                                        // нажатию кнопки со стрелкой вниз
                                           onPressed: () {
                                             cart.removeFromCart(
                                                 cart.cartItems[index]);

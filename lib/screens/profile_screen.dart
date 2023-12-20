@@ -8,6 +8,7 @@ class ProfileScreen extends StatelessWidget {
 
   const ProfileScreen({super.key, required this.profile});
 
+  // Метод перехода на страницу авторизации при разовтаризации пользователя
   void _logout(BuildContext context) {
     Navigator.pushReplacement(
       context,
@@ -59,13 +60,6 @@ class ProfileScreen extends StatelessWidget {
               },
               child: const Text('Выход'),
             ),
-
-            // ListTile(
-            //   title: const Text('Выход'),
-            //   onTap: () {
-            //     _logout(context);
-            //   },
-            // ),
           ],
         ),
       ),

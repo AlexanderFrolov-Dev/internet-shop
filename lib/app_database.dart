@@ -14,12 +14,14 @@ class AppDatabase {
     return _database!;
   }
 
+  // Создаём БД app_database
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'app_database.db');
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
+  // Создаём в БД таблицу carts
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE carts(
@@ -31,6 +33,7 @@ class AppDatabase {
     ''');
   }
 
+  // Метод добавления товара в БД
   Future<void> addToDb(int userId, int productId, int quantity) async {
     final db = await database;
 
@@ -41,6 +44,7 @@ class AppDatabase {
     );
   }
 
+  // Метод увеличения количества товара в БД
   Future<void> increaseProductQuantity(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
@@ -50,6 +54,7 @@ class AppDatabase {
   ''', [userId, productId]);
   }
 
+  // Метод уменьшения количества товара в БД
   Future<void> decreaseProductQuantity(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
@@ -59,17 +64,7 @@ class AppDatabase {
   ''', [userId, productId]);
   }
 
-  // Future<void> reduceQuantity(int userId, int productId) async {
-  //   final db = await database;
-  //
-  //   await db.update(
-  //     'carts',
-  //     {'quantity': 'quantity - 1'},
-  //     where: 'product_id = ? AND user_id = ?',
-  //     whereArgs: [productId, userId],
-  //   );
-  // }
-
+  // Метод удаления товара из БД по id пользователя
   Future<void> deleteProduct(int userId, int productId) async {
     final db = await database;
 
@@ -80,6 +75,7 @@ class AppDatabase {
     );
   }
 
+  // Метод поиска всех товаров по id пользователя
   Future<List<Map<String, dynamic>>> getAllProductsByUserId(int userId) async {
     final db = await database;
     List<Map<String, dynamic>> list = await db.query(
@@ -88,8 +84,6 @@ class AppDatabase {
       whereArgs: [userId],
     );
 
-    print('list length: ${list.length}');
-
     for (final productRow in list) {
       // Получение списка вхождений
       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
@@ -97,9 +91,7 @@ class AppDatabase {
       // Перебор вхождений и поиск значений по ключу
       for (var e in entry) {
         if (e.key == 'product_id') {
-          print('productId: ${e.value}');
         } else if (e.key == 'quantity') {
-          print('quantity: ${e.value}');
         }
       }
     }
@@ -107,15 +99,7 @@ class AppDatabase {
     return list;
   }
 
-  // Future<List<Map<String, dynamic>>> getAllProductsByUserId(int userId) async {
-  //   final db = await database;
-  //   return await db.query(
-  //     'carts',
-  //     where: 'user_id = ?',
-  //     whereArgs: [userId],
-  //   );
-  // }
-
+  // Метод удаления всех товаров из БД по id пользователя
   Future<void> deleteProductsByIdFromDb(int userId) async {
     final db = await database;
     await db.delete('carts', where: 'user_id = ?', whereArgs: [userId]);

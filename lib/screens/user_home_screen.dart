@@ -23,6 +23,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   List<Widget> widgets = <Widget>[];
   int _selectedIndex = 0;
 
+  // При нажатии на элемент BottomNavigationBarItem записывает его индекс в
+  // переменную _selectedIndex
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -33,6 +35,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   void initState() {
     super.initState();
 
+    // Добавление виджетов списка товаров админинистратора и экрана профилей
+    // для использования в нижней панели BottomNavigationBarItem
     widgets.add(const UserProductList());
     widgets.add(ProfileScreen(profile: widget.profile));
   }
@@ -43,6 +47,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         appBar: AppBar(
           title: const Text('Интернет-магазин'),
           actions: <Widget>[
+            // Consumer позволяет использовать CartModel,
+            // который прослушивается через ChangeNotifierProvider,
+            // отслеживающий все изменения происходящие в CartModel
             Consumer<CartModel>(
               builder: (context, cart, child) => CartBadge(
                 value: '${Provider.of<CartModel>(context, listen: false).getItemsCount()}',
