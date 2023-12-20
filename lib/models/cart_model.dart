@@ -112,6 +112,8 @@ class CartModel extends ChangeNotifier {
     // Получение списка всех товаров из json файла
     await Product.getAllProducts().then((value) => products.addAll(value));
 
+    cartItems.clear();
+
     for (final productRow in usersProducts) {
       // Получение вхождений списка мап
       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
