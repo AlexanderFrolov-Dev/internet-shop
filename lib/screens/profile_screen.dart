@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../profile.dart';
 import 'authorization_screen.dart';
@@ -9,7 +10,10 @@ class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, required this.profile});
 
   // Метод перехода на страницу авторизации при разовтаризации пользователя
-  void _logout(BuildContext context) {
+  void _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('isLoggedIn');
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const AuthorizationScreen()),

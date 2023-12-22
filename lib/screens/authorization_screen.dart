@@ -28,123 +28,67 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   void initState() {
     super.initState();
 
-    goToCatalog();
-
-    // getProfileList().then((value) => profiles.addAll(value));
-    // isLoading = false;
-
-    // print('isLoggedIn: $isLoggedIn');
-    // getValuePrefsIsLoggedIn().then((value) {
-    //   isLoggedIn = value;
-    //   print('prefs.getBool: $value');
-    //   print('isLoggedIn in getValuePrefsIsLoggedIn(): $isLoggedIn');
-    // });
-
-    // checkLoginStatus().then((value) => isLoggedIn);
-    //
-    // print('isLoggedIn after checkLoginStatus(): $isLoggedIn');
-
-    // print('isLoggedIn after getValuePrefsIsLoggedIn(): $isLoggedIn');
-
-    // if(isLoggedIn) {
-    //   print('isLoggedIn before goToScreenByUserRole(): $isLoggedIn');
-    //   print('profileId before goToScreenByUserRole(): $profileId');
-    //   goToScreenByUserRole(getAuthorizedProfile(profileId));
-    // }
-
-
-
-    // Создаём Future для получения списка профилей.
-    // Работа по получению списка профилей началась
-    // getProfileList().then((value) {
-      // В then мы уже получаем в качестве результата список профилей
-      // setState(() {
-      //   // После получения списка профилей присваиваем этот результат
-      //   // переменной profiles. Меняем значение isLoading на false,
-      //   // обозначая этим, что загрузка профилей закончена.
-      //   // И проверяем авторизован ли пользователь,
-      //   // с помощью вызова метода checkLoginStatus
-      //   profiles = value;
-      //   isLoading = false;
-      //   checkLoginStatus();
-      //
-      //   // if (profileId > 0) {
-      //   //   Profile authorizedProfile = getAuthorizedProfile(profileId);
-      //   //
-      //   //   if (authorizedProfile.role == 'admin') {
-      //   //     // Переходим на экран администратора
-      //   //     Navigator.pushReplacement(
-      //   //       context,
-      //   //       MaterialPageRoute(
-      //   //           builder: (context) => AdminHomeScreen(profile: authorizedProfile)),
-      //   //     );
-      //   //   } else if (authorizedProfile.role == 'user') {
-      //   //     // Переходим на экран пользователя
-      //   //     Navigator.pushReplacement(
-      //   //       context,
-      //   //       MaterialPageRoute(
-      //   //           builder: (context) => UserHomeScreen(profile: authorizedProfile)),
-      //   //     );
-      //   //   }
-      //   // }
-      // });
+    loadAuthorizationData();
   }
 
-  Future<bool> getValuePrefsIsLoggedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
-  }
-
-  Future<void> goToCatalog() async {
-    await getProfileList().then((value) => profiles.addAll(value));
-    isLoading = false;
-    await checkLoginStatus();
+  // Загружаем профили пользователей,
+  // присваиваем переменным profileId и isLoggedIn
+  // соответствующие значения из SharedPreferences
+  Future<void> loadAuthorizationData() async {
+    await getProfileList().then((value) {
+      profiles.addAll(value);
+      isLoading = false;
+    });
     await saveIdOfAuthorizedUser();
-
-    if(isLoggedIn) {
-      print('isLoggedIn before goToScreenByUserRole(): $isLoggedIn');
-      print('profileId before goToScreenByUserRole(): $profileId');
-      goToScreenByUserRole(getAuthorizedProfile(profileId));
-    }
-  }
-
-  // Проверяем, авторизован ли пользователь.
-  Future<void> checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-      print('prefs.getBool(isLoggedIn) from checkLoginStatus ${prefs.getBool('isLoggedIn')}');
-    });
-  }
-
-  // Проверяем, авторизован ли пользователь.
-  // Future<bool> checkLoginStatus() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // setState(() {
-  //   //   // Присваиваем isLoggedIn значение, которое получаем по ключу 'isLoggedIn'.
-  //   //   // Если значение равно null, то присваиваем значение false
-  //   //   isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-  //   //
-  //   //   print('prefs.getBool(isLoggedIn) from checkLoginStatus ${prefs.getBool('isLoggedIn')}');
-  //   // });
-  //
-  //   print('prefs.getBool(isLoggedIn) from checkLoginStatus ${prefs.getBool('isLoggedIn')}');
-  //
-  //   return prefs.getBool('isLoggedIn') ?? false;
-  // }
-
-  Future<void> saveIdOfAuthorizedUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      profileId = prefs.getInt('profileId') ?? 0;
-    });
+    _checkLoginStatus();
   }
 
   // Создаём Future для получения профилей
   Future<List<Profile>> getProfileList() async {
     return await Profile.getProfiles();
+  }
+
+  Future<void> saveIdOfAuthorizedUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      profileId = prefs.getInt('profileId') ?? 0;
+    });
+  }
+
+  // Проверяем, авторизован ли пользователь.
+  void _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    if (isLoggedIn) {
+      setState(() {
+        if(profileId > 0) {
+          setState(() {
+            Profile profile = profiles.firstWhere((p) => p.id == profileId);
+
+            String role = profile.role;
+
+            // Определение роли пользователя (админ или обычный пользователь)
+            if (role == 'admin') {
+              // Переходим на экран администратора
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AdminHomeScreen(profile: profile)),
+              );
+            } else if (role == 'user') {
+              // Переходим на экран пользователя
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => UserHomeScreen(profile: profile)),
+              );
+            }
+
+            cartModel.restoreCartFromDb();
+          });
+        }
+      });
+    }
   }
 
   // Получаем профиль из списка по логину и паролю.
@@ -196,8 +140,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       await prefs.setBool('isLoggedIn', true);
       await prefs.setInt('profileId', profile.id);
 
-      print('prefs isLoggedIn: ${prefs.getBool('isLoggedIn')}');
-
       await goToScreenByUserRole(profile);
     }
   }
@@ -222,37 +164,11 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       );
     }
 
-    cartModel.restoreCartFromDb();
+    await cartModel.restoreCartFromDb();
   }
 
   @override
   Widget build(BuildContext context) {
-    // // Создаём Future для получения списка профилей.
-    // // Работа по получению списка профилей началась
-    // getProfileList().then((value) {
-    //   // В then мы уже получаем в качестве результата список профилей
-    //   setState(() {
-    //     // После получения списка профилей присваиваем этот результат
-    //     // переменной profiles. Меняем значение isLoading на false,
-    //     // обозначая этим, что загрузка профилей закончена.
-    //     // И проверяем авторизован ли пользователь,
-    //     // с помощью вызова метода checkLoginStatus
-    //     profiles.addAll(value);
-    //     isLoading = false;
-    //     checkLoginStatus();
-    //
-    //     if(isLoggedIn) {
-    //       saveIdOfAuthorizedUser();
-    //     }
-    //
-    //     if (profileId > 0) {
-    //       Profile authorizedProfile = getAuthorizedProfile(profileId);
-    //
-    //       goToScreenByUserRole(authorizedProfile);
-    //     }
-    //   });
-    // });
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Авторизация'),
