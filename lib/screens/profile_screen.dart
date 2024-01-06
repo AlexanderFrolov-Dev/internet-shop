@@ -13,6 +13,8 @@ class ProfileScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('isLoggedIn');
+    await prefs.setInt('profileId', 0);
+    // prefs.setBool('isLoggedIn', false);
 
     Navigator.pushReplacement(
       context,

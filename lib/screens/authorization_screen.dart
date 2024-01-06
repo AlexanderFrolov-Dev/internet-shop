@@ -34,14 +34,27 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   // Загружаем профили пользователей,
   // присваиваем переменным profileId и isLoggedIn
   // соответствующие значения из SharedPreferences
-  Future<void> loadAuthorizationData() async {
-    await getProfileList().then((value) {
-      profiles.addAll(value);
-      isLoading = false;
-    });
+  void loadAuthorizationData() async {
+    await getProfileList().then((value) => setState(() {
+        isLoading = false;
+        profiles.addAll(value);
+      })
+    );
     await saveIdOfAuthorizedUser();
-    _checkLoginStatus();
+    // _checkLoginStatus();
   }
+
+  // // Загружаем профили пользователей,
+  // // присваиваем переменным profileId и isLoggedIn
+  // // соответствующие значения из SharedPreferences
+  // Future<void> loadAuthorizationData() async {
+  //   await getProfileList().then((value) {
+  //     profiles.addAll(value);
+  //     isLoading = false;
+  //   });
+  //   // await saveIdOfAuthorizedUser();
+  //   // _checkLoginStatus();
+  // }
 
   // Создаём Future для получения профилей
   Future<List<Profile>> getProfileList() async {
@@ -138,6 +151,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       // Сохраняем факт авторизации в shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+      print('isLoggedIn in AuthorizationScreen: ${prefs.getBool('isLoggedIn')}');
       await prefs.setInt('profileId', profile.id);
 
       await goToScreenByUserRole(profile);
