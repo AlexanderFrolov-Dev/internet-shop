@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/product.dart';
 import 'package:mobile_app_internet_shop/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -10,9 +11,10 @@ import '../widgets/user_product_list.dart';
 import 'cart_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
+  AppDatabase appDatabase;
   Profile profile;
 
-  UserHomeScreen({super.key, required this.profile});
+  UserHomeScreen({super.key, required this.profile, required this.appDatabase});
 
   @override
   _UserHomeScreenState createState() => _UserHomeScreenState();
@@ -37,8 +39,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
     // Добавление виджетов списка товаров админинистратора и экрана профилей
     // для использования в нижней панели BottomNavigationBarItem
-    widgets.add(const UserProductList());
-    widgets.add(ProfileScreen(profile: widget.profile));
+    widgets.add(UserProductList(appDatabase: widget.appDatabase));
+    widgets.add(ProfileScreen(profile: widget.profile, appDatabase: widget.appDatabase,));
   }
 
   @override
@@ -59,7 +61,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CartScreen()));
+                            builder: (context) => CartScreen(appDatabase: widget.appDatabase)));
                   },
                 ),
               ),

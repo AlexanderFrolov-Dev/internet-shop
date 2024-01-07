@@ -7,17 +7,27 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
-  AppDatabase appDatabase = AppDatabase();
+  AppDatabase appDatabase;
   int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
-  CartModel._();
+  CartModel._(this.appDatabase);
 
   // Создаем статическое поле для хранения единственного экземпляра класса
-  static final CartModel _instance = CartModel._();
+  static CartModel? _instance;
 
-  // Создаем геттер для доступа к единственному экземпляру класса
-  static CartModel getInstance() => _instance;
+  // Создаем статический метод для получения единственного экземпляра класса
+  static CartModel getInstance(AppDatabase appDatabase) {
+    // Если экземпляр еще не создан, то создаем его
+    _instance ??= CartModel._(appDatabase);
+    return _instance!;
+  }
+
+  // // Создаем статическое поле для хранения единственного экземпляра класса
+  // static final CartModel _instance = CartModel._(AppDatabase());
+  //
+  // // Создаем геттер для доступа к единственному экземпляру класса
+  // static CartModel getInstance(AppDatabase appDatabase) => _instance;
 
   List<Product> get cartItems => _cartItems;
 

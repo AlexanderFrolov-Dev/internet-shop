@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 
 import '../models/cart_model.dart';
 import '../product.dart';
 
 class ProductDetailsCard extends StatelessWidget {
+  final AppDatabase appDatabase;
   final Product product;
 
-  const ProductDetailsCard({required Key key, required this.product})
+  ProductDetailsCard({required Key key, required this.product, required this.appDatabase})
       : super(key: key);
 
   @override
@@ -55,7 +57,7 @@ class ProductDetailsCard extends StatelessWidget {
               child: const Text('Добавить в корзину'),
               onPressed: () {
                 // При нажатии на кнопку добавляем товар в корзину
-                CartModel.getInstance().addToCart(product);
+                CartModel.getInstance(appDatabase).addToCart(product);
               },
             ),
           ),

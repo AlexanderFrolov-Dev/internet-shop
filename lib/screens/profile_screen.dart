@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../profile.dart';
 import 'authorization_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
+  AppDatabase appDatabase;
   final Profile profile;
 
-  const ProfileScreen({super.key, required this.profile});
+  ProfileScreen({super.key, required this.profile, required this.appDatabase});
 
   // Метод перехода на страницу авторизации при разовтаризации пользователя
   void _logout(BuildContext context) async {
@@ -18,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const AuthorizationScreen()),
+      MaterialPageRoute(builder: (context) => AuthorizationScreen(appDatabase: appDatabase)),
     );
   }
 

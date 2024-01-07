@@ -20,6 +20,7 @@
 /// https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/admin_home_screen.dart';
@@ -31,10 +32,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  AppDatabase appDatabase = AppDatabase();
+  CartModel cartModel = CartModel.getInstance(appDatabase);
   List<Profile> profiles = [];
   await Profile.getProfiles().then((value) => profiles.addAll(value));
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
+  cartModel.restoreCartFromDb();
   Widget? homeScreen;
   print('profiles length in main: ${profiles.length}');
   print('profileId in main: $profileId');
@@ -45,12 +49,12 @@ void main() async {
     String role = profile.role;
 
     if(role == 'admin') {
-      homeScreen = AdminHomeScreen(profile: profile);
+      homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase,);
     } else if(role == 'user') {
-      homeScreen = UserHomeScreen(profile: profile);
+      homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase,);
     }
   } else {
-    homeScreen = const AuthorizationScreen();
+    homeScreen = AuthorizationScreen(appDatabase: appDatabase,);
   }
 
   runApp(
@@ -58,7 +62,7 @@ void main() async {
     // который предоставляет экземпляр ChangeNotifier своим потомкам.
     // Определяем конструктор, который создает новый экземпляр из CartModel.
       ChangeNotifierProvider(
-        create: (context) => CartModel.getInstance(),
+        create: (context) => CartModel.getInstance(appDatabase),
         child: InternetShop(widget: homeScreen!)
       )
   );

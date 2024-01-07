@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
@@ -8,14 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
-  const AuthorizationScreen({Key? key}) : super(key: key);
+  AppDatabase appDatabase;
+
+  AuthorizationScreen({Key? key, required this.appDatabase}) : super(key: key);
 
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
 }
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
-  CartModel cartModel = CartModel.getInstance();
+  // CartModel cartModel = CartModel.getInstance(widget.appDatabase);
+  late CartModel cartModel;
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,6 +27,12 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   bool passwordVisible = false;
   bool isLoading = true;
   int profileId = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    cartModel = CartModel.getInstance(widget.appDatabase);
+  }
 
   @override
   void initState() {
@@ -86,14 +96,15 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AdminHomeScreen(profile: profile)),
+                    builder: (context) => AdminHomeScreen(
+                      profile: profile, appDatabase: widget.appDatabase,)),
               );
             } else if (role == 'user') {
               // Переходим на экран пользователя
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => UserHomeScreen(profile: profile)),
+                    builder: (context) => UserHomeScreen(profile: profile, appDatabase: widget.appDatabase)),
               );
             }
 
@@ -167,14 +178,15 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => AdminHomeScreen(profile: profile)),
+            builder: (context) => AdminHomeScreen(
+                profile: profile, appDatabase: widget.appDatabase,)),
       );
     } else if (role == 'user') {
       // Переходим на экран пользователя
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => UserHomeScreen(profile: profile)),
+            builder: (context) => UserHomeScreen(profile: profile, appDatabase: widget.appDatabase)),
       );
     }
 
