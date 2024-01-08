@@ -18,7 +18,6 @@ class AuthorizationScreen extends StatefulWidget {
 }
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
-  // CartModel cartModel = CartModel.getInstance(widget.appDatabase);
   late CartModel cartModel;
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
@@ -51,20 +50,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       })
     );
     await saveIdOfAuthorizedUser();
-    // _checkLoginStatus();
   }
-
-  // // Загружаем профили пользователей,
-  // // присваиваем переменным profileId и isLoggedIn
-  // // соответствующие значения из SharedPreferences
-  // Future<void> loadAuthorizationData() async {
-  //   await getProfileList().then((value) {
-  //     profiles.addAll(value);
-  //     isLoading = false;
-  //   });
-  //   // await saveIdOfAuthorizedUser();
-  //   // _checkLoginStatus();
-  // }
 
   // Создаём Future для получения профилей
   Future<List<Profile>> getProfileList() async {
@@ -76,44 +62,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     setState(() {
       profileId = prefs.getInt('profileId') ?? 0;
     });
-  }
-
-  // Проверяем, авторизован ли пользователь.
-  void _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    if (isLoggedIn) {
-      setState(() {
-        if(profileId > 0) {
-          setState(() {
-            Profile profile = profiles.firstWhere((p) => p.id == profileId);
-
-            String role = profile.role;
-
-            // Определение роли пользователя (админ или обычный пользователь)
-            if (role == 'admin') {
-              // Переходим на экран администратора
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AdminHomeScreen(
-                      profile: profile, appDatabase: widget.appDatabase,)),
-              );
-            } else if (role == 'user') {
-              // Переходим на экран пользователя
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UserHomeScreen(
-                        profile: profile, appDatabase: widget.appDatabase)),
-              );
-            }
-
-            cartModel.restoreCartFromDb();
-          });
-        }
-      });
-    }
   }
 
   // Получаем профиль из списка по логину и паролю.
@@ -128,15 +76,9 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     return null;
   }
 
-  Profile getAuthorizedProfile(int id) {
-    return profiles.firstWhere((profile) => profile.id == id);
-  }
-
   void login() async {
     Profile? profile =
         getProfile(_usernameController.text, _passwordController.text);
-
-    print('profile firstName: ${profile?.firstName}');
 
     if (_usernameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -187,7 +129,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => UserHomeScreen(profile: profile, appDatabase: widget.appDatabase)),
+            builder: (context) => UserHomeScreen(
+                profile: profile, appDatabase: widget.appDatabase)),
       );
     }
 

@@ -38,11 +38,7 @@ void main() async {
   await Profile.getProfiles().then((value) => profiles.addAll(value));
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
-  // cartModel.restoreCartFromDb();
   Widget? homeScreen;
-  print('profiles length in main: ${profiles.length}');
-  print('profileId in main: $profileId');
-  print('isLoggedIn in main: $isLoggedIn');
 
   if(profileId > 0) {
     Profile profile = profiles.firstWhere((profile) => profile.id == profileId);
@@ -50,14 +46,11 @@ void main() async {
 
     if(role == 'admin') {
       homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase);
-      // cartModel.restoreCartFromDb();
     } else if(role == 'user') {
       homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase);
-      // cartModel.restoreCartFromDb();
     }
   } else {
     homeScreen = AuthorizationScreen(appDatabase: appDatabase);
-    // cartModel.restoreCartFromDb();
   }
 
   cartModel.restoreCartFromDb();
@@ -85,7 +78,6 @@ class InternetShop extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: const AuthorizationScreen(),
       home: widget,
       debugShowCheckedModeBanner: false,
     );

@@ -23,12 +23,6 @@ class CartModel extends ChangeNotifier {
     return _instance!;
   }
 
-  // // Создаем статическое поле для хранения единственного экземпляра класса
-  // static final CartModel _instance = CartModel._(AppDatabase());
-  //
-  // // Создаем геттер для доступа к единственному экземпляру класса
-  // static CartModel getInstance(AppDatabase appDatabase) => _instance;
-
   List<Product> get cartItems => _cartItems;
 
   Future<bool> isFoundProduct(Product product) async {
@@ -37,36 +31,12 @@ class CartModel extends ChangeNotifier {
 
   // Метод добавления товара в корзину
   void addToCart(Product product) async {
-    bool founded = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
-    print('prefs.getInt(profileId) in CartModel add: ${prefs.getInt('profileId')}');
-    print('cartItems length: ${cartItems.length}');
-    for(Product product in cartItems) {
-      print('product name: ${product.name}');
-    }
-    print('this product: ${product.name}');
-
-    // bool founded = cartItems.any((item) => item == product);
-
-    for(Product p in cartItems) {
-      if(p.id == product.id) {
-        founded = true;
-      }
-    }
-
-    // await isFoundProduct(product);
-    print('founded: $founded');
 
     // Проверяем, есть ли уже такой товар в корзине
-    // if (cartItems.any((item) => item == product)) {
-    if (founded) {
-      print('yes');
-      // for(Product product in cartItems) {
-      //   print('product name: ${product.name}');
-      // }
+    if (cartItems.any((item) => item.id == product.id)) {
       // Если есть, то увеличиваем счетчик товара на 1
-      // int index = cartItems.indexWhere((item) => item == product);
       int index = cartItems.indexWhere((item) => item.id == product.id);
       cartItems[index].quantity++;
       await appDatabase.increaseProductQuantity(userId, product.id);
@@ -87,12 +57,11 @@ class CartModel extends ChangeNotifier {
   void removeFromCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
-    print('prefs.getInt(profileId) in CartModel remove: ${prefs.getInt('profileId')}');
 
     // Проверяем, есть ли такой товар в корзине
-    if (cartItems.any((item) => item == product)) {
+    if (cartItems.any((item) => item.id == product.id)) {
       // Если есть, то уменьшаем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item == product);
+      int index = cartItems.indexWhere((item) => item.id == product.id);
       if (cartItems[index].quantity > 1) {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
