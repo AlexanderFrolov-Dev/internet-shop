@@ -38,7 +38,7 @@ void main() async {
   await Profile.getProfiles().then((value) => profiles.addAll(value));
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
-  cartModel.restoreCartFromDb();
+  // cartModel.restoreCartFromDb();
   Widget? homeScreen;
   print('profiles length in main: ${profiles.length}');
   print('profileId in main: $profileId');
@@ -49,13 +49,18 @@ void main() async {
     String role = profile.role;
 
     if(role == 'admin') {
-      homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase,);
+      homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase);
+      // cartModel.restoreCartFromDb();
     } else if(role == 'user') {
-      homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase,);
+      homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase);
+      // cartModel.restoreCartFromDb();
     }
   } else {
-    homeScreen = AuthorizationScreen(appDatabase: appDatabase,);
+    homeScreen = AuthorizationScreen(appDatabase: appDatabase);
+    // cartModel.restoreCartFromDb();
   }
+
+  cartModel.restoreCartFromDb();
 
   runApp(
     // ChangeNotifierProvider это виджет,

@@ -104,7 +104,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => UserHomeScreen(profile: profile, appDatabase: widget.appDatabase)),
+                    builder: (context) => UserHomeScreen(
+                        profile: profile, appDatabase: widget.appDatabase)),
               );
             }
 

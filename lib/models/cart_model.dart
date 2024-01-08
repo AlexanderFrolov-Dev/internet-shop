@@ -31,22 +31,50 @@ class CartModel extends ChangeNotifier {
 
   List<Product> get cartItems => _cartItems;
 
+  Future<bool> isFoundProduct(Product product) async {
+    return cartItems.any((item) => item == product);
+  }
+
   // Метод добавления товара в корзину
   void addToCart(Product product) async {
+    bool founded = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
+    print('prefs.getInt(profileId) in CartModel add: ${prefs.getInt('profileId')}');
+    print('cartItems length: ${cartItems.length}');
+    for(Product product in cartItems) {
+      print('product name: ${product.name}');
+    }
+    print('this product: ${product.name}');
+
+    // bool founded = cartItems.any((item) => item == product);
+
+    for(Product p in cartItems) {
+      if(p.id == product.id) {
+        founded = true;
+      }
+    }
+
+    // await isFoundProduct(product);
+    print('founded: $founded');
 
     // Проверяем, есть ли уже такой товар в корзине
-    if (cartItems.any((item) => item == product)) {
+    // if (cartItems.any((item) => item == product)) {
+    if (founded) {
+      print('yes');
+      // for(Product product in cartItems) {
+      //   print('product name: ${product.name}');
+      // }
       // Если есть, то увеличиваем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item == product);
+      // int index = cartItems.indexWhere((item) => item == product);
+      int index = cartItems.indexWhere((item) => item.id == product.id);
       cartItems[index].quantity++;
-      appDatabase.increaseProductQuantity(userId, product.id);
+      await appDatabase.increaseProductQuantity(userId, product.id);
     } else {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
       // Увеличиваем количество товара в БД на 1
-      appDatabase.addToDb(userId, product.id, product.quantity);
+      await appDatabase.addToDb(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -59,6 +87,7 @@ class CartModel extends ChangeNotifier {
   void removeFromCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
+    print('prefs.getInt(profileId) in CartModel remove: ${prefs.getInt('profileId')}');
 
     // Проверяем, есть ли такой товар в корзине
     if (cartItems.any((item) => item == product)) {
@@ -69,13 +98,13 @@ class CartModel extends ChangeNotifier {
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
         // Уменьшаем количество товара в БД на 1
-        appDatabase.decreaseProductQuantity(userId, product.id);
+        await appDatabase.decreaseProductQuantity(userId, product.id);
       }
       else {
         // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Удаляем товар из БД
-        appDatabase.deleteProduct(userId, product.id);
+        await appDatabase.deleteProduct(userId, product.id);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }
