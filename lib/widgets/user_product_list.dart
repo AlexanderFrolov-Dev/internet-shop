@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 
+import '../app_database.dart';
 import '../product.dart';
 
 class UserProductList extends StatefulWidget {
-  const UserProductList({super.key});
+  AppDatabase appDatabase;
+
+  UserProductList({super.key, required this.appDatabase});
 
   @override
   State<UserProductList> createState() => _UserProductListState();
@@ -56,6 +59,7 @@ class _UserProductListState extends State<UserProductList> {
                 return ProductCard(
                   key: ValueKey(products[index]),
                   product: products[index],
+                  appDatabase: widget.appDatabase,
                 );
               },
             ),

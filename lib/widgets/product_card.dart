@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/widgets/product_detail_card.dart';
 
 import '../models/cart_model.dart';
@@ -6,10 +7,11 @@ import '../product.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
+  final AppDatabase appDatabase;
   final bool showCartIcon;
 
-  const ProductCard(
-      {required Key key, required this.product, this.showCartIcon = true})
+  ProductCard(
+      {required Key key, required this.product, required this.appDatabase, this.showCartIcon = true})
       : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class ProductCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                ProductDetailsCard(key: UniqueKey(), product: product),
+                ProductDetailsCard(key: UniqueKey(), product: product, appDatabase: appDatabase,),
           ),
         );
       },
@@ -67,7 +69,7 @@ class ProductCard extends StatelessWidget {
                   icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
                     // При нажатии на иконку корзины добавляем товар в корзину
-                    CartModel.getInstance().addToCart(product);
+                    CartModel.getInstance(appDatabase).addToCart(product);
                   },
                 ),
             ],

@@ -20,22 +20,55 @@
 /// https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
+import 'package:mobile_app_internet_shop/profile.dart';
+import 'package:mobile_app_internet_shop/screens/admin_home_screen.dart';
 import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
+import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(
-  // ChangeNotifierProvider это виджет,
-  // который предоставляет экземпляр ChangeNotifier своим потомкам.
-  // Определяем конструктор, который создает новый экземпляр из CartModel.
-  ChangeNotifierProvider(
-      create: (context) => CartModel.getInstance(),
-    child: const InternetShop(),
-  )
-);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  AppDatabase appDatabase = AppDatabase();
+  CartModel cartModel = CartModel.getInstance(appDatabase);
+  List<Profile> profiles = [];
+  await Profile.getProfiles().then((value) => profiles.addAll(value));
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  int profileId = prefs.getInt('profileId') ?? 0;
+  Widget? homeScreen;
+
+  if(profileId > 0) {
+    Profile profile = profiles.firstWhere((profile) => profile.id == profileId);
+    String role = profile.role;
+
+    if(role == 'admin') {
+      homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase);
+    } else if(role == 'user') {
+      homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase);
+    }
+  } else {
+    homeScreen = AuthorizationScreen(appDatabase: appDatabase);
+  }
+
+  cartModel.restoreCartFromDb();
+
+  runApp(
+    // ChangeNotifierProvider это виджет,
+    // который предоставляет экземпляр ChangeNotifier своим потомкам.
+    // Определяем конструктор, который создает новый экземпляр из CartModel.
+      ChangeNotifierProvider(
+        create: (context) => CartModel.getInstance(appDatabase),
+        child: InternetShop(widget: homeScreen!)
+      )
+  );
+}
 
 class InternetShop extends StatelessWidget {
-  const InternetShop({super.key});
+  Widget widget;
+  InternetShop({super.key, required this.widget});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +78,7 @@ class InternetShop extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthorizationScreen(),
+      home: widget,
       debugShowCheckedModeBanner: false,
     );
   }

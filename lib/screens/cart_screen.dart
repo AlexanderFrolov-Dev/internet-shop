@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart_model.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  AppDatabase appDatabase;
+
+  CartScreen({super.key, required this.appDatabase});
 
   @override
   _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  CartModel cart = CartModel.getInstance();
+  // CartModel cart = CartModel.getInstance();
+  late CartModel cartModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    cartModel = CartModel.getInstance(widget.appDatabase);
+  }
 
   @override
   Widget build(BuildContext context) {

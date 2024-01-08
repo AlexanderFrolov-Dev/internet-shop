@@ -7,19 +7,27 @@ import '../product.dart';
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   double _totalPrice = 0;
-  AppDatabase appDatabase = AppDatabase();
+  AppDatabase appDatabase;
   int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
-  CartModel._();
+  CartModel._(this.appDatabase);
 
   // Создаем статическое поле для хранения единственного экземпляра класса
-  static final CartModel _instance = CartModel._();
+  static CartModel? _instance;
 
-  // Создаем геттер для доступа к единственному экземпляру класса
-  static CartModel getInstance() => _instance;
+  // Создаем статический метод для получения единственного экземпляра класса
+  static CartModel getInstance(AppDatabase appDatabase) {
+    // Если экземпляр еще не создан, то создаем его
+    _instance ??= CartModel._(appDatabase);
+    return _instance!;
+  }
 
   List<Product> get cartItems => _cartItems;
+
+  Future<bool> isFoundProduct(Product product) async {
+    return cartItems.any((item) => item == product);
+  }
 
   // Метод добавления товара в корзину
   void addToCart(Product product) async {
@@ -27,16 +35,16 @@ class CartModel extends ChangeNotifier {
     userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли уже такой товар в корзине
-    if (cartItems.any((item) => item == product)) {
+    if (cartItems.any((item) => item.id == product.id)) {
       // Если есть, то увеличиваем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item == product);
+      int index = cartItems.indexWhere((item) => item.id == product.id);
       cartItems[index].quantity++;
-      appDatabase.increaseProductQuantity(userId, product.id);
+      await appDatabase.increaseProductQuantity(userId, product.id);
     } else {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
       // Увеличиваем количество товара в БД на 1
-      appDatabase.addToDb(userId, product.id, product.quantity);
+      await appDatabase.addToDb(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -51,21 +59,21 @@ class CartModel extends ChangeNotifier {
     userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли такой товар в корзине
-    if (cartItems.any((item) => item == product)) {
+    if (cartItems.any((item) => item.id == product.id)) {
       // Если есть, то уменьшаем счетчик товара на 1
-      int index = cartItems.indexWhere((item) => item == product);
+      int index = cartItems.indexWhere((item) => item.id == product.id);
       if (cartItems[index].quantity > 1) {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
         // Уменьшаем количество товара в БД на 1
-        appDatabase.decreaseProductQuantity(userId, product.id);
+        await appDatabase.decreaseProductQuantity(userId, product.id);
       }
       else {
         // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Удаляем товар из БД
-        appDatabase.deleteProduct(userId, product.id);
+        await appDatabase.deleteProduct(userId, product.id);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }

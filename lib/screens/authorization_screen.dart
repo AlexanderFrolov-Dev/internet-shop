@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
@@ -8,14 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
-  const AuthorizationScreen({Key? key}) : super(key: key);
+  AppDatabase appDatabase;
+
+  AuthorizationScreen({Key? key, required this.appDatabase}) : super(key: key);
 
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
 }
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
-  CartModel cartModel = CartModel.getInstance();
+  late CartModel cartModel;
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,6 +26,12 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   bool passwordVisible = false;
   bool isLoading = true;
   int profileId = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    cartModel = CartModel.getInstance(widget.appDatabase);
+  }
 
   @override
   void initState() {
@@ -34,13 +43,13 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   // Загружаем профили пользователей,
   // присваиваем переменным profileId и isLoggedIn
   // соответствующие значения из SharedPreferences
-  Future<void> loadAuthorizationData() async {
-    await getProfileList().then((value) {
-      profiles.addAll(value);
-      isLoading = false;
-    });
+  void loadAuthorizationData() async {
+    await getProfileList().then((value) => setState(() {
+        isLoading = false;
+        profiles.addAll(value);
+      })
+    );
     await saveIdOfAuthorizedUser();
-    _checkLoginStatus();
   }
 
   // Создаём Future для получения профилей
@@ -55,42 +64,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     });
   }
 
-  // Проверяем, авторизован ли пользователь.
-  void _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    if (isLoggedIn) {
-      setState(() {
-        if(profileId > 0) {
-          setState(() {
-            Profile profile = profiles.firstWhere((p) => p.id == profileId);
-
-            String role = profile.role;
-
-            // Определение роли пользователя (админ или обычный пользователь)
-            if (role == 'admin') {
-              // Переходим на экран администратора
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AdminHomeScreen(profile: profile)),
-              );
-            } else if (role == 'user') {
-              // Переходим на экран пользователя
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UserHomeScreen(profile: profile)),
-              );
-            }
-
-            cartModel.restoreCartFromDb();
-          });
-        }
-      });
-    }
-  }
-
   // Получаем профиль из списка по логину и паролю.
   // Если не находим профиль в списке возвращаем null
   Profile? getProfile(String username, String password) {
@@ -103,15 +76,9 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     return null;
   }
 
-  Profile getAuthorizedProfile(int id) {
-    return profiles.firstWhere((profile) => profile.id == id);
-  }
-
   void login() async {
     Profile? profile =
         getProfile(_usernameController.text, _passwordController.text);
-
-    print('profile firstName: ${profile?.firstName}');
 
     if (_usernameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -138,6 +105,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       // Сохраняем факт авторизации в shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+      print('isLoggedIn in AuthorizationScreen: ${prefs.getBool('isLoggedIn')}');
       await prefs.setInt('profileId', profile.id);
 
       await goToScreenByUserRole(profile);
@@ -153,14 +121,16 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => AdminHomeScreen(profile: profile)),
+            builder: (context) => AdminHomeScreen(
+                profile: profile, appDatabase: widget.appDatabase,)),
       );
     } else if (role == 'user') {
       // Переходим на экран пользователя
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => UserHomeScreen(profile: profile)),
+            builder: (context) => UserHomeScreen(
+                profile: profile, appDatabase: widget.appDatabase)),
       );
     }
 

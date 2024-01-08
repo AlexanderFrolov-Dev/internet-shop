@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 
 import '../product.dart';
 import '../screens/add_product_form.dart';
 
 class AdminProductList extends StatefulWidget {
-  const AdminProductList({super.key});
+  AppDatabase appDatabase;
+
+  AdminProductList({super.key, required this.appDatabase});
 
   @override
   State<AdminProductList> createState() => _AdminProductListState();
@@ -57,6 +60,7 @@ class _AdminProductListState extends State<AdminProductList> {
                 return ProductCard(
                   key: ValueKey(products[index]),
                   product: products[index],
+                  appDatabase: widget.appDatabase,
                 );
               },
             ),
