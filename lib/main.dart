@@ -35,10 +35,13 @@ void main() async {
   AppDatabase appDatabase = AppDatabase();
   CartModel cartModel = CartModel.getInstance(appDatabase);
   List<Profile> profiles = [];
-  await Profile.getProfiles().then((value) => profiles.addAll(value));
+  Widget? homeScreen;
+  // await Profile.getProfiles().then((value) => profiles.addAll(value));
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
-  Widget? homeScreen;
+  bool isLoading = true;
+
+  await Profile.getProfiles().then((value) => profiles.addAll(value));
 
   if(profileId > 0) {
     Profile profile = profiles.firstWhere((profile) => profile.id == profileId);
@@ -49,8 +52,10 @@ void main() async {
     } else if(role == 'user') {
       homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase);
     }
+    isLoading = false;
   } else {
     homeScreen = AuthorizationScreen(appDatabase: appDatabase);
+    isLoading = false;
   }
 
   cartModel.restoreCartFromDb();
@@ -61,9 +66,13 @@ void main() async {
     // Определяем конструктор, который создает новый экземпляр из CartModel.
       ChangeNotifierProvider(
         create: (context) => CartModel.getInstance(appDatabase),
-        child: InternetShop(widget: homeScreen!)
+        child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
+            ? Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
+            : homeScreen!, // иначе выводим homeScreen)
       )
-  );
+  ));
+
+  // isLoading = false;
 }
 
 class InternetShop extends StatelessWidget {

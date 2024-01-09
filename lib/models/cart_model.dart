@@ -116,41 +116,43 @@ class CartModel extends ChangeNotifier {
     Product? product;
     // Получение id пользователя после авторизации
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    userId = prefs.getInt('profileId') ?? 0;
 
-    // Получаем все записи из БД относящиеся к указанному id пользователя,
-    // и добавляем их в локальный список мап usersProducts
-    await appDatabase.getAllProductsByUserId(userId).then((value) =>
-      usersProducts.addAll(value));
+    if(userId > 0) {
+      // Получаем все записи из БД относящиеся к указанному id пользователя,
+      // и добавляем их в локальный список мап usersProducts
+      await appDatabase.getAllProductsByUserId(userId).then((value) =>
+          usersProducts.addAll(value));
 
-    // Получение списка всех товаров из json файла
-    await Product.getAllProducts().then((value) => products.addAll(value));
+      // Получение списка всех товаров из json файла
+      await Product.getAllProducts().then((value) => products.addAll(value));
 
-    cartItems.clear();
+      cartItems.clear();
 
-    for (final productRow in usersProducts) {
-      // Получение вхождений списка мап
-      Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+      for (final productRow in usersProducts) {
+        // Получение вхождений списка мап
+        Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
 
-      int productId = 0;
-      int quantity = 0;
+        int productId = 0;
+        int quantity = 0;
 
-      // Перебор вхождений и поиск значений по ключу
-      for (var e in entry) {
-        if (e.key == 'product_id') {
-          productId = e.value;
-        } else if (e.key == 'quantity') {
-          quantity = e.value;
+        // Перебор вхождений и поиск значений по ключу
+        for (var e in entry) {
+          if (e.key == 'product_id') {
+            productId = e.value;
+          } else if (e.key == 'quantity') {
+            quantity = e.value;
+          }
         }
+
+        // Получение товара из общего списка по id
+        product = products.firstWhere((p) => p.id == productId);
+
+        // Добавление товара с указанием его количества в корзину
+        product.quantity = quantity;
+        cartItems.add(product);
+        _totalPrice += product.price;
       }
-
-      // Получение товара из общего списка по id
-      product = products.firstWhere((p) => p.id == productId);
-
-      // Добавление товара с указанием его количества в корзину
-      product.quantity = quantity;
-      cartItems.add(product);
-      _totalPrice += product.price;
     }
 
     // Этот вызов сообщает виджетам,
