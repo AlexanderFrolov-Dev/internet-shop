@@ -9,6 +9,7 @@ import 'package:mobile_app_internet_shop/widgets/cart_badge.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_screen.dart';
+import '../widgets/favorite_list.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   AppDatabase appDatabase;
@@ -40,6 +41,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     // Добавление виджетов списка товаров админинистратора и экрана профилей
     // для использования в нижней панели BottomNavigationBarItem
     widgets.add(AdminProductList(appDatabase: widget.appDatabase));
+    widgets.add(FavoriteList(appDatabase: widget.appDatabase));
     widgets.add(ProfileScreen(profile: widget.profile, appDatabase: widget.appDatabase));
   }
 
@@ -82,6 +84,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.list),
               label: ('Каталог'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: ('Избранное'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
+import 'package:mobile_app_internet_shop/models/favorite_products_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
@@ -19,6 +20,7 @@ class AuthorizationScreen extends StatefulWidget {
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
   late CartModel cartModel;
+  late FavoriteProductsModel favoriteProductsModel;
   List<Profile> profiles = [];
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -31,6 +33,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     cartModel = CartModel.getInstance(widget.appDatabase);
+    favoriteProductsModel = FavoriteProductsModel.getInstance(widget.appDatabase);
   }
 
   @override
@@ -135,6 +138,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     }
 
     await cartModel.restoreCartFromDb();
+    await favoriteProductsModel.restoreFavoriteFromDb();
   }
 
   @override

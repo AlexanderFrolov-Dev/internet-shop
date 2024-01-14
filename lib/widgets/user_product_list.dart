@@ -60,6 +60,9 @@ class _UserProductListState extends State<UserProductList> {
                   key: ValueKey(products[index]),
                   product: products[index],
                   appDatabase: widget.appDatabase,
+                  showCartIcon: true,
+                  showFavoriteIcon: true,
+                  showDeleteIcon: false,
                 );
               },
             ),

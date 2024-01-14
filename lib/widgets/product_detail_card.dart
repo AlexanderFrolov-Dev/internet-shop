@@ -8,7 +8,7 @@ class ProductDetailsCard extends StatelessWidget {
   final AppDatabase appDatabase;
   final Product product;
 
-  ProductDetailsCard({required Key key, required this.product, required this.appDatabase})
+  const ProductDetailsCard({required Key key, required this.product, required this.appDatabase})
       : super(key: key);
 
   @override

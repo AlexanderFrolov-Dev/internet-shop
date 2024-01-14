@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/product.dart';
+import 'package:mobile_app_internet_shop/widgets/favorite_list.dart';
 import 'package:mobile_app_internet_shop/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     // Добавление виджетов списка товаров админинистратора и экрана профилей
     // для использования в нижней панели BottomNavigationBarItem
     widgets.add(UserProductList(appDatabase: widget.appDatabase));
+    widgets.add(FavoriteList(appDatabase: widget.appDatabase));
     widgets.add(ProfileScreen(profile: widget.profile, appDatabase: widget.appDatabase,));
   }
 
@@ -78,6 +80,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.list),
               label: ('Каталог'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: ('Избранное'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

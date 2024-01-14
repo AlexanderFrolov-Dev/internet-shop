@@ -61,6 +61,9 @@ class _AdminProductListState extends State<AdminProductList> {
                   key: ValueKey(products[index]),
                   product: products[index],
                   appDatabase: widget.appDatabase,
+                  showCartIcon: true,
+                  showFavoriteIcon: true,
+                  showDeleteIcon: false,
                 );
               },
             ),
