@@ -41,7 +41,8 @@ class CartModel extends ChangeNotifier {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
       // Увеличиваем количество товара в БД на 1
-      await appDatabase.addToCartTable(userId, product.id, product.quantity);
+      await appDatabase.addToCartTable(userId, product.id, product.quantity,
+          product.isFavorite ? 1 : 0);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -132,6 +133,7 @@ class CartModel extends ChangeNotifier {
 
         int productId = 0;
         int quantity = 0;
+        int isFavorite = 0;
 
         // Перебор вхождений и поиск значений по ключу
         for (var e in entry) {
@@ -139,6 +141,8 @@ class CartModel extends ChangeNotifier {
             productId = e.value;
           } else if (e.key == 'quantity') {
             quantity = e.value;
+          } else if (e.key == 'is_favorite') {
+            isFavorite = e.value;
           }
         }
 
@@ -147,6 +151,12 @@ class CartModel extends ChangeNotifier {
 
         // Добавление товара с указанием его количества в корзину
         product.quantity = quantity;
+        if(isFavorite == 0) {
+          product.isFavorite = false;
+        } else if(isFavorite == 1) {
+          product.isFavorite = true;
+        }
+
         cartItems.add(product);
         _totalPrice += product.price;
       }

@@ -28,7 +28,7 @@ class _FavoriteListState extends State<FavoriteList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Consumer<FavoriteProductsModel>(
+      body: Consumer<FavoriteProductsModel>(
       builder: (context, cart, child) => Column(
         children: [
           Expanded(
@@ -81,7 +81,7 @@ class _FavoriteListState extends State<FavoriteList> {
                               ),
                             ),
                             Expanded(
-                                child: Row(
+                              child: Row(
                               children: [
                                 IconButton(
                                     // Добавление товара в корзину

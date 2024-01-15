@@ -29,25 +29,19 @@ class FavoriteProductsModel extends ChangeNotifier {
   void addToFavorite(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
-    bool added = favoriteItems.add(product);
+    // bool added = favoriteItems.add(product);
+    //
+    // print('added: $added');
+    //
+    // if(added) {
+    //   await appDatabase.addToFavoritesTable(userId, product.id);
+    // }
 
-    if(added) {
+    // Проверяем, есть ли уже такой товар в избранном
+    if (favoriteItems.any((item) => item.id == product.id)) {
       await appDatabase.addToFavoritesTable(userId, product.id);
     }
 
-
-    // // Проверяем, есть ли уже такой товар в избранном
-    // if (favoriteItems.any((item) => item.id == product.id)) {
-    //   // Если есть, то увеличиваем счетчик товара на 1
-    //   int index = favoriteItems.indexWhere((item) => item.id == product.id);
-    //   favoriteItems[index].quantity++;
-    //   await appDatabase.increaseProductQuantity(userId, product.id);
-    // } else {
-    //   // Если нет, то добавляем товар в избранное
-    //   favoriteItems.add(product);
-    //   // Увеличиваем количество товара в БД на 1
-    //   await appDatabase.addToDb(userId, product.id, product.quantity);
-    // }
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();

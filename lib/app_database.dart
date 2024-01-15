@@ -28,6 +28,7 @@ class AppDatabase {
         user_id INTEGER,
         product_id INTEGER,
         quantity INTEGER,
+        is_favorite INTEGER,
         PRIMARY KEY (user_id, product_id)
       )
     ''');
@@ -51,12 +52,14 @@ class AppDatabase {
   }
 
   // Метод добавления товара в таблицу carts
-  Future<void> addToCartTable(int userId, int productId, int quantity) async {
+  Future<void> addToCartTable(int userId, int productId, int quantity,
+      int isFavorite) async {
     final db = await database;
 
     await db.insert(
       'carts',
-      {'user_id': userId, 'product_id': productId, 'quantity': quantity},
+      {'user_id': userId, 'product_id': productId, 'quantity': quantity,
+        'is_favorite': isFavorite},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

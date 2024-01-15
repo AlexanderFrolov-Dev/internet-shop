@@ -111,6 +111,20 @@ class _ProductCardState extends State<ProductCard> {
                             .addToFavorite(widget.product);
                       });
                     }
+
+                    // if(widget.product.isFavorite) {
+                    //   setState(() {
+                    //     widget.product.isFavorite = false;
+                    //     FavoriteProductsModel.getInstance(widget.appDatabase)
+                    //         .removeFromFavorite(widget.product);
+                    //   });
+                    // } else {
+                    //   setState(() {
+                    //     widget.product.isFavorite = true;
+                    //     FavoriteProductsModel.getInstance(widget.appDatabase)
+                    //         .addToFavorite(widget.product);
+                    //   });
+                    // }
                   },
                 ),
               if(widget.showDeleteIcon)
