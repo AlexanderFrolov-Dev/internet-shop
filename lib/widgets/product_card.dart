@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/favorite_products_model.dart';
 import 'package:mobile_app_internet_shop/widgets/product_detail_card.dart';
+import 'package:provider/provider.dart';
 
 import '../models/cart_model.dart';
 import '../product.dart';
@@ -27,7 +28,6 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool isEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _ProductCardState extends State<ProductCard> {
             builder: (context) =>
                 ProductDetailsCard(key: UniqueKey(),
                   product: widget.product,
-                  appDatabase: widget.appDatabase,),
+                  appDatabase: widget.appDatabase),
           ),
         );
       },
@@ -90,41 +90,21 @@ class _ProductCardState extends State<ProductCard> {
                   },
                 ),
               if(widget.showFavoriteIcon)
-                IconButton(
-                  icon: Icon(widget.product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: Colors.red,
-                  ),
-                  // onPressed: () => setState(() {
-                  //   widget.product.isFavorite ? Icons.favorite : Icons.favorite_border;
-                  // })
-                  onPressed: () {
-                    if(widget.product.isFavorite) {
-                      setState(() {
-                        widget.product.isFavorite = false;
-                        FavoriteProductsModel.getInstance(widget.appDatabase)
-                            .removeFromFavorite(widget.product);
-                      });
-                    } else {
-                      setState(() {
-                        widget.product.isFavorite = true;
-                        FavoriteProductsModel.getInstance(widget.appDatabase)
-                            .addToFavorite(widget.product);
-                      });
-                    }
-
-                    // if(widget.product.isFavorite) {
-                    //   setState(() {
-                    //     widget.product.isFavorite = false;
-                    //     FavoriteProductsModel.getInstance(widget.appDatabase)
-                    //         .removeFromFavorite(widget.product);
-                    //   });
-                    // } else {
-                    //   setState(() {
-                    //     widget.product.isFavorite = true;
-                    //     FavoriteProductsModel.getInstance(widget.appDatabase)
-                    //         .addToFavorite(widget.product);
-                    //   });
-                    // }
+                Consumer<FavoriteProductsModel>(
+                  builder: (context, model, child) {
+                    final existsInFavorites = model.favoriteItems.contains(widget.product);
+                    return IconButton(
+                      icon: Icon(existsInFavorites ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        if(existsInFavorites) {
+                          model.removeFromFavorite(widget.product);
+                        } else {
+                          model.addToFavorite(widget.product);
+                        }
+                      },
+                    );
                   },
                 ),
               if(widget.showDeleteIcon)

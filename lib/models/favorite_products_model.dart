@@ -29,17 +29,6 @@ class FavoriteProductsModel extends ChangeNotifier {
   void addToFavorite(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
-    // bool added = favoriteItems.add(product);
-    //
-    // print('added: $added');
-    //
-    // if(added) {
-    //   await appDatabase.addToFavoritesTable(userId, product.id);
-    // }
-
-    print('user id: $userId');
-    print('product id: ${product.id}');
-    print('matched: ${favoriteItems.any((item) => item.id == product.id)}');
 
     // Проверяем, есть ли уже такой товар в избранном.
     // Если нет, то добавляем.
@@ -61,27 +50,6 @@ class FavoriteProductsModel extends ChangeNotifier {
     favoriteItems.remove(product);
     appDatabase.deleteProduct(tableName, userId, product.id);
 
-    // // Проверяем, есть ли такой товар в избранном
-    // if (favoriteItems.any((item) => item.id == product.id)) {
-    //   // Если есть, то уменьшаем счетчик товара на 1
-    //   int index = favoriteItems.indexWhere((item) => item.id == product.id);
-    //   if (favoriteItems[index].quantity > 1) {
-    //     favoriteItems[index].quantity--;
-    //     // Уменьшаем количество товара в БД на 1
-    //     await appDatabase.decreaseProductQuantity(userId, product.id);
-    //   }
-    //   else {
-    //     // Если счетчик равен 0, то удаляем товар из избранного
-    //     favoriteItems.removeAt(index);
-    //     // Удаляем товар из БД
-    //     await appDatabase.deleteProduct(userId, product.id);
-    //   }
-    //
-    //   // Этот вызов сообщает виджетам,
-    //   // которые прослушивают эту модель, о необходимости перестройки.
-    //   notifyListeners();
-    // }
-
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
@@ -98,6 +66,27 @@ class FavoriteProductsModel extends ChangeNotifier {
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
+  }
+
+  Future<List<Product>> getProductListByUser() async {
+    List<Map<String, dynamic>> usersProducts = [];
+    List<Product> products = [];
+    // Получение id пользователя после авторизации
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('profileId') ?? 0;
+
+    if(userId > 0) {
+      // Получаем все записи из БД относящиеся к указанному id пользователя,
+      // и добавляем их в локальный список мап usersProducts
+      await appDatabase.getAllProductsByUserId(tableName, userId).then((
+          value) =>
+          usersProducts.addAll(value));
+
+      // Получение списка всех товаров из json файла
+      await Product.getAllProducts().then((value) => products.addAll(value));
+    }
+
+    return products;
   }
 
   // Метод восстанавления содержимого избранного пользователя из БД
@@ -123,24 +112,17 @@ class FavoriteProductsModel extends ChangeNotifier {
       for (final productRow in usersProducts) {
         // Получение вхождений списка мап
         Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-
         int productId = 0;
-        int quantity = 0;
 
         // Перебор вхождений и поиск значений по ключу
         for (var e in entry) {
           if (e.key == 'product_id') {
             productId = e.value;
-          } else if (e.key == 'quantity') {
-            quantity = e.value;
           }
         }
 
         // Получение товара из общего списка по id
         product = products.firstWhere((p) => p.id == productId);
-
-        // Добавление товара с указанием его количества в избранное
-        product.quantity = quantity;
         favoriteItems.add(product);
       }
     }
