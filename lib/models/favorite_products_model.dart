@@ -5,7 +5,7 @@ import '../app_database.dart';
 import '../product.dart';
 
 class FavoriteProductsModel extends ChangeNotifier {
-  final Set<Product> _favoriteItems = {};
+  final List<Product> _favoriteItems = [];
   AppDatabase appDatabase;
   static const String tableName = 'favorites';
   int userId = 0;
@@ -23,7 +23,7 @@ class FavoriteProductsModel extends ChangeNotifier {
     return _instance!;
   }
 
-  Set<Product> get favoriteItems => _favoriteItems;
+  List<Product> get favoriteItems => _favoriteItems;
 
   // Метод добавления товара в корзину
   void addToFavorite(Product product) async {
@@ -37,9 +37,15 @@ class FavoriteProductsModel extends ChangeNotifier {
     //   await appDatabase.addToFavoritesTable(userId, product.id);
     // }
 
-    // Проверяем, есть ли уже такой товар в избранном
-    if (favoriteItems.any((item) => item.id == product.id)) {
+    print('user id: $userId');
+    print('product id: ${product.id}');
+    print('matched: ${favoriteItems.any((item) => item.id == product.id)}');
+
+    // Проверяем, есть ли уже такой товар в избранном.
+    // Если нет, то добавляем.
+    if (!favoriteItems.any((item) => item.id == product.id)) {
       await appDatabase.addToFavoritesTable(userId, product.id);
+      favoriteItems.add(product);
     }
 
     // Этот вызов сообщает виджетам,
