@@ -28,9 +28,32 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  // bool existInFavorites = false;
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   setState(() {
+  //     checkInFavorites();
+  //   });
+  // }
+  //
+  // void checkInFavorites() async {
+  //   await FavoriteProductsModel.getInstance(widget.appDatabase)
+  //       .checkProductInFavorites(widget.product).then((value) => existInFavorites = value);
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // setState(() {
+    //   FavoriteProductsModel.getInstance(widget.appDatabase)
+    //       .checkProductInFavorites(widget.product, existInFavorites);
+    //   print('existInFavorites in setState: $existInFavorites');
+    // });
+
+    // print('product name: ${widget.product.name} and existInFavorites: $existInFavorites');
+
     return InkWell(
       onTap: () {
         // При нажатии на карточку товара открываем экран с подробным описанием
@@ -92,7 +115,9 @@ class _ProductCardState extends State<ProductCard> {
               if(widget.showFavoriteIcon)
                 Consumer<FavoriteProductsModel>(
                   builder: (context, model, child) {
-                    final existsInFavorites = model.favoriteItems.contains(widget.product);
+                    // final existsInFavorites = model.favoriteItems.contains(widget.product);
+                    final existsInFavorites = model.favoriteItems
+                        .any((element) => element.id == widget.product.id);
                     return IconButton(
                       icon: Icon(existsInFavorites ? Icons.favorite : Icons.favorite_border,
                         color: Colors.red,
