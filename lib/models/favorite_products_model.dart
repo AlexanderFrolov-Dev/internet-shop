@@ -51,11 +51,8 @@ class FavoriteProductsModel extends ChangeNotifier {
     int id = product.id;
     Product p = favoriteItems.firstWhere((element) => element.id == id);
 
-    // favoriteItems.remove(product);
-
     await appDatabase.deleteProduct(tableName, userId, product.id);
     favoriteItems.remove(p);
-    print('method remove from favorite working with userId: $userId and product id: ${product.id}');
 
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
@@ -83,32 +80,6 @@ class FavoriteProductsModel extends ChangeNotifier {
     // bool exist = products.contains(product);
     return products.any((element) => element.id == product.id);
   }
-
-  // void checkProductInFavorites(Product product, bool exist) async {
-  //   List<Product> products = [];
-  //
-  //   await getFavoriteProductListByUser().then((value) => products.addAll(value));
-  //   print('products length: ${products.length}');
-  //   // bool exist = products.contains(product);
-  //   bool exist = products.any((element) => element.id == product.id);
-  //   print('exist: $exist');
-  // }
-
-  // Future<void> checkProductInFavorites(Product product, bool exist) async {
-  //   List<Product> products = [];
-  //
-  //   await getFavoriteProductListByUser().then((value) => products.addAll(value));
-  //   print('products length: ${products.length}');
-  //   exist = products.contains(product);
-  // }
-
-  // void checkProductInFavorites(Product product, bool exist) async {
-  //   List<Product> products = [];
-  //
-  //   await getFavoriteProductListByUser().then((value) => products.addAll(value));
-  //   print('products length: ${products.length}');
-  //   exist = products.contains(product);
-  // }
 
   // Метод для получения списка товаров пользователя из таблицы избранного
   Future<List<Product>> getFavoriteProductListByUser() async {
@@ -169,47 +140,4 @@ class FavoriteProductsModel extends ChangeNotifier {
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
   }
-
-  // // Метод восстанавления содержимого избранного пользователя из БД
-  // Future<void> restoreFavoriteFromDb() async {
-  //   List<Map<String, dynamic>> usersProducts = [];
-  //   List<Product> products = [];
-  //   Product? product;
-  //   // Получение id пользователя после авторизации
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt('profileId') ?? 0;
-  //
-  //   if(userId > 0) {
-  //     // Получаем все записи из БД относящиеся к указанному id пользователя,
-  //     // и добавляем их в локальный список мап usersProducts
-  //     await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
-  //         usersProducts.addAll(value));
-  //
-  //     // Получение списка всех товаров из json файла
-  //     await Product.getAllProducts().then((value) => products.addAll(value));
-  //
-  //     favoriteItems.clear();
-  //
-  //     for (final productRow in usersProducts) {
-  //       // Получение вхождений списка мап
-  //       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-  //       int productId = 0;
-  //
-  //       // Перебор вхождений и поиск значений по ключу
-  //       for (var e in entry) {
-  //         if (e.key == 'product_id') {
-  //           productId = e.value;
-  //         }
-  //       }
-  //
-  //       // Получение товара из общего списка по id
-  //       product = products.firstWhere((p) => p.id == productId);
-  //       favoriteItems.add(product);
-  //     }
-  //   }
-  //
-  //   // Этот вызов сообщает виджетам,
-  //   // которые прослушивают эту модель, о необходимости перестройки.
-  //   notifyListeners();
-  // }
 }

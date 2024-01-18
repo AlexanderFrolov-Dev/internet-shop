@@ -112,18 +112,6 @@ class AppDatabase {
       where: 'user_id = ?',
       whereArgs: [userId],
     );
-    //
-    // for (final productRow in list) {
-    //   // Получение списка вхождений
-    //   Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-    //
-    //   // Перебор вхождений и поиск значений по ключу
-    //   for (var e in entry) {
-    //     if (e.key == 'product_id') {
-    //     } else if (e.key == 'quantity') {
-    //     }
-    //   }
-    // }
 
     return list;
   }
