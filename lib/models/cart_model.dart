@@ -41,8 +41,7 @@ class CartModel extends ChangeNotifier {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
       // Увеличиваем количество товара в БД на 1
-      await appDatabase.addToCartTable(userId, product.id, product.quantity,
-          product.isFavorite ? 1 : 0);
+      await appDatabase.addToCartTable(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;

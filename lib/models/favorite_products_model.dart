@@ -37,6 +37,8 @@ class FavoriteProductsModel extends ChangeNotifier {
       favoriteItems.add(product);
     }
 
+    print('add product in favorite');
+
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
@@ -46,9 +48,14 @@ class FavoriteProductsModel extends ChangeNotifier {
   void removeFromFavorite(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
+    int id = product.id;
+    Product p = favoriteItems.firstWhere((element) => element.id == id);
 
-    favoriteItems.remove(product);
-    appDatabase.deleteProduct(tableName, userId, product.id);
+    // favoriteItems.remove(product);
+
+    await appDatabase.deleteProduct(tableName, userId, product.id);
+    favoriteItems.remove(p);
+    print('method remove from favorite working with userId: $userId and product id: ${product.id}');
 
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.

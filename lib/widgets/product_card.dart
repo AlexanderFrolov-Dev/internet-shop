@@ -116,18 +116,24 @@ class _ProductCardState extends State<ProductCard> {
                 Consumer<FavoriteProductsModel>(
                   builder: (context, model, child) {
                     // final existsInFavorites = model.favoriteItems.contains(widget.product);
-                    final existsInFavorites = model.favoriteItems
+                    // final existsInFavorites = model.favoriteItems
+                    //     .any((element) => element.id == widget.product.id);
+                    bool existsInFavorites = model.favoriteItems
                         .any((element) => element.id == widget.product.id);
                     return IconButton(
                       icon: Icon(existsInFavorites ? Icons.favorite : Icons.favorite_border,
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        if(existsInFavorites) {
-                          model.removeFromFavorite(widget.product);
-                        } else {
-                          model.addToFavorite(widget.product);
-                        }
+                        setState(() {
+                          if(existsInFavorites) {
+                            model.removeFromFavorite(widget.product);
+                            existsInFavorites = false;
+                          } else {
+                            model.addToFavorite(widget.product);
+                            existsInFavorites = true;
+                          }
+                        });
                       },
                     );
                   },
