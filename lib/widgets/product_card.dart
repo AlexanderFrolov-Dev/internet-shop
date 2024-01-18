@@ -37,7 +37,7 @@ class _ProductCardState extends State<ProductCard> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                ProductDetailsCard(key: UniqueKey(),
+                ProductDetailsCard(key: ValueKey(widget.product),
                   product: widget.product,
                   appDatabase: widget.appDatabase),
           ),
