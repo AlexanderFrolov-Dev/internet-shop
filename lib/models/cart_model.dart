@@ -6,8 +6,9 @@ import '../product.dart';
 
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
-  double _totalPrice = 0;
   AppDatabase appDatabase;
+  static const String tableName = 'carts';
+  double _totalPrice = 0;
   int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
@@ -25,10 +26,6 @@ class CartModel extends ChangeNotifier {
 
   List<Product> get cartItems => _cartItems;
 
-  Future<bool> isFoundProduct(Product product) async {
-    return cartItems.any((item) => item == product);
-  }
-
   // Метод добавления товара в корзину
   void addToCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,12 +36,12 @@ class CartModel extends ChangeNotifier {
       // Если есть, то увеличиваем счетчик товара на 1
       int index = cartItems.indexWhere((item) => item.id == product.id);
       cartItems[index].quantity++;
-      await appDatabase.increaseProductQuantity(userId, product.id);
+      await appDatabase.increaseProductQuantityInCart(userId, product.id);
     } else {
       // Если нет, то добавляем товар в корзину
       cartItems.add(product);
       // Увеличиваем количество товара в БД на 1
-      await appDatabase.addToDb(userId, product.id, product.quantity);
+      await appDatabase.addToCartTable(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
     _totalPrice += product.price;
@@ -67,13 +64,13 @@ class CartModel extends ChangeNotifier {
         // Уменьшаем общую стоимость товаров в корзине
         _totalPrice -= product.price;
         // Уменьшаем количество товара в БД на 1
-        await appDatabase.decreaseProductQuantity(userId, product.id);
+        await appDatabase.decreaseProductQuantityInCart(userId, product.id);
       }
       else {
         // Если счетчик равен 0, то удаляем товар из корзины
         cartItems.removeAt(index);
         // Удаляем товар из БД
-        await appDatabase.deleteProduct(userId, product.id);
+        await appDatabase.deleteProduct(tableName, userId, product.id);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
         _totalPrice -= product.price;
       }
@@ -103,7 +100,7 @@ class CartModel extends ChangeNotifier {
     cartItems.clear();
     _totalPrice = 0;
     // Удаляем из БД товары пользователя
-    appDatabase.deleteProductsByIdFromDb(userId);
+    appDatabase.deleteProductsByIdFromDb(tableName, userId);
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
@@ -121,7 +118,7 @@ class CartModel extends ChangeNotifier {
     if(userId > 0) {
       // Получаем все записи из БД относящиеся к указанному id пользователя,
       // и добавляем их в локальный список мап usersProducts
-      await appDatabase.getAllProductsByUserId(userId).then((value) =>
+      await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
           usersProducts.addAll(value));
 
       // Получение списка всех товаров из json файла
@@ -135,6 +132,7 @@ class CartModel extends ChangeNotifier {
 
         int productId = 0;
         int quantity = 0;
+        int isFavorite = 0;
 
         // Перебор вхождений и поиск значений по ключу
         for (var e in entry) {
@@ -142,6 +140,8 @@ class CartModel extends ChangeNotifier {
             productId = e.value;
           } else if (e.key == 'quantity') {
             quantity = e.value;
+          } else if (e.key == 'is_favorite') {
+            isFavorite = e.value;
           }
         }
 
@@ -150,6 +150,12 @@ class CartModel extends ChangeNotifier {
 
         // Добавление товара с указанием его количества в корзину
         product.quantity = quantity;
+        if(isFavorite == 0) {
+          product.isFavorite = false;
+        } else if(isFavorite == 1) {
+          product.isFavorite = true;
+        }
+
         cartItems.add(product);
         _totalPrice += product.price;
       }

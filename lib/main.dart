@@ -22,6 +22,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
+import 'package:mobile_app_internet_shop/models/favorite_products_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/admin_home_screen.dart';
 import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
@@ -34,6 +35,7 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   AppDatabase appDatabase = AppDatabase();
   CartModel cartModel = CartModel.getInstance(appDatabase);
+  FavoriteProductsModel favoriteProductsModel = FavoriteProductsModel.getInstance(appDatabase);
   List<Profile> profiles = [];
   Widget? homeScreen;
   // await Profile.getProfiles().then((value) => profiles.addAll(value));
@@ -59,18 +61,34 @@ void main() async {
   }
 
   cartModel.restoreCartFromDb();
+  favoriteProductsModel.restoreFavoriteFromDb();
 
   runApp(
-    // ChangeNotifierProvider это виджет,
-    // который предоставляет экземпляр ChangeNotifier своим потомкам.
+    // MultiProvider это виджет,
+    // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.
     // Определяем конструктор, который создает новый экземпляр из CartModel.
-      ChangeNotifierProvider(
-        create: (context) => CartModel.getInstance(appDatabase),
-        child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
-            ? Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
-            : homeScreen!, // иначе выводим homeScreen)
-      )
-  ));
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
+            ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase)),
+          ],
+          child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
+              ? const Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
+              : homeScreen!, // иначе выводим homeScreen)
+          )
+      ));
+
+  // runApp(
+  //   // ChangeNotifierProvider это виджет,
+  //   // который предоставляет экземпляр ChangeNotifier своим потомкам.
+  //   // Определяем конструктор, который создает новый экземпляр из CartModel.
+  //     ChangeNotifierProvider(
+  //       create: (context) => CartModel.getInstance(appDatabase),
+  //       child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
+  //           ? const Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
+  //           : homeScreen!, // иначе выводим homeScreen)
+  //     )
+  // ));
 
   // isLoading = false;
 }

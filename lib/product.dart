@@ -10,13 +10,15 @@ class Product {
   final String image;
   final double price;
   int quantity;
+  bool isFavorite;
 
   Product({required this.id,
     required this.name,
     required this.description,
     required this.image,
     required this.price,
-    this.quantity = 1});
+    this.quantity = 1,
+    this.isFavorite = false});
 
   // Создаем фабричный конструктор для удобного парсинга данных из json
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,8 @@ class Product {
       {
         'id': id,
         'name': name,
+        'description': description,
+        'image': image,
         'price': price,
       };
 
