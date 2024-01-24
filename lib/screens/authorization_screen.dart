@@ -5,12 +5,14 @@ import 'package:mobile_app_internet_shop/models/favorite_products_model.dart';
 import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/registration_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
+import 'package:mobile_app_internet_shop/sorting_method.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   AppDatabase appDatabase;
+  static const String initialSortingValue = 'По цене↑';
 
   AuthorizationScreen({Key? key, required this.appDatabase}) : super(key: key);
 
@@ -125,7 +127,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => AdminHomeScreen(
-                profile: profile, appDatabase: widget.appDatabase,)),
+              profile: profile,
+              appDatabase: widget.appDatabase,
+              initialSortingValue: AuthorizationScreen.initialSortingValue,
+            )),
       );
     } else if (role == 'user') {
       // Переходим на экран пользователя

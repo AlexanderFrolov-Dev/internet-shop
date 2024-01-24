@@ -27,6 +27,7 @@ import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/admin_home_screen.dart';
 import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
+import 'package:mobile_app_internet_shop/sorting_method.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,7 +39,8 @@ void main() async {
   FavoriteProductsModel favoriteProductsModel = FavoriteProductsModel.getInstance(appDatabase);
   List<Profile> profiles = [];
   Widget? homeScreen;
-  // await Profile.getProfiles().then((value) => profiles.addAll(value));
+  final String initialSortingValue = prefs.getString('sortingMethod')
+      ?? SortingMethod.byPriceIncrease.toString();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
   bool isLoading = true;
@@ -50,9 +52,16 @@ void main() async {
     String role = profile.role;
 
     if(role == 'admin') {
-      homeScreen = AdminHomeScreen(profile: profile, appDatabase: appDatabase);
+      homeScreen = AdminHomeScreen(
+          profile: profile,
+          appDatabase: appDatabase,
+          initialSortingValue: initialSortingValue
+      );
     } else if(role == 'user') {
-      homeScreen = UserHomeScreen(profile: profile, appDatabase: appDatabase);
+      homeScreen = UserHomeScreen(
+          profile: profile,
+          appDatabase: appDatabase
+      );
     }
     isLoading = false;
   } else {
