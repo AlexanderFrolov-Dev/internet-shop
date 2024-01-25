@@ -12,7 +12,10 @@ import 'admin_home_screen.dart';
 class AuthorizationScreen extends StatefulWidget {
   AppDatabase appDatabase;
 
-  AuthorizationScreen({Key? key, required this.appDatabase}) : super(key: key);
+  AuthorizationScreen({
+    Key? key,
+    required this.appDatabase,
+  }) : super(key: key);
 
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
@@ -125,7 +128,9 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => AdminHomeScreen(
-                profile: profile, appDatabase: widget.appDatabase,)),
+              profile: profile,
+              appDatabase: widget.appDatabase,
+            )),
       );
     } else if (role == 'user') {
       // Переходим на экран пользователя
@@ -133,7 +138,9 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => UserHomeScreen(
-                profile: profile, appDatabase: widget.appDatabase)),
+              profile: profile,
+              appDatabase: widget.appDatabase,
+            )),
       );
     }
 
