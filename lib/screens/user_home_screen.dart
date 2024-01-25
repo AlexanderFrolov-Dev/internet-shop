@@ -9,8 +9,11 @@ class UserHomeScreen extends HomeScreen {
   UserHomeScreen({super.key, required Profile profile, required AppDatabase appDatabase})
       : super(profile: profile, appDatabase: appDatabase);
 
+  // Реализуем абстрактный метод класса предка HomeScreen
   @override
   Widget buildProductList() {
+    // Просто возвращаем список товаров пользователя для отображения его
+    // при выборе раздела BottomNavigationBarItem "Каталог"
     return UserProductList(appDatabase: appDatabase);
   }
 }

@@ -19,6 +19,7 @@ abstract class HomeScreen extends StatefulWidget {
     required this.appDatabase,
   }) : super(key: key);
 
+  // Абстрактный метод для его реализации в классах потомках.
   Widget buildProductList();
 
   @override
@@ -41,6 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Добавление виджетов списка товаров и экрана профилей
     // для использования в нижней панели BottomNavigationBarItem
+
+    // Абстрактный метод buildProductList() реализуется в классах потомках ,
+    // в них этот метод просто будет возвращать соответствующий класс
+    // UserProductList или AdminProductList для отображения раздела
+    // каталога товаров в панели BottomNavigationBarItem.
+    // Т. е. можно считать, что здесь просто добавляются виджеты
+    // UserProductList или AdminProductList (в зависимости от класса потомка),
+    // виджет избранных товаров и виджет профиля.
     widgets.add(widget.buildProductList());
     widgets.add(FavoriteList(appDatabase: widget.appDatabase));
     widgets.add(ProfileScreen(profile: widget.profile, appDatabase: widget.appDatabase));

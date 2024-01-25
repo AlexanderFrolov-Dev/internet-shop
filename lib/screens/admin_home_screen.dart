@@ -9,8 +9,11 @@ class AdminHomeScreen extends HomeScreen {
   AdminHomeScreen({super.key, required Profile profile, required AppDatabase appDatabase})
       : super(profile: profile, appDatabase: appDatabase);
 
+  // Реализуем абстрактный метод класса предка HomeScreen
   @override
   Widget buildProductList() {
+    // Просто возвращаем список товаров админа для отображения его при выборе
+    // раздела BottomNavigationBarItem "Каталог"
     return AdminProductList(appDatabase: appDatabase);
   }
 }
