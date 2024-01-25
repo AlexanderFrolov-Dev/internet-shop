@@ -13,12 +13,10 @@ import '../sorting_method.dart';
 
 class AdminProductList extends StatefulWidget {
   AppDatabase appDatabase;
-  String initialSortingValue;
 
   AdminProductList({
     super.key,
     required this.appDatabase,
-    required this.initialSortingValue
   });
 
   @override
@@ -28,26 +26,19 @@ class AdminProductList extends StatefulWidget {
 class _AdminProductListState extends State<AdminProductList> {
   List<Product> products = [];
   SortingMethod? initialSortingMethod;
-  // SortingMethod initialSortingMethod = SortingMethod.byPriceIncrease;
   SortingMethod? selectedSortingMethod;
-  String test = '';
 
   @override
   void initState() {
     super.initState();
     // Вызов метода для получения данных о товарах при инициализации экрана
     getProducts();
-    initialSortingMethod = getSortingMethod(AuthorizationScreen.initialSortingValue);
-  }
-
-  Future<String> getValueOfSortingMethod() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('sortingMethod') ?? SortingMethod.byPriceIncrease
-        .toString();
+    // Получение начального значения метода сортировки.
+    initialSortingMethod = getSortingMethod('mock');
+    getSortedListOfProducts(initialSortingMethod!);
   }
 
   SortingMethod? getSortingMethod(String valueOfSorting) {
-    print('valueOfSorting: $valueOfSorting');
     SortingMethod? sortingMethod;
     for (SortingMethod value in SortingMethod.values) {
       if (value.label == valueOfSorting) {
@@ -56,27 +47,12 @@ class _AdminProductListState extends State<AdminProductList> {
       }
     }
 
-    print('sortingMethod: ${sortingMethod?.label}');
     return sortingMethod;
   }
-
-  // void setInitialSortingMethod() async {
-  //   String initialValueOfSorting = '';
-  //   await getValueOfSortingMethod().then((value) => initialValueOfSorting);
-  //   print('initialValueOfSorting: $initialSortingMethod');
-  //   // initialSortingMethod = getSortingMethod(initialValueOfSorting);
-  //   print('initialSortingMethod label: ${initialSortingMethod.label}');
-  //
-  //   // // Обновление состояния виджета для отображения полученных данных
-  //   // setState(() {});
-  // }
 
   void setSortingMethod(SortingMethod sortingMethod) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('methodOfSorting', sortingMethod.label);
-
-    // // Обновление состояния виджета для отображения полученных данных
-    // setState(() {});
   }
 
   void getSortedListOfProducts(SortingMethod sortingMethod) {
@@ -123,24 +99,19 @@ class _AdminProductListState extends State<AdminProductList> {
     return Scaffold(
         body:
         Column(children: [
-
+          // Выпадающий список сортировки.
           DropdownMenu<SortingMethod>(
             initialSelection: initialSortingMethod,
-            // controller: colorController,
-            // requestFocusOnTap is enabled/disabled by platforms when it is null.
-            // On mobile platforms, this is false by default. Setting this to true will
-            // trigger focus request on the text field and virtual keyboard will appear
-            // afterward. On desktop platforms however, this defaults to true.
             requestFocusOnTap: true,
             label: const Text('Фильтры'),
             onSelected: (SortingMethod? sortingMethod) {
               setState(() {
                 selectedSortingMethod = sortingMethod;
-                print('selectedSortingMethod: $selectedSortingMethod');
                 setSortingMethod(selectedSortingMethod!);
                 getSortedListOfProducts(selectedSortingMethod!);
               });
             },
+            // Выпадающий список состоит из списка элементов DropdownMenuEntry.
             dropdownMenuEntries: SortingMethod.values
                 .map<DropdownMenuEntry<SortingMethod>>(
                     (SortingMethod methodOfSorting) {
@@ -150,19 +121,6 @@ class _AdminProductListState extends State<AdminProductList> {
                   );
                 }).toList(),
           ),
-
-          // DropdownButton<MethodOfSorting>(
-          //   value: sortingMethodProvider.sortingMethod,
-          //   onChanged: (value) {
-          //     sortingMethodProvider.sortingMethod = value!;
-          //   },
-          //   items: MethodOfSorting.values.map((method) {
-          //     return DropdownMenuItem<MethodOfSorting>(
-          //       value: method,
-          //       child: Text(method.label),
-          //     );
-          //   }).toList(),
-          // ),
           Flexible(
             flex: 5,
             child: ListView.builder(

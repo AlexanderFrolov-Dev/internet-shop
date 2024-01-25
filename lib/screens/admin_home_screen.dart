@@ -16,13 +16,11 @@ import '../widgets/favorite_list.dart';
 class AdminHomeScreen extends StatefulWidget {
   AppDatabase appDatabase;
   Profile profile;
-  String initialSortingValue;
 
   AdminHomeScreen({
     super.key,
     required this.profile,
     required this.appDatabase,
-    required this.initialSortingValue
   });
 
   @override
@@ -50,7 +48,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     // для использования в нижней панели BottomNavigationBarItem
     widgets.add(AdminProductList(
       appDatabase: widget.appDatabase,
-      initialSortingValue: AuthorizationScreen.initialSortingValue
     ));
     widgets.add(FavoriteList(appDatabase: widget.appDatabase));
     widgets.add(ProfileScreen(profile: widget.profile, appDatabase: widget.appDatabase));

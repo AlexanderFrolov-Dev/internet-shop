@@ -12,9 +12,12 @@ import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   AppDatabase appDatabase;
-  static const String initialSortingValue = 'По цене↑';
+  // static const String initialSortingValue = 'По цене↑';
 
-  AuthorizationScreen({Key? key, required this.appDatabase}) : super(key: key);
+  AuthorizationScreen({
+    Key? key,
+    required this.appDatabase,
+  }) : super(key: key);
 
   @override
   State<AuthorizationScreen> createState() => _AuthorizationScreenState();
@@ -129,7 +132,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
             builder: (context) => AdminHomeScreen(
               profile: profile,
               appDatabase: widget.appDatabase,
-              initialSortingValue: AuthorizationScreen.initialSortingValue,
             )),
       );
     } else if (role == 'user') {
@@ -138,7 +140,9 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => UserHomeScreen(
-                profile: profile, appDatabase: widget.appDatabase)),
+              profile: profile,
+              appDatabase: widget.appDatabase,
+            )),
       );
     }
 

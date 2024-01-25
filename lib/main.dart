@@ -1,24 +1,3 @@
-/// Код соответствует рекомендациям от 03.11.2023
-///
-/// 1. в случае ввода неверного логина/пароля выводить пользователю сообщение,
-/// а то сейчас визуально ничего не происходит
-///
-/// 2. после успешного входа сохранять, что пользователь авторизован.
-/// входить каждый раз утомительно) для этого посмотрите пакет
-/// https://pub.dev/packages/shared_preferences
-/// он очень широко используется в разработке для хранения простых типов данных
-///
-/// 3. раз мы сохранили факт авторизации,
-/// надо пользователю дать возможность разавторизоваться.
-/// заодно изучим новый визуальный компонент -
-/// давайте на главном экране снизу сделаем бар,
-/// где будет две вкладки - одна это список товаров как сейчас,
-/// а другая это профиль, где выводится,
-/// под каким логином авторизовался пользователя и кнопка Выйти,
-/// которая разавторизует пользователя и перекидывает его на экран логина.
-/// для этого используйте стандартный компонент BottomNavigationBar
-/// https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
-
 import 'package:flutter/material.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
 import 'package:mobile_app_internet_shop/models/cart_model.dart';
@@ -53,14 +32,13 @@ void main() async {
 
     if(role == 'admin') {
       homeScreen = AdminHomeScreen(
-          profile: profile,
-          appDatabase: appDatabase,
-          initialSortingValue: initialSortingValue
+        profile: profile,
+        appDatabase: appDatabase,
       );
     } else if(role == 'user') {
       homeScreen = UserHomeScreen(
-          profile: profile,
-          appDatabase: appDatabase
+        profile: profile,
+        appDatabase: appDatabase,
       );
     }
     isLoading = false;
