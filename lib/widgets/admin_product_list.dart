@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/app_database.dart';
-import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,11 +30,18 @@ class _AdminProductListState extends State<AdminProductList> {
   @override
   void initState() {
     super.initState();
-    // Вызов метода для получения данных о товарах при инициализации экрана
-    getProducts();
-    // Получение начального значения метода сортировки.
-    initialSortingMethod = getSortingMethod('mock');
-    getSortedListOfProducts(initialSortingMethod!);
+    getProducts().then((value) => {
+      loadInitialSortingMethod()
+    });
+  }
+
+  void loadInitialSortingMethod() async {
+    String sortingMethodValue = '';
+    await getSortingMethodValue().then((value) => {
+      sortingMethodValue = value,
+      initialSortingMethod = getSortingMethod(sortingMethodValue),
+      getSortedListOfProducts(initialSortingMethod!)
+    });
   }
 
   SortingMethod? getSortingMethod(String valueOfSorting) {
@@ -53,6 +59,11 @@ class _AdminProductListState extends State<AdminProductList> {
   void setSortingMethod(SortingMethod sortingMethod) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('methodOfSorting', sortingMethod.label);
+  }
+
+  Future<String> getSortingMethodValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('methodOfSorting') ?? 'По цене↑';
   }
 
   void getSortedListOfProducts(SortingMethod sortingMethod) {

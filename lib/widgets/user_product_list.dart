@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 import 'package:mobile_app_internet_shop/widgets/product_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,33 +29,16 @@ class _UserProductListState extends State<UserProductList> {
   @override
   void initState() {
     super.initState();
-    // Получение начального значения метода сортировки.
-    // initialSortingMethod = getSortingMethod(AuthorizationScreen.initialSortingValue);
-    // Вызов метода для получения данных о товарах при инициализации экрана
-    // getProducts();
-
     getProducts().then((value) => {
      loadInitialSortingMethod()
     });
-
-    // loadInitialSortingMethod();
-
-    // getSortedListOfProducts(initialSortingMethod!);
   }
 
   void loadInitialSortingMethod() async {
     String sortingMethodValue = '';
-    // await getSortingMethodValue().then((value) => sortingMethodValue);
-    // initialSortingMethod = getSortingMethod(sortingMethodValue);
-    // await getProducts();
-    // getSortedListOfProducts(initialSortingMethod!);
-
     await getSortingMethodValue().then((value) => {
       sortingMethodValue = value,
-      print('sortingMethodValue: $sortingMethodValue'),
       initialSortingMethod = getSortingMethod(sortingMethodValue),
-      print('initialSortingMethod: $initialSortingMethod'),
-      print('products length: ${products.length}'),
       getSortedListOfProducts(initialSortingMethod!)
     });
   }
