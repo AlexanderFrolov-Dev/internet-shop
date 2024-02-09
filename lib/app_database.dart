@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
@@ -6,6 +7,8 @@ class AppDatabase {
 
   // Если БД существует, то получаем её, если нет, создаём новую
   Future<Database> get database async {
+    sqfliteFfiInit();
+
     if (_database != null) {
       return _database!;  // _database! - _database точно не null
     }
@@ -16,9 +19,26 @@ class AppDatabase {
 
   // Создаём БД app_database
   Future<Database> _initDB() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'app_database.db');
-    return await openDatabase(path, version: 1, onCreate: _createTables);
+    final String dbPath = await getDatabasesPath();
+    final String path = join(dbPath, 'app_database.db');
+    // Пакет sqflite_common_ffi представляет собой
+    // альтернативную реализацию пакета SQFlute,
+    // который использует FFI (интерфейс внешней функции)
+    // для взаимодействия с собственной библиотекой SQLite.
+    // Использование sqflite_common_ffi может быть полезным в ситуациях,
+    // когда вам нужна лучшая производительность или совместимость,
+    // поскольку оно направлено на повышение производительности
+    // за счет взаимодействия с машинным кодом.
+    return await databaseFactoryFfi.openDatabase(
+        path,
+        options: OpenDatabaseOptions(
+          version: 1,
+          onCreate: _createCartsTable,
+          onDowngrade: onDatabaseDowngradeDelete
+        ),
+
+        // onUpgrade: _createCartsTable
+    );
   }
 
   // Создаём в БД таблицу carts
@@ -33,7 +53,7 @@ class AppDatabase {
     ''');
   }
 
-  // Создаём в БД таблицу carts
+  // Создаём в БД таблицу favorites
   Future<void> _createFavoritesTable(Database db, int version) async {
     await db.execute('''
       CREATE TABLE favorites(
@@ -44,11 +64,11 @@ class AppDatabase {
     ''');
   }
 
-  // Здесь запускаем методы для создания каждой из необходимых таблиц
-  Future<void> _createTables(Database db, int version) async {
-    _createCartsTable(db, version);
-    _createFavoritesTable(db, version);
-  }
+  // // Здесь запускаем методы для создания каждой из необходимых таблиц
+  // Future<void> _createTables(Database db, int version) async {
+  //   _createCartsTable(db, version);
+  //   _createFavoritesTable(db, version);
+  // }
 
   // Метод добавления товара в таблицу carts
   Future<void> addToCartTable(int userId, int productId, int quantity) async {
@@ -120,5 +140,12 @@ class AppDatabase {
   Future<void> deleteProductsByIdFromDb(String tableName, int userId) async {
     final db = await database;
     await db.delete(tableName, where: 'user_id = ?', whereArgs: [userId]);
+  }
+
+  // Метод миграции базы данных
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await _createFavoritesTable(db, newVersion);
+    }
   }
 }
