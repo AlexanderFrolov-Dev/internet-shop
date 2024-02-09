@@ -7,8 +7,6 @@ class AppDatabase {
 
   // Если БД существует, то получаем её, если нет, создаём новую
   Future<Database> get database async {
-    sqfliteFfiInit();
-
     if (_database != null) {
       return _database!;  // _database! - _database точно не null
     }
@@ -19,26 +17,9 @@ class AppDatabase {
 
   // Создаём БД app_database
   Future<Database> _initDB() async {
-    final String dbPath = await getDatabasesPath();
-    final String path = join(dbPath, 'app_database.db');
-    // Пакет sqflite_common_ffi представляет собой
-    // альтернативную реализацию пакета SQFlute,
-    // который использует FFI (интерфейс внешней функции)
-    // для взаимодействия с собственной библиотекой SQLite.
-    // Использование sqflite_common_ffi может быть полезным в ситуациях,
-    // когда вам нужна лучшая производительность или совместимость,
-    // поскольку оно направлено на повышение производительности
-    // за счет взаимодействия с машинным кодом.
-    return await databaseFactoryFfi.openDatabase(
-        path,
-        options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: _createCartsTable,
-          onDowngrade: onDatabaseDowngradeDelete
-        ),
-
-        // onUpgrade: _createCartsTable
-    );
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'app_database.db');
+    return await openDatabase(path, version: 2, onCreate: _createTables, onUpgrade: _onUpgrade);
   }
 
   // Создаём в БД таблицу carts
@@ -64,11 +45,11 @@ class AppDatabase {
     ''');
   }
 
-  // // Здесь запускаем методы для создания каждой из необходимых таблиц
-  // Future<void> _createTables(Database db, int version) async {
-  //   _createCartsTable(db, version);
-  //   _createFavoritesTable(db, version);
-  // }
+  // Здесь запускаем методы для создания каждой из необходимых таблиц
+  Future<void> _createTables(Database db, int version) async {
+    _createCartsTable(db, version);
+    _createFavoritesTable(db, version);
+  }
 
   // Метод добавления товара в таблицу carts
   Future<void> addToCartTable(int userId, int productId, int quantity) async {
