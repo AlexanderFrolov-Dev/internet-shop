@@ -43,23 +43,14 @@ class _UserProductListState extends State<UserProductList> {
     });
   }
 
-  SortingMethod? getSortingMethod(String valueOfSorting) {
-    SortingMethod? sortingMethod;
-    print('valueOfSorting: $valueOfSorting');
-    for (SortingMethod value in SortingMethod.values) {
-      if (value.label == valueOfSorting) {
-        sortingMethod = value;
-        break;
-      }
-    }
-
-    print('sortingMethod: ${sortingMethod?.label}');
-    return sortingMethod;
-  }
+  SortingMethod getSortingMethod(String valueOfSorting) => SortingMethod.values.firstWhere(
+        (sort) => sort.name == valueOfSorting,
+    orElse: () => SortingMethod.byAlphabet,
+  );
 
   void setSortingMethod(SortingMethod sortingMethod) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('methodOfSorting', sortingMethod.label);
+    await prefs.setString('methodOfSorting', sortingMethod.name);
   }
 
   Future<String> getSortingMethodValue() async {

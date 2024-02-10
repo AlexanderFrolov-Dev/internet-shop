@@ -44,21 +44,14 @@ class _AdminProductListState extends State<AdminProductList> {
     });
   }
 
-  SortingMethod? getSortingMethod(String valueOfSorting) {
-    SortingMethod? sortingMethod;
-    for (SortingMethod value in SortingMethod.values) {
-      if (value.label == valueOfSorting) {
-        sortingMethod = value;
-        break;
-      }
-    }
-
-    return sortingMethod;
-  }
+  SortingMethod getSortingMethod(String valueOfSorting) => SortingMethod.values.firstWhere(
+    (sort) => sort.name == valueOfSorting,
+    orElse: () => SortingMethod.byAlphabet,
+  );
 
   void setSortingMethod(SortingMethod sortingMethod) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('methodOfSorting', sortingMethod.label);
+    await prefs.setString('methodOfSorting', sortingMethod.name);
   }
 
   Future<String> getSortingMethodValue() async {
