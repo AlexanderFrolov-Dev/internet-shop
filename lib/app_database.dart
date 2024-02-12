@@ -1,3 +1,4 @@
+import 'package:mobile_app_internet_shop/product.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
@@ -104,7 +105,7 @@ class AppDatabase {
     );
   }
 
-  // Метод поиска всех товаров по id пользователя из таблицы carts
+  // Метод поиска всех товаров по id пользователя из указанной таблицы
   Future<List<Map<String, dynamic>>> getAllProductsByUserId(
       String tableName, int userId) async {
     final db = await database;
@@ -114,7 +115,96 @@ class AppDatabase {
       whereArgs: [userId],
     );
 
+    for(Map<String, dynamic> map in list) {
+      print('map keys: ${map.keys}');
+      print('map values: ${map.values}');
+      print('------------');
+    }
+
     return list;
+  }
+
+  Future<List<Product>> getProductsForCart(int userId) async {
+    String tableName = 'carts';
+    List<Product> products = [];
+    List<Product> cartProducts = [];
+    Product? product;
+
+    await Product.getAllProducts().then((value) => products.addAll(value));
+
+    List<Map<String, dynamic>> dataList = [];
+    await getAllProductsByUserId(tableName, userId)
+        .then((value) => dataList.addAll(value));
+
+    for (final productRow in dataList) {
+      // Получение вхождений списка мап
+      Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+      int productId = 0;
+      int quantity = 0;
+      int isFavorite = 0;
+
+      // Перебор вхождений и поиск значений по ключу
+      for (var e in entry) {
+        if (e.key == 'product_id') {
+          productId = e.value;
+        } else if (e.key == 'quantity') {
+          quantity = e.value;
+        } else if (e.key == 'is_favorite') {
+          isFavorite = e.value;
+        }
+      }
+
+      // Получение товара из общего списка по id
+      product = products.firstWhere((p) => p.id == productId);
+
+      // Добавление товара с указанием его количества
+      product.quantity = quantity;
+      if(isFavorite == 0) {
+        product.isFavorite = false;
+      } else if(isFavorite == 1) {
+        product.isFavorite = true;
+      }
+
+      cartProducts.add(product);
+    }
+
+    return cartProducts;
+  }
+
+  Future<List<Product>> getProductsForFavorites(int userId) async {
+    String tableName = 'favorites';
+    List<Product> products = [];
+    List<Product> favoriteProducts = [];
+    Product? product;
+
+    await Product.getAllProducts().then((value) => products.addAll(value));
+
+    List<Map<String, dynamic>> dataList = [];
+    await getAllProductsByUserId(tableName, userId)
+        .then((value) => dataList.addAll(value));
+
+    for (final productRow in dataList) {
+      // Получение вхождений списка мап
+      Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+      int productId = 0;
+
+      // Перебор вхождений и поиск значений по ключу
+      for (var e in entry) {
+        if (e.key == 'product_id') {
+          productId = e.value;
+          print('e.value: ${e.value}');
+        }
+      }
+
+      // Получение товара из общего списка по id
+      product = products.firstWhere((p) => p.id == productId);
+      // print('product: ${product.name}');
+      favoriteProducts.add(product);
+    }
+
+    // print('favoriteProducts length: ${favoriteProducts.length}');
+
+    return favoriteProducts;
   }
 
   // Метод удаления всех товаров из указанной таблицы по id пользователя

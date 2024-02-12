@@ -106,11 +106,69 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // // Метод восстанавления содержимого корзины пользователя из БД
+  // Future<void> restoreCartFromDb() async {
+  //   List<Map<String, dynamic>> usersProducts = [];
+  //   List<Product> products = [];
+  //   Product? product;
+  //   // Получение id пользователя после авторизации
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getInt('profileId') ?? 0;
+  //
+  //   if(userId > 0) {
+  //     // Получаем все записи из БД относящиеся к указанному id пользователя,
+  //     // и добавляем их в локальный список мап usersProducts
+  //     await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
+  //         usersProducts.addAll(value));
+  //
+  //     // Получение списка всех товаров из json файла
+  //     await Product.getAllProducts().then((value) => products.addAll(value));
+  //
+  //     cartItems.clear();
+  //
+  //     for (final productRow in usersProducts) {
+  //       // Получение вхождений списка мап
+  //       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
+  //
+  //       int productId = 0;
+  //       int quantity = 0;
+  //       int isFavorite = 0;
+  //
+  //       // Перебор вхождений и поиск значений по ключу
+  //       for (var e in entry) {
+  //         if (e.key == 'product_id') {
+  //           productId = e.value;
+  //         } else if (e.key == 'quantity') {
+  //           quantity = e.value;
+  //         } else if (e.key == 'is_favorite') {
+  //           isFavorite = e.value;
+  //         }
+  //       }
+  //
+  //       // Получение товара из общего списка по id
+  //       product = products.firstWhere((p) => p.id == productId);
+  //
+  //       // Добавление товара с указанием его количества в корзину
+  //       product.quantity = quantity;
+  //       if(isFavorite == 0) {
+  //         product.isFavorite = false;
+  //       } else if(isFavorite == 1) {
+  //         product.isFavorite = true;
+  //       }
+  //
+  //       cartItems.add(product);
+  //       _totalPrice += product.price;
+  //     }
+  //   }
+  //
+  //   // Этот вызов сообщает виджетам,
+  //   // которые прослушивают эту модель, о необходимости перестройки.
+  //   notifyListeners();
+  // }
+
   // Метод восстанавления содержимого корзины пользователя из БД
   Future<void> restoreCartFromDb() async {
-    List<Map<String, dynamic>> usersProducts = [];
     List<Product> products = [];
-    Product? product;
     // Получение id пользователя после авторизации
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId') ?? 0;
@@ -118,44 +176,12 @@ class CartModel extends ChangeNotifier {
     if(userId > 0) {
       // Получаем все записи из БД относящиеся к указанному id пользователя,
       // и добавляем их в локальный список мап usersProducts
-      await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
-          usersProducts.addAll(value));
-
-      // Получение списка всех товаров из json файла
-      await Product.getAllProducts().then((value) => products.addAll(value));
+      await appDatabase.getProductsForCart(userId).then((value) =>
+          products.addAll(value));
 
       cartItems.clear();
 
-      for (final productRow in usersProducts) {
-        // Получение вхождений списка мап
-        Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-
-        int productId = 0;
-        int quantity = 0;
-        int isFavorite = 0;
-
-        // Перебор вхождений и поиск значений по ключу
-        for (var e in entry) {
-          if (e.key == 'product_id') {
-            productId = e.value;
-          } else if (e.key == 'quantity') {
-            quantity = e.value;
-          } else if (e.key == 'is_favorite') {
-            isFavorite = e.value;
-          }
-        }
-
-        // Получение товара из общего списка по id
-        product = products.firstWhere((p) => p.id == productId);
-
-        // Добавление товара с указанием его количества в корзину
-        product.quantity = quantity;
-        if(isFavorite == 0) {
-          product.isFavorite = false;
-        } else if(isFavorite == 1) {
-          product.isFavorite = true;
-        }
-
+      for (Product product in products) {
         cartItems.add(product);
         _totalPrice += product.price;
       }
