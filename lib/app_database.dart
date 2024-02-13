@@ -20,11 +20,12 @@ class AppDatabase {
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'app_database.db');
-    return await openDatabase(path, version: 2, onCreate: _createTables, onUpgrade: _onUpgrade);
+    return await openDatabase(path, version: 2, onCreate: _createCartsTable, onUpgrade: _onUpgrade);
   }
 
   // Создаём в БД таблицу carts
   Future<void> _createCartsTable(Database db, int version) async {
+    await db.execute('DROP TABLE IF EXISTS carts');
     await db.execute('''
       CREATE TABLE carts(
         user_id INTEGER,
@@ -36,7 +37,8 @@ class AppDatabase {
   }
 
   // Создаём в БД таблицу favorites
-  Future<void> _createFavoritesTable(Database db, int version) async {
+  Future<void> _createFavoritesTable(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS favorites');
     await db.execute('''
       CREATE TABLE favorites(
         user_id INTEGER,
@@ -46,11 +48,11 @@ class AppDatabase {
     ''');
   }
 
-  // Здесь запускаем методы для создания каждой из необходимых таблиц
-  Future<void> _createTables(Database db, int version) async {
-    _createCartsTable(db, version);
-    _createFavoritesTable(db, version);
-  }
+  // // Здесь запускаем методы для создания каждой из необходимых таблиц
+  // Future<void> _createTables(Database db, int version) async {
+  //   _createCartsTable(db, version);
+  //   _createFavoritesTable(db, version);
+  // }
 
   // Метод добавления товара в таблицу carts
   Future<void> addToCartTable(int userId, int productId, int quantity) async {
@@ -213,10 +215,9 @@ class AppDatabase {
     await db.delete(tableName, where: 'user_id = ?', whereArgs: [userId]);
   }
 
-  // Метод миграции базы данных
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await _createFavoritesTable(db, newVersion);
+  void _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2 && newVersion >= 2) {
+      await _createFavoritesTable(db);
     }
   }
 }

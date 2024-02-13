@@ -175,10 +175,10 @@ class FavoriteProductsModel extends ChangeNotifier {
     print('products length: ${products.length}');
 
     if(products.isNotEmpty) {
-      favoriteItems.clear();
+      _favoriteItems.clear();
 
       for (Product product in products) {
-        favoriteItems.add(product);
+        _favoriteItems.add(product);
       }
     }
 
