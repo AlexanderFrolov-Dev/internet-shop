@@ -8,7 +8,7 @@ class FavoriteProductsModel extends ChangeNotifier {
   final List<Product> _favoriteItems = [];
   AppDatabase appDatabase;
   static const String tableName = 'favorites';
-  int userId = 0;
+  // int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
   FavoriteProductsModel._(this.appDatabase);
@@ -28,7 +28,7 @@ class FavoriteProductsModel extends ChangeNotifier {
   // Метод добавления товара в корзину
   void addToFavorite(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли уже такой товар в избранном.
     // Если нет, то добавляем.
@@ -47,7 +47,7 @@ class FavoriteProductsModel extends ChangeNotifier {
   // Метод удаления товара из избранного
   void removeFromFavorite(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
     int id = product.id;
     Product p = favoriteItems.firstWhere((element) => element.id == id);
 
@@ -61,7 +61,7 @@ class FavoriteProductsModel extends ChangeNotifier {
 
   void clearFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
 
     // Очищаем избранное
     favoriteItems.clear();
@@ -163,7 +163,7 @@ class FavoriteProductsModel extends ChangeNotifier {
     List<Product> products = [];
     // Получение id пользователя после авторизации
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId') ?? 0;
+    int userId = prefs.getInt('profileId') ?? 0;
 
     print('userId: $userId');
 
