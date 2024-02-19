@@ -3,6 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 
+import 'cart_info.dart';
+
 class AppDatabase {
   Database? _database;
 
@@ -157,51 +159,31 @@ class AppDatabase {
     return list;
   }
 
+  // Метод получения списка товаров для корзины
   Future<List<Product>> getProductsForCart(int userId) async {
-    String tableName = 'carts';
-    List<Product> products = [];
-    List<Product> cartProducts = [];
-    Product? product;
+    final db = await database;
+    const cartTable = 'carts';
 
-    await Product.getAllProducts().then((value) => products.addAll(value));
+    // Получение товаров из корзины
+    final cartList = await db.query(cartTable, where: 'user_id = ?', whereArgs: [userId]);
 
-    List<Map<String, dynamic>> dataList = [];
-    await getAllProductsByUserId(tableName, userId)
-        .then((value) => dataList.addAll(value));
+    final productIdsList = cartList.map((cartRow) => cartRow['product_id'] as int).toList();
 
-    for (final productRow in dataList) {
-      // Получение вхождений списка мап
-      Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-      int productId = 0;
-      int quantity = 0;
-      int isFavorite = 0;
+    // Получение информации о товарах по их id
+    final productsList = await Product.getProductsByIds(productIdsList);
+    final List<CartInfo> cartInfoList = [];
 
-      // Перебор вхождений и поиск значений по ключу
-      for (var e in entry) {
-        if (e.key == 'product_id') {
-          productId = e.value;
-        } else if (e.key == 'quantity') {
-          quantity = e.value;
-        } else if (e.key == 'is_favorite') {
-          isFavorite = e.value;
-        }
-      }
-
-      // Получение товара из общего списка по id
-      product = products.firstWhere((p) => p.id == productId);
-
-      // Добавление товара с указанием его количества
-      product.quantity = quantity;
-      if(isFavorite == 0) {
-        product.isFavorite = false;
-      } else if(isFavorite == 1) {
-        product.isFavorite = true;
-      }
-
-      cartProducts.add(product);
+    // Создание объектов CartInfo для каждого товара в корзине
+    for (final cartRow in cartList) {
+      final cartInfo = CartInfo.fromJson(cartRow);
+      cartInfoList.add(CartInfo(cartInfo.userId, cartInfo.productId, cartInfo.quantity));
     }
 
-    return cartProducts;
+    productsList.forEach((p) {
+      p.quantity = cartInfoList.firstWhere((element) => p.id == element.productId).quantity;
+    });
+
+    return productsList;
   }
 
   Future<List<Product>> getProductsForFavorites(int userId) async {

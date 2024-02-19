@@ -92,4 +92,11 @@ class Product {
       }
     }
   }
+
+  // Метод получения информации о товарах по их id
+  static Future<List<Product>> getProductsByIds(List<int> productIds) async {
+    final productsList = await Product.getAllProducts();
+
+    return productsList.where((product) => productIds.contains(product.id)).toList();
+  }
 }
