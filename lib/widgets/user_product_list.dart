@@ -55,7 +55,7 @@ class _UserProductListState extends State<UserProductList> {
 
   Future<String> getSortingMethodValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('methodOfSorting') ?? 'По цене↑';
+    return prefs.getString('methodOfSorting') ?? SortingMethod.byPriceIncrease.name;
   }
 
   void getSortedListOfProducts(SortingMethod sortingMethod) {
