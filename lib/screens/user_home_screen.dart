@@ -6,7 +6,7 @@ import '../profile.dart';
 import '../widgets/user_product_list.dart';
 
 class UserHomeScreen extends HomeScreen {
-  UserHomeScreen({super.key, required Profile profile, required AppDatabase appDatabase})
+  const UserHomeScreen({super.key, required Profile profile, required AppDatabase appDatabase})
       : super(profile: profile, appDatabase: appDatabase);
 
   // Реализуем абстрактный метод класса предка HomeScreen

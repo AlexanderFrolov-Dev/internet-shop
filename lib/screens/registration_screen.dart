@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../profile.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  List<Profile> profiles = [];
+  final List<Profile> profiles = [];
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _patronymicController = TextEditingController();
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  RegistrationScreen({super.key});
 
 
   // TODO: и прочие методы валидации вводимых данных
