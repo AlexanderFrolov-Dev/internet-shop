@@ -6,10 +6,10 @@ import '../profile.dart';
 import 'authorization_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
   final Profile profile;
 
-  ProfileScreen({super.key, required this.profile, required this.appDatabase});
+  const ProfileScreen({super.key, required this.profile, required this.appDatabase});
 
   // Метод перехода на страницу авторизации при разовтаризации пользователя
   void _logout(BuildContext context) async {
