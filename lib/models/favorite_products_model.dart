@@ -8,7 +8,6 @@ class FavoriteProductsModel extends ChangeNotifier {
   final List<Product> _favoriteItems = [];
   AppDatabase appDatabase;
   static const String tableName = 'favorites';
-  // int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
   FavoriteProductsModel._(this.appDatabase);
@@ -36,8 +35,6 @@ class FavoriteProductsModel extends ChangeNotifier {
       await appDatabase.addToFavoritesTable(userId, product.id);
       favoriteItems.add(product);
     }
-
-    print('add product in favorite');
 
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
@@ -72,92 +69,6 @@ class FavoriteProductsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<bool> checkProductInFavorites(Product product) async {
-  //   List<Product> products = [];
-  //
-  //   await getFavoriteProductListByUser().then((value) => products.addAll(value));
-  //   print('products length: ${products.length}');
-  //   // bool exist = products.contains(product);
-  //   return products.any((element) => element.id == product.id);
-  // }
-
-  // // Метод для получения списка товаров пользователя из таблицы избранного
-  // Future<List<Product>> getFavoriteProductListByUser() async {
-  //   List<Map<String, dynamic>> usersProducts = [];
-  //   List<Product> products = [];
-  //   // Получение id пользователя после авторизации
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt('profileId') ?? 0;
-  //
-  //   if(userId > 0) {
-  //     // Получаем все записи из БД относящиеся к указанному id пользователя,
-  //     // и добавляем их в локальный список мап usersProducts
-  //     await appDatabase.getAllProductsByUserId(tableName, userId)
-  //         .then((value) => usersProducts.addAll(value));
-  //
-  //     // Получение списка всех товаров из json файла
-  //     await Product.getAllProducts().then((value) => products.addAll(value));
-  //   }
-  //
-  //   return products;
-  // }
-
-  // // Метод для получения списка товаров пользователя из таблицы избранного
-  // Future<List<Product>> getFavoriteProductListByUser() async {
-  //   List<Product> products = [];
-  //   // Получение id пользователя после авторизации
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt('profileId') ?? 0;
-  //
-  //   if(userId > 0) {
-  //     await appDatabase.getProductsForFavorites(userId)
-  //         .then((value) => products.addAll(value));
-  //   }
-  //
-  //   print('products.length in getFavoriteProductListByUser: ${products.length}');
-  //
-  //   return products;
-  // }
-
-  // // Метод восстанавления содержимого избранного пользователя из БД
-  // Future<void> restoreFavoriteFromDb() async {
-  //   List<Map<String, dynamic>> usersProducts = [];
-  //   List<Product> products = [];
-  //   Product? product;
-  //
-  //   await getFavoriteProductListByUser().then((value) => products.addAll(value));
-  //
-  //   if(products.isNotEmpty) {
-  //     // Получаем все записи из БД относящиеся к указанному id пользователя,
-  //     // и добавляем их в локальный список мап usersProducts
-  //     await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
-  //         usersProducts.addAll(value));
-  //
-  //     favoriteItems.clear();
-  //
-  //     for (final productRow in usersProducts) {
-  //       // Получение вхождений списка мап
-  //       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-  //       int productId = 0;
-  //
-  //       // Перебор вхождений и поиск значений по ключу
-  //       for (var e in entry) {
-  //         if (e.key == 'product_id') {
-  //           productId = e.value;
-  //         }
-  //       }
-  //
-  //       // Получение товара из общего списка по id
-  //       product = products.firstWhere((p) => p.id == productId);
-  //       favoriteItems.add(product);
-  //     }
-  //   }
-  //
-  //   // Этот вызов сообщает виджетам,
-  //   // которые прослушивают эту модель, о необходимости перестройки.
-  //   notifyListeners();
-  // }
-
   // Метод восстанавления содержимого избранного пользователя из БД
   Future<void> restoreFavoriteFromDb() async {
     List<Product> products = [];
@@ -165,14 +76,10 @@ class FavoriteProductsModel extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int userId = prefs.getInt('profileId') ?? 0;
 
-    print('userId: $userId');
-
     if(userId > 0) {
       await appDatabase.getProductsForFavorites(userId)
           .then((value) => products.addAll(value));
     }
-
-    print('products length: ${products.length}');
 
     if(products.isNotEmpty) {
       _favoriteItems.clear();
