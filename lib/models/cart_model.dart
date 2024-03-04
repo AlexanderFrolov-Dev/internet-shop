@@ -6,10 +6,9 @@ import '../product.dart';
 
 class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
   static const String tableName = 'carts';
   double totalPrice = 0;
-  int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
   CartModel._(this.appDatabase);
@@ -28,7 +27,7 @@ class CartModel extends ChangeNotifier {
 
   void addToCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли уже такой товар в корзине
     if (cartItems.any((item) => item.id == product.id)) {
@@ -52,7 +51,7 @@ class CartModel extends ChangeNotifier {
   // Метод удаления товара из корзины
   void removeFromCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
 
     // Проверяем, есть ли такой товар в корзине
     if (cartItems.any((item) => item.id == product.id)) {
@@ -93,7 +92,7 @@ class CartModel extends ChangeNotifier {
 
   void clearCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId')!;
+    int userId = prefs.getInt('profileId')!;
 
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();
@@ -110,7 +109,7 @@ class CartModel extends ChangeNotifier {
     List<Product> products = [];
     // Получение id пользователя после авторизации
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('profileId') ?? 0;
+    int userId = prefs.getInt('profileId') ?? 0;
 
     if(userId > 0) {
       // Получаем все записи из БД относящиеся к указанному id пользователя,
