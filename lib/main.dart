@@ -6,7 +6,6 @@ import 'package:mobile_app_internet_shop/profile.dart';
 import 'package:mobile_app_internet_shop/screens/admin_home_screen.dart';
 import 'package:mobile_app_internet_shop/screens/authorization_screen.dart';
 import 'package:mobile_app_internet_shop/screens/user_home_screen.dart';
-import 'package:mobile_app_internet_shop/sorting_method.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,15 +15,10 @@ void main() async {
   AppDatabase appDatabase = AppDatabase();
   CartModel cartModel = CartModel.getInstance(appDatabase);
   FavoriteProductsModel favoriteProductsModel = FavoriteProductsModel.getInstance(appDatabase);
-  List<Profile> profiles = [];
+  List<Profile> profiles = await Profile.getProfiles();
   Widget? homeScreen;
-  final String initialSortingValue = prefs.getString('sortingMethod')
-      ?? SortingMethod.byPriceIncrease.toString();
-  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   int profileId = prefs.getInt('profileId') ?? 0;
   bool isLoading = true;
-
-  await Profile.getProfiles().then((value) => profiles.addAll(value));
 
   if(profileId > 0) {
     Profile profile = profiles.firstWhere((profile) => profile.id == profileId);
@@ -81,8 +75,8 @@ void main() async {
 }
 
 class InternetShop extends StatelessWidget {
-  Widget widget;
-  InternetShop({super.key, required this.widget});
+  final Widget widget;
+  const InternetShop({super.key, required this.widget});
 
   @override
   Widget build(BuildContext context) {
