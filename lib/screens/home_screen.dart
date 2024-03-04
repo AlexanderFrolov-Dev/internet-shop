@@ -10,10 +10,10 @@ import 'package:provider/provider.dart';
 import '../../widgets/favorite_list.dart';
 
 abstract class HomeScreen extends StatefulWidget {
-  AppDatabase appDatabase;
-  Profile profile;
+  final AppDatabase appDatabase;
+  final Profile profile;
 
-  HomeScreen({
+  const HomeScreen({
     Key? key,
     required this.profile,
     required this.appDatabase,
