@@ -11,9 +11,9 @@ import '../screens/add_product_form.dart';
 import '../sorting_method.dart';
 
 class AdminProductList extends StatefulWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
 
-  AdminProductList({
+  const AdminProductList({
     super.key,
     required this.appDatabase,
   });

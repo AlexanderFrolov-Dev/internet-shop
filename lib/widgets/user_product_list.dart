@@ -10,9 +10,9 @@ import '../product.dart';
 import '../sorting_method.dart';
 
 class UserProductList extends StatefulWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
 
-  UserProductList({
+  const UserProductList({
     super.key,
     required this.appDatabase,
   });

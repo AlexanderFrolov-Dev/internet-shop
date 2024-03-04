@@ -5,9 +5,9 @@ import 'package:mobile_app_internet_shop/models/favorite_products_model.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteList extends StatefulWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
 
-  FavoriteList({super.key, required this.appDatabase});
+  const FavoriteList({super.key, required this.appDatabase});
 
   @override
   _FavoriteListState createState() => _FavoriteListState();
