@@ -10,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'admin_home_screen.dart';
 
 class AuthorizationScreen extends StatefulWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
 
-  AuthorizationScreen({
+  const AuthorizationScreen({
     Key? key,
     required this.appDatabase,
   }) : super(key: key);
@@ -111,7 +111,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       // Сохраняем факт авторизации в shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
-      print('isLoggedIn in AuthorizationScreen: ${prefs.getBool('isLoggedIn')}');
       await prefs.setInt('profileId', profile.id);
 
       await goToScreenByUserRole(profile);
