@@ -74,25 +74,6 @@ class Product {
     return products;
   }
 
-  // Метод получения товара по id пользователя
-  static Future<Product?> getProductById(int id) async {
-    // Загружаем содержимое файла с продуктами
-    final jsonProducts = await rootBundle.loadString(
-        'assets/data/products.json');
-    // Преобразование полученных данных в формат JSON
-    final jsonData = json.decode(jsonProducts);
-    // Product? product;
-
-    // Проход по списку товаров и создание экземпляров класса Product
-    for (var product in jsonData) {
-      Product currentProduct = Product.fromJson(product);
-
-      if (currentProduct.id == id) {
-        return currentProduct;
-      }
-    }
-  }
-
   // Метод получения информации о товарах по их id
   static Future<List<Product>> getProductsByIds(List<int> productIds) async {
     final productsList = await Product.getAllProducts();

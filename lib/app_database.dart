@@ -1,6 +1,5 @@
 import 'package:mobile_app_internet_shop/product.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 
 import 'cart_info.dart';
@@ -28,14 +27,6 @@ class AppDatabase {
         onCreate: _createTables,
         onUpgrade: _onUpgrade
     );
-
-    // final dbPath = await getDatabasesPath();
-    // final path = join(dbPath, 'app_database.db');
-    // return await openDatabase(
-    //     path,
-    //     version: 1,
-    //     onCreate: _createCartsTable
-    // );
   }
 
   // Создаём в БД таблицу carts
@@ -67,24 +58,6 @@ class AppDatabase {
   Future<void> _createTables(Database db, int version) async {
     await _createCartsTable(db, version);
     await _createFavoritesTable(db);
-
-    // await db.execute('DROP TABLE IF EXISTS carts');
-    // await db.execute('''
-    //   CREATE TABLE carts(
-    //     user_id INTEGER,
-    //     product_id INTEGER,
-    //     quantity INTEGER,
-    //     PRIMARY KEY (user_id, product_id)
-    //   )
-    // ''');
-    // await db.execute('DROP TABLE IF EXISTS favorites');
-    // await db.execute('''
-    //   CREATE TABLE favorites(
-    //     user_id INTEGER,
-    //     product_id INTEGER,
-    //     PRIMARY KEY (user_id, product_id)
-    //   )
-    // ''');
   }
 
   // Метод добавления товара в таблицу carts
@@ -141,20 +114,13 @@ class AppDatabase {
   }
 
   // Метод поиска всех товаров по id пользователя из указанной таблицы
-  Future<List<Map<String, dynamic>>> getAllProductsByUserId(
-      String tableName, int userId) async {
+  Future<List<Map<String, dynamic>>> getAllProductsByUserId(String tableName, int userId) async {
     final db = await database;
     List<Map<String, dynamic>> list = await db.query(
       tableName,
       where: 'user_id = ?',
       whereArgs: [userId],
     );
-
-    for(Map<String, dynamic> map in list) {
-      print('map keys: ${map.keys}');
-      print('map values: ${map.values}');
-      print('------------');
-    }
 
     return list;
   }
@@ -179,9 +145,9 @@ class AppDatabase {
       cartInfoList.add(CartInfo(cartInfo.userId, cartInfo.productId, cartInfo.quantity));
     }
 
-    productsList.forEach((p) {
+    for (var p in productsList) {
       p.quantity = cartInfoList.firstWhere((element) => p.id == element.productId).quantity;
-    });
+    }
 
     return productsList;
   }
@@ -207,17 +173,13 @@ class AppDatabase {
       for (var e in entry) {
         if (e.key == 'product_id') {
           productId = e.value;
-          print('e.value: ${e.value}');
         }
       }
 
       // Получение товара из общего списка по id
       product = products.firstWhere((p) => p.id == productId);
-      // print('product: ${product.name}');
       favoriteProducts.add(product);
     }
-
-    // print('favoriteProducts length: ${favoriteProducts.length}');
 
     return favoriteProducts;
   }
