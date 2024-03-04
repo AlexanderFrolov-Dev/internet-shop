@@ -41,48 +41,45 @@ void main() async {
   cartModel.restoreCartFromDb();
   favoriteProductsModel.restoreFavoriteFromDb();
 
-  runApp(
-    // MultiProvider это виджет,
-    // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.
-    // Определяем конструктор, который создает новый экземпляр из CartModel.
-      MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
-            ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase)),
-          ],
-          child: InternetShop(widget: homeScreen!
-          )
-      ));
-
-  // runApp(
-  //   // ChangeNotifierProvider это виджет,
-  //   // который предоставляет экземпляр ChangeNotifier своим потомкам.
-  //   // Определяем конструктор, который создает новый экземпляр из CartModel.
-  //     ChangeNotifierProvider(
-  //       create: (context) => CartModel.getInstance(appDatabase),
-  //       child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
-  //           ? const Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
-  //           : homeScreen!, // иначе выводим homeScreen)
-  //     )
-  // ));
-
-  // isLoading = false;
+  runApp(InternetShop(widget: homeScreen, appDatabase: appDatabase)
+    // // MultiProvider это виджет,
+    // // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.
+    // // Определяем конструктор, который создает новый экземпляр из CartModel.
+    //   MultiProvider(
+    //       providers: [
+    //         ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
+    //         ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase)),
+    //       ],
+    //       child: InternetShop(widget: homeScreen!, appDatabase: appDatabase)
+    //   )
+  );
 }
 
 class InternetShop extends StatelessWidget {
-  final Widget widget;
-  const InternetShop({super.key, required this.widget});
+  final Widget? widget;
+  final AppDatabase appDatabase;
+  const InternetShop({super.key, required this.widget, required this.appDatabase});
 
   @override
   Widget build(BuildContext context) {
     // Создаём виджет верхнего уровня
-    return MaterialApp(
-      title: 'Интернет-магазин',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: widget,
-      debugShowCheckedModeBanner: false,
-    );
+
+    return
+      // MultiProvider это виджет,
+      // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.
+      // Определяем конструктор, который создает новый экземпляр из CartModel.
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
+            ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase))
+          ],
+          child: MaterialApp(
+            title: 'Интернет-магазин',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: widget,
+            debugShowCheckedModeBanner: false,
+      ));
   }
 }
