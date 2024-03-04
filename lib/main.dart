@@ -18,7 +18,6 @@ void main() async {
   List<Profile> profiles = await Profile.getProfiles();
   Widget? homeScreen;
   int profileId = prefs.getInt('profileId') ?? 0;
-  bool isLoading = true;
 
   if(profileId > 0) {
     Profile profile = profiles.firstWhere((profile) => profile.id == profileId);
@@ -35,10 +34,8 @@ void main() async {
         appDatabase: appDatabase,
       );
     }
-    isLoading = false;
   } else {
     homeScreen = AuthorizationScreen(appDatabase: appDatabase);
-    isLoading = false;
   }
 
   cartModel.restoreCartFromDb();
@@ -53,9 +50,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
             ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase)),
           ],
-          child: InternetShop(widget: isLoading // Передаем значение isLoading в качестве параметра
-              ? const Center(child: CircularProgressIndicator()) // если isLoading=true, то выводим индикатор прогресса
-              : homeScreen!, // иначе выводим homeScreen)
+          child: InternetShop(widget: homeScreen!
           )
       ));
 
