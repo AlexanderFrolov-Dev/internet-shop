@@ -6,6 +6,12 @@ import 'cart_info.dart';
 
 class AppDatabase {
   Database? _database;
+  static const String databaseName = 'app_database.db';
+  static const String cartTable = 'carts';
+  static const String favoriteTable = 'favorites';
+  static const String userIdByTable = 'user_id';
+  static const String productIdByTable = 'product_id';
+  static const String quantityByTable = 'quantity';
 
   // Если БД существует, то получаем её, если нет, создаём новую
   Future<Database> get database async {
@@ -20,7 +26,7 @@ class AppDatabase {
   // Создаём БД app_database
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'app_database.db');
+    final path = join(dbPath, databaseName);
     return await openDatabase(
         path,
         version: 2,
@@ -31,25 +37,25 @@ class AppDatabase {
 
   // Создаём в БД таблицу carts
   Future<void> _createCartsTable(Database db, int version) async {
-    await db.execute('DROP TABLE IF EXISTS carts');
+    await db.execute('DROP TABLE IF EXISTS $cartTable');
     await db.execute('''
-      CREATE TABLE carts(
-        user_id INTEGER,
-        product_id INTEGER,
-        quantity INTEGER,
-        PRIMARY KEY (user_id, product_id)
+      CREATE TABLE $cartTable(
+        $userIdByTable INTEGER,
+        $productIdByTable INTEGER,
+        $quantityByTable INTEGER,
+        PRIMARY KEY ($userIdByTable, $productIdByTable)
       )
     ''');
   }
 
   // Создаём в БД таблицу favorites
   Future<void> _createFavoritesTable(Database db) async {
-    await db.execute('DROP TABLE IF EXISTS favorites');
+    await db.execute('DROP TABLE IF EXISTS $favoriteTable');
     await db.execute('''
-      CREATE TABLE favorites(
-        user_id INTEGER,
-        product_id INTEGER,
-        PRIMARY KEY (user_id, product_id)
+      CREATE TABLE $favoriteTable(
+        $userIdByTable INTEGER,
+        $productIdByTable INTEGER,
+        PRIMARY KEY ($userIdByTable, $productIdByTable)
       )
     ''');
   }
@@ -65,8 +71,8 @@ class AppDatabase {
     final db = await database;
 
     await db.insert(
-      'carts',
-      {'user_id': userId, 'product_id': productId, 'quantity': quantity},
+      cartTable,
+      {userIdByTable: userId, productIdByTable: productId, quantityByTable: quantity},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -76,8 +82,8 @@ class AppDatabase {
     final db = await database;
 
     await db.insert(
-      'favorites',
-      {'user_id': userId, 'product_id': productId},
+      favoriteTable,
+      {userIdByTable: userId, productIdByTable: productId},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -86,9 +92,9 @@ class AppDatabase {
   Future<void> increaseProductQuantityInCart(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
-    UPDATE carts 
-    SET quantity = quantity + 1 
-    WHERE user_id = ? AND product_id = ?
+    UPDATE $cartTable 
+    SET $quantityByTable = $quantityByTable + 1 
+    WHERE $userIdByTable = ? AND $productIdByTable = ?
   ''', [userId, productId]);
   }
 
@@ -96,9 +102,9 @@ class AppDatabase {
   Future<void> decreaseProductQuantityInCart(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
-    UPDATE carts 
-    SET quantity = quantity - 1 
-    WHERE user_id = ? AND product_id = ?
+    UPDATE $cartTable 
+    SET $quantityByTable = $quantityByTable - 1 
+    WHERE $userIdByTable = ? AND $productIdByTable = ?
   ''', [userId, productId]);
   }
 
@@ -108,7 +114,7 @@ class AppDatabase {
 
     await db.delete(
       tableName,
-      where: 'product_id = ? AND user_id = ?',
+      where: '$productIdByTable = ? AND $userIdByTable = ?',
       whereArgs: [productId, userId],
     );
   }
@@ -118,7 +124,7 @@ class AppDatabase {
     final db = await database;
     List<Map<String, dynamic>> list = await db.query(
       tableName,
-      where: 'user_id = ?',
+      where: '$userIdByTable = ?',
       whereArgs: [userId],
     );
 
@@ -128,12 +134,11 @@ class AppDatabase {
   // Метод получения списка товаров для корзины
   Future<List<Product>> getProductsForCart(int userId) async {
     final db = await database;
-    const cartTable = 'carts';
 
     // Получение товаров из корзины
-    final cartList = await db.query(cartTable, where: 'user_id = ?', whereArgs: [userId]);
+    final cartList = await db.query(cartTable, where: '$userIdByTable = ?', whereArgs: [userId]);
 
-    final productIdsList = cartList.map((cartRow) => cartRow['product_id'] as int).toList();
+    final productIdsList = cartList.map((cartRow) => cartRow[productIdByTable] as int).toList();
 
     // Получение информации о товарах по их id
     final productsList = await Product.getProductsByIds(productIdsList);
@@ -153,7 +158,6 @@ class AppDatabase {
   }
 
   Future<List<Product>> getProductsForFavorites(int userId) async {
-    String tableName = 'favorites';
     List<Product> products = [];
     List<Product> favoriteProducts = [];
     Product? product;
@@ -161,7 +165,7 @@ class AppDatabase {
     await Product.getAllProducts().then((value) => products.addAll(value));
 
     List<Map<String, dynamic>> dataList = [];
-    await getAllProductsByUserId(tableName, userId)
+    await getAllProductsByUserId(favoriteTable, userId)
         .then((value) => dataList.addAll(value));
 
     for (final productRow in dataList) {
@@ -171,7 +175,7 @@ class AppDatabase {
 
       // Перебор вхождений и поиск значений по ключу
       for (var e in entry) {
-        if (e.key == 'product_id') {
+        if (e.key == productIdByTable) {
           productId = e.value;
         }
       }
@@ -187,7 +191,7 @@ class AppDatabase {
   // Метод удаления всех товаров из указанной таблицы по id пользователя
   Future<void> deleteProductsByIdFromDb(String tableName, int userId) async {
     final db = await database;
-    await db.delete(tableName, where: 'user_id = ?', whereArgs: [userId]);
+    await db.delete(tableName, where: '$userIdByTable = ?', whereArgs: [userId]);
   }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
