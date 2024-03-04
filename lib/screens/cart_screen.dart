@@ -5,16 +5,15 @@ import 'package:provider/provider.dart';
 import '../models/cart_model.dart';
 
 class CartScreen extends StatefulWidget {
-  AppDatabase appDatabase;
+  final AppDatabase appDatabase;
 
-  CartScreen({super.key, required this.appDatabase});
+  const CartScreen({super.key, required this.appDatabase});
 
   @override
   _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  // CartModel cart = CartModel.getInstance();
   late CartModel cartModel;
 
   @override
