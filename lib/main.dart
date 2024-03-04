@@ -41,18 +41,7 @@ void main() async {
   cartModel.restoreCartFromDb();
   favoriteProductsModel.restoreFavoriteFromDb();
 
-  runApp(InternetShop(widget: homeScreen, appDatabase: appDatabase)
-    // // MultiProvider это виджет,
-    // // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.
-    // // Определяем конструктор, который создает новый экземпляр из CartModel.
-    //   MultiProvider(
-    //       providers: [
-    //         ChangeNotifierProvider(create: (context) => CartModel.getInstance(appDatabase)),
-    //         ChangeNotifierProvider(create: (context) => FavoriteProductsModel.getInstance(appDatabase)),
-    //       ],
-    //       child: InternetShop(widget: homeScreen!, appDatabase: appDatabase)
-    //   )
-  );
+  runApp(InternetShop(widget: homeScreen, appDatabase: appDatabase));
 }
 
 class InternetShop extends StatelessWidget {
@@ -63,7 +52,6 @@ class InternetShop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Создаём виджет верхнего уровня
-
     return
       // MultiProvider это виджет,
       // который предоставляет экземпляры нескольких ChangeNotifier своим потомкам.

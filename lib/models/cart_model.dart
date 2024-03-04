@@ -8,7 +8,7 @@ class CartModel extends ChangeNotifier {
   final List<Product> _cartItems = [];
   AppDatabase appDatabase;
   static const String tableName = 'carts';
-  double _totalPrice = 0;
+  double totalPrice = 0;
   int userId = 0;
 
   // Создаем приватный конструктор для реализации Singleton
@@ -24,9 +24,8 @@ class CartModel extends ChangeNotifier {
     return _instance!;
   }
 
-  List<Product> get cartItems => _cartItems;
+  List<Product> get cartItems => _cartItems; // Метод добавления товара в корзину
 
-  // Метод добавления товара в корзину
   void addToCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('profileId')!;
@@ -44,7 +43,7 @@ class CartModel extends ChangeNotifier {
       await appDatabase.addToCartTable(userId, product.id, product.quantity);
     }
     // Увеличиваем общую стоимость товаров в корзине
-    _totalPrice += product.price;
+    totalPrice += product.price;
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
@@ -62,7 +61,7 @@ class CartModel extends ChangeNotifier {
       if (cartItems[index].quantity > 1) {
         cartItems[index].quantity--;
         // Уменьшаем общую стоимость товаров в корзине
-        _totalPrice -= product.price;
+        totalPrice -= product.price;
         // Уменьшаем количество товара в БД на 1
         await appDatabase.decreaseProductQuantityInCart(userId, product.id);
       }
@@ -72,7 +71,7 @@ class CartModel extends ChangeNotifier {
         // Удаляем товар из БД
         await appDatabase.deleteProduct(tableName, userId, product.id);
         // Уменьшаем общую стоимость товаров в корзине на стоимость удаленного товара
-        _totalPrice -= product.price;
+        totalPrice -= product.price;
       }
 
       // Этот вызов сообщает виджетам,
@@ -98,73 +97,13 @@ class CartModel extends ChangeNotifier {
 
     // Очищаем корзину и обнуляем общую стоимость
     cartItems.clear();
-    _totalPrice = 0;
+    totalPrice = 0;
     // Удаляем из БД товары пользователя
     appDatabase.deleteProductsByIdFromDb(tableName, userId);
     // Этот вызов сообщает виджетам,
     // которые прослушивают эту модель, о необходимости перестройки.
     notifyListeners();
   }
-
-  // // Метод восстанавления содержимого корзины пользователя из БД
-  // Future<void> restoreCartFromDb() async {
-  //   List<Map<String, dynamic>> usersProducts = [];
-  //   List<Product> products = [];
-  //   Product? product;
-  //   // Получение id пользователя после авторизации
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt('profileId') ?? 0;
-  //
-  //   if(userId > 0) {
-  //     // Получаем все записи из БД относящиеся к указанному id пользователя,
-  //     // и добавляем их в локальный список мап usersProducts
-  //     await appDatabase.getAllProductsByUserId(tableName, userId).then((value) =>
-  //         usersProducts.addAll(value));
-  //
-  //     // Получение списка всех товаров из json файла
-  //     await Product.getAllProducts().then((value) => products.addAll(value));
-  //
-  //     cartItems.clear();
-  //
-  //     for (final productRow in usersProducts) {
-  //       // Получение вхождений списка мап
-  //       Iterable<MapEntry<String, dynamic>> entry = productRow.entries;
-  //
-  //       int productId = 0;
-  //       int quantity = 0;
-  //       int isFavorite = 0;
-  //
-  //       // Перебор вхождений и поиск значений по ключу
-  //       for (var e in entry) {
-  //         if (e.key == 'product_id') {
-  //           productId = e.value;
-  //         } else if (e.key == 'quantity') {
-  //           quantity = e.value;
-  //         } else if (e.key == 'is_favorite') {
-  //           isFavorite = e.value;
-  //         }
-  //       }
-  //
-  //       // Получение товара из общего списка по id
-  //       product = products.firstWhere((p) => p.id == productId);
-  //
-  //       // Добавление товара с указанием его количества в корзину
-  //       product.quantity = quantity;
-  //       if(isFavorite == 0) {
-  //         product.isFavorite = false;
-  //       } else if(isFavorite == 1) {
-  //         product.isFavorite = true;
-  //       }
-  //
-  //       cartItems.add(product);
-  //       _totalPrice += product.price;
-  //     }
-  //   }
-  //
-  //   // Этот вызов сообщает виджетам,
-  //   // которые прослушивают эту модель, о необходимости перестройки.
-  //   notifyListeners();
-  // }
 
   // Метод восстанавления содержимого корзины пользователя из БД
   Future<void> restoreCartFromDb() async {
@@ -183,7 +122,7 @@ class CartModel extends ChangeNotifier {
 
       for (Product product in products) {
         cartItems.add(product);
-        _totalPrice += product.price;
+        totalPrice += product.price;
       }
     }
 
