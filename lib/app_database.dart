@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:mobile_app_internet_shop/product.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -7,10 +10,15 @@ import 'cart_info.dart';
 class AppDatabase {
   Database? _database;
   static const String databaseName = 'app_database.db';
-  static const String cartTable = 'carts';
-  static const String favoriteTable = 'favorites';
+  static const String productsTable = 'products';
+  static const String cartsTable = 'carts';
+  static const String favoritesTable = 'favorites';
   static const String userIdByTable = 'user_id';
   static const String productIdByTable = 'product_id';
+  static const String productName = 'name';
+  static const String productDescription = 'description';
+  static const String productImage = 'image';
+  static const String productPrice = 'price';
   static const String quantityByTable = 'quantity';
 
   // Если БД существует, то получаем её, если нет, создаём новую
@@ -35,11 +43,26 @@ class AppDatabase {
     );
   }
 
+  Future<void> _createProductsTable(Database db, int version) async {
+    await db.execute('DROP TABLE IF EXISTS $productsTable');
+    await db.execute('''
+      CREATE TABLE $productsTable(
+        $productIdByTable INTEGER,
+        $productName TEXT,
+        $productDescription TEXT,
+        $productImage TEXT,
+        $productPrice REAL,
+        $quantityByTable INTEGER,
+        PRIMARY KEY ($productIdByTable)
+      )
+    ''');
+  }
+
   // Создаём в БД таблицу carts
   Future<void> _createCartsTable(Database db, int version) async {
-    await db.execute('DROP TABLE IF EXISTS $cartTable');
+    await db.execute('DROP TABLE IF EXISTS $cartsTable');
     await db.execute('''
-      CREATE TABLE $cartTable(
+      CREATE TABLE $cartsTable(
         $userIdByTable INTEGER,
         $productIdByTable INTEGER,
         $quantityByTable INTEGER,
@@ -50,9 +73,9 @@ class AppDatabase {
 
   // Создаём в БД таблицу favorites
   Future<void> _createFavoritesTable(Database db) async {
-    await db.execute('DROP TABLE IF EXISTS $favoriteTable');
+    await db.execute('DROP TABLE IF EXISTS $favoritesTable');
     await db.execute('''
-      CREATE TABLE $favoriteTable(
+      CREATE TABLE $favoritesTable(
         $userIdByTable INTEGER,
         $productIdByTable INTEGER,
         PRIMARY KEY ($userIdByTable, $productIdByTable)
@@ -71,7 +94,7 @@ class AppDatabase {
     final db = await database;
 
     await db.insert(
-      cartTable,
+      cartsTable,
       {userIdByTable: userId, productIdByTable: productId, quantityByTable: quantity},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -82,17 +105,51 @@ class AppDatabase {
     final db = await database;
 
     await db.insert(
-      favoriteTable,
+      favoritesTable,
       {userIdByTable: userId, productIdByTable: productId},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  // Метод добавления товара в таблицу products
+  Future<void> addToProductTable(int productId, String name,
+      String description, String image, double price) async {
+    final db = await database;
+
+    await db.insert(
+      productsTable,
+      {
+        productIdByTable: productId,
+        productName: name,
+        productDescription: description,
+        productImage: image,
+        productPrice: price,
+        quantityByTable: 1
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> fillProductsTable() async {
+    // Получение данных из JSON-файла с помощью метода rootBundle
+    final jsonProducts =
+    await rootBundle.loadString('assets/data/products.json');
+
+    // Преобразование полученных данных в формат JSON
+    final jsonData = json.decode(jsonProducts);
+
+    // Проход по списку товаров и создание экземпляров класса Product
+    for (var product in jsonData) {
+      // products.add(Product.fromJson(product));
+      product.toString()
+    }
   }
 
   // Метод увеличения количества товара в таблице carts
   Future<void> increaseProductQuantityInCart(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
-    UPDATE $cartTable 
+    UPDATE $cartsTable 
     SET $quantityByTable = $quantityByTable + 1 
     WHERE $userIdByTable = ? AND $productIdByTable = ?
   ''', [userId, productId]);
@@ -102,7 +159,7 @@ class AppDatabase {
   Future<void> decreaseProductQuantityInCart(int userId, int productId) async {
     final db = await database;
     await db.rawUpdate('''
-    UPDATE $cartTable 
+    UPDATE $cartsTable 
     SET $quantityByTable = $quantityByTable - 1 
     WHERE $userIdByTable = ? AND $productIdByTable = ?
   ''', [userId, productId]);
@@ -136,7 +193,7 @@ class AppDatabase {
     final db = await database;
 
     // Получение товаров из корзины
-    final cartList = await db.query(cartTable, where: '$userIdByTable = ?', whereArgs: [userId]);
+    final cartList = await db.query(cartsTable, where: '$userIdByTable = ?', whereArgs: [userId]);
 
     final productIdsList = cartList.map((cartRow) => cartRow[productIdByTable] as int).toList();
 
@@ -165,7 +222,7 @@ class AppDatabase {
     await Product.getAllProducts().then((value) => products.addAll(value));
 
     List<Map<String, dynamic>> dataList = [];
-    await getAllProductsByUserId(favoriteTable, userId)
+    await getAllProductsByUserId(favoritesTable, userId)
         .then((value) => dataList.addAll(value));
 
     for (final productRow in dataList) {

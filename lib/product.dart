@@ -10,7 +10,6 @@ class Product {
   final String image;
   final double price;
   int quantity;
-  bool isFavorite;
 
   Product({required this.id,
     required this.name,
@@ -18,7 +17,7 @@ class Product {
     required this.image,
     required this.price,
     this.quantity = 1,
-    this.isFavorite = false});
+});
 
   // Создаем фабричный конструктор для удобного парсинга данных из json
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -40,6 +39,17 @@ class Product {
         'image': image,
         'price': price,
       };
+
+  // Метод toMap для преобразования объекта в Map для последующего добавления
+  // в таблицу товаров базы данных
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'image': image,
+    'price': price,
+    'quantity': 1
+  }
 
   // 2. Получение данных из файла products.json
   static Future<void> addProduct(Product product) async {
