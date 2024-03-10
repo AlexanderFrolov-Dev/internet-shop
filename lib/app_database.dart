@@ -123,7 +123,7 @@ class AppDatabase {
     await db.insert(
       productsTable,
       {
-        productIdByTable: productId,
+        id: productId,
         productName: name,
         productDescription: description,
         productImage: image,
@@ -203,16 +203,34 @@ class AppDatabase {
     return productsList;
   }
 
+  Future<List<Product>> getProducts() async {
+    final db = await database;
+
+    // Получаем список мап, представляющих товары из таблицы products
+    final List<Map<String, dynamic>> dogMaps = await db.query(productsTable);
+
+    // Создаем список, и заполняем его товарами
+    // путем конвертации мапы в объект класса Product
+    return [
+      for (final {
+      id: productId,
+      productName: name,
+      productDescription: description,
+      productImage: image,
+      productPrice: price,
+      quantityByTable: quantity
+      } in dogMaps)
+        Product(id: productId, name: name, description: description,
+            image: image, price: price, quantity: quantity)
+    ];
+  }
+
   Future<List<Product>> getProductsForFavorites(int userId) async {
-    List<Product> products = [];
     List<Product> favoriteProducts = [];
     Product? product;
+    List<Product> products = await getProducts();
 
-    await Product.getAllProducts().then((value) => products.addAll(value));
-
-    List<Map<String, dynamic>> dataList = [];
-    await getAllProductsByUserId(favoritesTable, userId)
-        .then((value) => dataList.addAll(value));
+    List<Map<String, dynamic>> dataList = await getAllProductsByUserId(favoritesTable, userId);
 
     for (final productRow in dataList) {
       // Получение вхождений списка мап
