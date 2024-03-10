@@ -15,6 +15,7 @@ class AppDatabase {
   static const String favoritesTable = 'favorites';
   static const String userIdByTable = 'user_id';
   static const String productIdByTable = 'product_id';
+  static const String id = 'id';
   static const String productName = 'name';
   static const String productDescription = 'description';
   static const String productImage = 'image';
@@ -37,23 +38,24 @@ class AppDatabase {
     final path = join(dbPath, databaseName);
     return await openDatabase(
         path,
-        version: 2,
+        version: 3,
         onCreate: _createTables,
         onUpgrade: _onUpgrade
     );
   }
 
+  // Создаём в БД таблицу products
   Future<void> _createProductsTable(Database db, int version) async {
     await db.execute('DROP TABLE IF EXISTS $productsTable');
     await db.execute('''
       CREATE TABLE $productsTable(
-        $productIdByTable INTEGER,
+        $id INTEGER,
         $productName TEXT,
         $productDescription TEXT,
         $productImage TEXT,
         $productPrice REAL,
         $quantityByTable INTEGER,
-        PRIMARY KEY ($productIdByTable)
+        PRIMARY KEY ($id)
       )
     ''');
   }
@@ -85,6 +87,8 @@ class AppDatabase {
 
   // Здесь запускаем методы для создания каждой из необходимых таблиц
   Future<void> _createTables(Database db, int version) async {
+    await _createProductsTable(db, version);
+    await _loadProductsFromJson(db);
     await _createCartsTable(db, version);
     await _createFavoritesTable(db);
   }
@@ -128,21 +132,6 @@ class AppDatabase {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-  }
-
-  Future<void> fillProductsTable() async {
-    // Получение данных из JSON-файла с помощью метода rootBundle
-    final jsonProducts =
-    await rootBundle.loadString('assets/data/products.json');
-
-    // Преобразование полученных данных в формат JSON
-    final jsonData = json.decode(jsonProducts);
-
-    // Проход по списку товаров и создание экземпляров класса Product
-    for (var product in jsonData) {
-      // products.add(Product.fromJson(product));
-      product.toString()
-    }
   }
 
   // Метод увеличения количества товара в таблице carts
@@ -251,9 +240,23 @@ class AppDatabase {
     await db.delete(tableName, where: '$userIdByTable = ?', whereArgs: [userId]);
   }
 
+  Future<void> _loadProductsFromJson(Database db) async {
+    String jsonString =
+    await rootBundle.loadString('assets/data/products.json');
+    List<dynamic> productJsonList = json.decode(jsonString);
+
+    List<Product> productList = productJsonList
+        .map((productJson) => Product.fromJson(productJson)).toList();
+
+    for (Product product in productList) {
+      await db.insert(productsTable, product.toJson());
+    }
+  }
+
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await _createFavoritesTable(db);
+    if (oldVersion < 3) {
+      await _createProductsTable(db, newVersion);
+      await _loadProductsFromJson(db);
     }
   }
 }

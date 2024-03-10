@@ -38,30 +38,20 @@ class Product {
         'description': description,
         'image': image,
         'price': price,
+        'quantity': 1
       };
 
-  // Метод toMap для преобразования объекта в Map для последующего добавления
-  // в таблицу товаров базы данных
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'name': name,
-    'description': description,
-    'image': image,
-    'price': price,
-    'quantity': 1
-  }
-
-  // 2. Получение данных из файла products.json
+  // Получение данных из файла products.json
   static Future<void> addProduct(Product product) async {
     String jsonString = await rootBundle.loadString(
         'assets/data/products.json');
-    // 3. Преобразование данных в объект Dart
+    // Преобразование данных в объект Dart
     List<dynamic> products = json.decode(jsonString);
-    // 4. Добавление нового товара
+    // Добавление нового товара
     products.add(product.toJson());
-    // 5. Преобразование объекта обратно в JSON
+    // Преобразование объекта обратно в JSON
     String newJsonString = json.encode(products);
-    // 6. Запись данных в файл products.json
+    // Запись данных в файл products.json
     final File file = File('assets/data/products.json');
     file.writeAsString(newJsonString);
   }
