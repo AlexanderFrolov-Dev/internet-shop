@@ -47,5 +47,12 @@
     "description": "Xiaomi 13 Ultra 512Gb Black",
     "price": 139999.0,
     "image": "assets/images/Xiaomi 13 Ultra 512Gb Black.jpg"
+  },
+  {
+    "id" : 8,
+    "name": "Google Pixel Fold",
+    "description": "Google Pixel Fold 256 ГБ бежевый",
+    "price": 249999.0,
+    "image": "assets/images/Google Pixel Fold 256 ГБ бежевый.jpg"
   }
 ]

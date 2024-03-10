@@ -14,6 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   AppDatabase appDatabase = AppDatabase();
+  await appDatabase.loadProductsFromJson();
   CartModel cartModel = CartModel.getInstance(appDatabase);
   FavoriteProductsModel favoriteProductsModel = FavoriteProductsModel.getInstance(appDatabase);
   List<Profile> profiles = await Profile.getProfiles();

@@ -44,6 +44,11 @@ class AppDatabase {
     );
   }
 
+  Future<void> loadProductsFromJson() async {
+    final db = await database;
+    await _loadProductsFromJson(db);
+  }
+
   // Создаём в БД таблицу products
   Future<void> _createProductsTable(Database db, int version) async {
     await db.execute('DROP TABLE IF EXISTS $productsTable');
@@ -88,9 +93,9 @@ class AppDatabase {
   // Здесь запускаем методы для создания каждой из необходимых таблиц
   Future<void> _createTables(Database db, int version) async {
     await _createProductsTable(db, version);
-    await _loadProductsFromJson(db);
     await _createCartsTable(db, version);
     await _createFavoritesTable(db);
+    await _loadProductsFromJson(db);
   }
 
   // Метод добавления товара в таблицу carts
@@ -190,8 +195,6 @@ class AppDatabase {
 
     List<Product> productsById = products.where((product) => productIdsList.contains(product.id)).toList();
 
-    // Получение информации о товарах по их id
-    // final productsList = await Product.getProductsByIds(productIdsList);
     final List<CartInfo> cartInfoList = [];
 
     // Создание объектов CartInfo для каждого товара в корзине
@@ -263,15 +266,31 @@ class AppDatabase {
   }
 
   Future<void> _loadProductsFromJson(Database db) async {
-    String jsonString =
-    await rootBundle.loadString('assets/data/products.json');
+    String jsonString = await rootBundle.loadString('assets/data/products.json');
     List<dynamic> productJsonList = json.decode(jsonString);
 
-    List<Product> productList = productJsonList
-        .map((productJson) => Product.fromJson(productJson)).toList();
+    for (var productJson in productJsonList) {
+      Product product = Product.fromJson(productJson);
 
-    for (Product product in productList) {
-      await db.insert(productsTable, product.toJson());
+      // Проверка существования товара по id в таблице products
+      List<Map<String, dynamic>> existingProducts = await db.query(
+        productsTable,
+        where: '$id = ?',
+        whereArgs: [product.id],
+      );
+
+      if (existingProducts.isNotEmpty) {
+        // Выполнение обновления товара, если он уже существует
+        await db.update(
+          productsTable,
+          product.toJson(),
+          where: '$id = ?',
+          whereArgs: [product.id],
+        );
+      } else {
+        // Вставка нового товара, если его не существует
+        await db.insert(productsTable, product.toJson());
+      }
     }
   }
 
