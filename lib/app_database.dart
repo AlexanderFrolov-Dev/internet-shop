@@ -186,8 +186,12 @@ class AppDatabase {
 
     final productIdsList = cartList.map((cartRow) => cartRow[productIdByTable] as int).toList();
 
+    List<Product> products = await getProducts();
+
+    List<Product> productsById = products.where((product) => productIdsList.contains(product.id)).toList();
+
     // Получение информации о товарах по их id
-    final productsList = await Product.getProductsByIds(productIdsList);
+    // final productsList = await Product.getProductsByIds(productIdsList);
     final List<CartInfo> cartInfoList = [];
 
     // Создание объектов CartInfo для каждого товара в корзине
@@ -196,11 +200,11 @@ class AppDatabase {
       cartInfoList.add(CartInfo(cartInfo.userId, cartInfo.productId, cartInfo.quantity));
     }
 
-    for (var p in productsList) {
+    for (var p in productsById) {
       p.quantity = cartInfoList.firstWhere((element) => p.id == element.productId).quantity;
     }
 
-    return productsList;
+    return productsById;
   }
 
   Future<List<Product>> getProducts() async {
